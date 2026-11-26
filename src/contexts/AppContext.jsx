@@ -1,16 +1,18 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { mockItems, mockProfile } from '../data/mockData';
+import { mockItems, mockRentals } from '../data/mockData';
 
 const AppContext = createContext();
 
+const getStoredUser = () => localStorage.getItem('rentify_user') || sessionStorage.getItem('rentify_user');
+
 export function AppProvider({ children }) {
-  const [isLoggedIn, setIsLoggedIn] = useState(() => Boolean(localStorage.getItem('rentify_user')));
+  const [isLoggedIn, setIsLoggedIn] = useState(() => Boolean(getStoredUser()));
   const [user, setUser] = useState(() => {
-    const saved = localStorage.getItem('rentify_user');
+    const saved = getStoredUser();
     return saved ? JSON.parse(saved) : null;
   });
   const [favorites, setFavorites] = useState(new Set());
-  const [rentals] = useState({ active: [], upcoming: [], completed: [], cancelled: [] });
+  const [rentals] = useState(() => Object.values(mockRentals).flat());
   const [notifications, setNotifications] = useState([]);
   const [items, setItems] = useState(mockItems);
 
@@ -21,7 +23,7 @@ export function AppProvider({ children }) {
       .catch(() => setItems(mockItems));
   }, []);
 
-  const login = async ({ email, password }) => {
+  const login = async ({ email, password, remember = true }) => {
     const response = await fetch('/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -31,7 +33,9 @@ export function AppProvider({ children }) {
     if (!response.ok) throw new Error(data.error);
     setUser(data.user);
     setIsLoggedIn(true);
-    localStorage.setItem('rentify_user', JSON.stringify(data.user));
+    localStorage.removeItem('rentify_user');
+    sessionStorage.removeItem('rentify_user');
+    (remember ? localStorage : sessionStorage).setItem('rentify_user', JSON.stringify(data.user));
   };
 
   const register = async ({ name, email, password }) => {
@@ -44,6 +48,7 @@ export function AppProvider({ children }) {
     if (!response.ok) throw new Error(data.error);
     setUser(data.user);
     setIsLoggedIn(true);
+    sessionStorage.removeItem('rentify_user');
     localStorage.setItem('rentify_user', JSON.stringify(data.user));
   };
 
@@ -51,6 +56,7 @@ export function AppProvider({ children }) {
     setUser(null);
     setIsLoggedIn(false);
     localStorage.removeItem('rentify_user');
+    sessionStorage.removeItem('rentify_user');
   };
 
   const addNotification = (notification) => {

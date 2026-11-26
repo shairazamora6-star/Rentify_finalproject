@@ -9,7 +9,7 @@ npm install
 npm run dev
 ```
 
-The app runs on `http://localhost:5173`. The API runs on `http://localhost:5174`.
+The app runs on `http://localhost:5173`. The API runs on `http://127.0.0.1:5175`.
 
 ## Database
 

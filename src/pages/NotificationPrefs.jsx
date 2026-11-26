@@ -189,7 +189,7 @@ export default function NotificationPrefs() {
             </div>
           </div>
 
-          <div style={{ display: 'flex', gap: 12 }}>
+          <div className="time-range">
             <div style={{ flex: 1 }}>
               <label style={{ display: 'block', fontSize: 12, color: '#64748B', marginBottom: 4 }}>Start</label>
               <input type="time" defaultValue="22:00" className="input-field" style={{ width: '100%' }} />

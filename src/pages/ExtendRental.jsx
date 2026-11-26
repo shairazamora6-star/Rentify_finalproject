@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Calendar, Clock, AlertCircle, CheckCircle, XCircle, Loader2, ChevronLeft } from 'lucide-react';
-import { mockItems, mockRentals } from '../data/mockData';
+import { mockItems } from '../data/mockData';
 import { useApp } from '../contexts/AppContext';
 
 export default function ExtendRental() {
@@ -10,7 +10,7 @@ export default function ExtendRental() {
   const { rentals, addNotification } = useApp();
 
   const rental = rentals.find(r => r.id === parseInt(id));
-  const item = rental ? mockItems.find(i => i.id === rental.itemId) : null;
+  const item = rental ? mockItems.find(i => i.id === rental.itemId || i.title === rental.item) : null;
 
   const [step, setStep] = useState(1); // 1: dates, 2: review, 3: payment
   const [startDate, setStartDate] = useState(rental?.endDate || '');
@@ -246,12 +246,12 @@ export default function ExtendRental() {
                     <XCircle size={24} color="#64748B" />
                   </button>
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 4, marginBottom: 8 }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, minmax(0, 1fr))', gap: 4, marginBottom: 8 }}>
                   {['Su','Mo','Tu','We','Th','Fr','Sa'].map(d => (
                     <div key={d} style={{ textAlign: 'center', fontSize: 11, fontWeight: 600, color: '#94A3B8', padding: '8px 0' }}>{d}</div>
                   ))}
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 4 }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, minmax(0, 1fr))', gap: 4 }}>
                   {renderCalendar()}
                 </div>
                 <div style={{ height: 'env(safe-area-inset-bottom)' }} />

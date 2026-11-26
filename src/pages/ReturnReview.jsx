@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Star, Camera, Send, ChevronLeft, CheckCircle, Image, Smile, Meh, Frown, XCircle } from 'lucide-react';
-import { mockItems, mockRentals } from '../data/mockData';
+import { mockItems } from '../data/mockData';
 import { useApp } from '../contexts/AppContext';
 
 export default function ReturnReview() {
@@ -10,7 +10,7 @@ export default function ReturnReview() {
   const { rentals, addNotification } = useApp();
 
   const rental = rentals.find(r => r.id === parseInt(id));
-  const item = rental ? mockItems.find(i => i.id === rental.itemId) : null;
+  const item = rental ? mockItems.find(i => i.id === rental.itemId || i.title === rental.item) : null;
 
   const [step, setStep] = useState(1); // 1: return confirmation, 2: review
   const [rating, setRating] = useState(0);

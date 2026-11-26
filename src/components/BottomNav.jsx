@@ -37,8 +37,12 @@ export default function BottomNav() {
             transition: 'color 0.15s',
           })}
         >
-          <Icon size={22} strokeWidth={isActive ? 2.5 : 2} />
-          <span style={{ fontSize: 11, fontWeight: isActive ? 600 : 400 }}>{label}</span>
+          {({ isActive }) => (
+            <>
+              <Icon size={22} strokeWidth={isActive ? 2.5 : 2} />
+              <span style={{ fontSize: 11, fontWeight: isActive ? 600 : 400 }}>{label}</span>
+            </>
+          )}
         </NavLink>
       ))}
     </nav>

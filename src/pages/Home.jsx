@@ -127,7 +127,7 @@ export default function Home() {
           <h2 style={{ fontSize: 17, fontWeight: 700, color: '#0F172A' }}>Nearby Items</h2>
           <button onClick={() => navigate('/search')} style={{ fontSize: 13, color: '#2563EB', fontWeight: 600, padding: '4px 0' }}>See All →</button>
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+        <div className="rental-grid">
           {filtered.slice(0, 6).map(item => <ItemCard key={item.id} item={item} />)}
         </div>
       </div>

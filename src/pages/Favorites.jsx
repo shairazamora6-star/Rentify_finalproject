@@ -48,7 +48,7 @@ export default function Favorites() {
         ) : (
           <>
             <p style={{ fontSize: 14, color: '#64748B', marginBottom: 16 }}>{favorites.length} saved items</p>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+            <div className="rental-grid">
               {favorites.map(item => <ItemCard key={item.id} item={item} />)}
             </div>
           </>

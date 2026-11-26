@@ -104,7 +104,7 @@ export default function Search() {
             <p style={{ color: '#94A3B8', fontSize: 13 }}>Try adjusting your search or filters</p>
           </div>
         ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+          <div className="rental-grid">
             {results.map(item => <ItemCard key={item.id} item={item} />)}
           </div>
         )}

@@ -229,8 +229,8 @@ app.use((error, _req, res, _next) => {
   res.status(500).json({ error: 'SQL Server operation failed' });
 });
 
-const port = Number(process.env.PORT || 5174);
-app.listen(port, () => {
+const port = Number(process.env.PORT || 5175);
+app.listen(port, '127.0.0.1', () => {
   console.log(`Rentify API listening on http://localhost:${port}`);
   console.log(`Connected to SQL Server: ${sqlConfig.server}/${sqlConfig.database}`);
 });

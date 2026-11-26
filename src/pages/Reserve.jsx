@@ -47,7 +47,7 @@ function DateRangePicker({ startDate, endDate, onSelect }) {
         <button onClick={() => setViewDate(new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, 1))}
           style={{ width: 34, height: 34, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#F8FAFC', border: '1px solid #E2E8F0', fontSize: 16, color: '#0F172A' }}>›</button>
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 4, textAlign: 'center' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, minmax(0, 1fr))', gap: 4, textAlign: 'center' }}>
         {['Su','Mo','Tu','We','Th','Fr','Sa'].map(d => (
           <span key={d} style={{ fontSize: 11, color: '#94A3B8', fontWeight: 600, padding: '4px 0', textTransform: 'uppercase', letterSpacing: 0.5 }}>{d}</span>
         ))}
@@ -72,7 +72,7 @@ function DateRangePicker({ startDate, endDate, onSelect }) {
                 }
               }
             }} style={{
-              width: 38, height: 38, borderRadius: selected ? 12 : 10,
+              width: '100%', maxWidth: 38, height: 38, borderRadius: selected ? 12 : 10,
               fontSize: 13, fontWeight: 500,
               background: selected ? '#2563EB' : isToday ? '#EEF2FF' : 'transparent',
               color: selected ? 'white' : isToday ? '#2563EB' : '#0F172A',

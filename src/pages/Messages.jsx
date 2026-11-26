@@ -1,15 +1,20 @@
 import { MessageCircle } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 import { mockMessages, mockUsers } from '../data/mockData';
 import { useState } from 'react';
 
 const ChatView = ({ conversation, onBack }) => {
   const [messageText, setMessageText] = useState('');
-  const messages = mockMessages[conversation.id] || [];
+  const [messages, setMessages] = useState([]);
 
   const handleSend = () => {
-    if (!messageText.trim()) return;
-    // In real app: send message via API
+    const text = messageText.trim();
+    if (!text) return;
+    setMessages((current) => [...current, {
+      id: Date.now(),
+      text,
+      sent: true,
+      time: new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }),
+    }]);
     setMessageText('');
   };
 
@@ -120,18 +125,11 @@ const ChatView = ({ conversation, onBack }) => {
 };
 
 export default function Messages() {
-  const navigate = useNavigate();
   const [view, setView] = useState('list'); // 'list' or chat with conversation id
   const [activeConversation, setActiveConversation] = useState(null);
 
   const onlineUsers = mockUsers.filter(u => u.online);
-  const conversations = mockMessages.conversations || Object.keys(mockMessages).filter(k => k !== 'conversations').map(id => ({
-    id, name: mockUsers.find(u => u.id === parseInt(id))?.name || 'User',
-    lastMessage: mockMessages[id]?.[mockMessages[id].length - 1]?.text || '',
-    time: mockMessages[id]?.[mockMessages[id].length - 1]?.time || '',
-    unread: mockMessages[id]?.filter(m => !m.sent).length || 0,
-    online: mockUsers.find(u => u.id === parseInt(id))?.online || false,
-  }));
+  const conversations = mockMessages;
 
   if (view === 'chat' && activeConversation) {
     return <ChatView conversation={activeConversation} onBack={() => setView('list')} />;
@@ -158,7 +156,7 @@ export default function Messages() {
             <div style={{ display: 'flex', gap: 16, overflowX: 'auto', scrollbarWidth: 'none' }}>
               {onlineUsers.map(user => (
                 <button key={user.id} onClick={() => {
-                  const conv = conversations.find(c => c.id === String(user.id));
+                  const conv = conversations.find(c => c.id === user.id);
                   if (conv) { setActiveConversation(conv); setView('chat'); }
                 }} style={{
                   display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,

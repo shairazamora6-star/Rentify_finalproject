@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { Clock, AlertCircle, CheckCircle, XCircle, ChevronLeft } from 'lucide-react';
-import { mockItems, mockRentals } from '../data/mockData';
+import { mockItems } from '../data/mockData';
 import { useApp } from '../contexts/AppContext';
 
 export default function ExtendRentalPending() {
@@ -9,7 +9,7 @@ export default function ExtendRentalPending() {
   const { rentals } = useApp();
 
   const rental = rentals.find(r => r.id === parseInt(id));
-  const item = rental ? mockItems.find(i => i.id === rental.itemId) : null;
+  const item = rental ? mockItems.find(i => i.id === rental.itemId || i.title === rental.item) : null;
 
   const status = rental?.extensionStatus || 'pending'; // pending, approved, rejected
 
