@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import { Eye, EyeOff, LockKeyhole, LogIn, Mail } from 'lucide-react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useApp } from '../contexts/AppContext'
 import AuthLayout from '../components/AuthLayout'
 
 export default function Login() {
+  const location = useLocation()
   const navigate = useNavigate()
   const { login } = useApp()
   const [email, setEmail] = useState('')
@@ -35,6 +36,7 @@ export default function Login() {
       footer={<>New to Rentify? <Link to="/register">Create an account</Link></>}
     >
       <form className="auth-form" onSubmit={handleSubmit}>
+        {location.state?.registered && !error && <div className="auth-success" role="status">Account created. Please sign in.</div>}
         <div className="auth-field">
           <label htmlFor="login-email">Email address</label>
           <div className="auth-input-wrap">

@@ -135,7 +135,7 @@ export default function Landing() {
                 </article>
               ))}
             </div>
-            <button className="browse-all-button" onClick={() => browseCategory('all')}>Browse all rentals <ArrowRight size={16} /></button>
+            <button className="browse-all-button" onClick={() => navigate('/register')}>Browse all rentals <ArrowRight size={16} /></button>
           </div>
         </section>
 

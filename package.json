@@ -3,31 +3,19 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
   "scripts": {
-    "dev": "concurrently -k \"node server.js\" \"vite\"",
-    "server": "node server.js",
-    "build": "vite build",
-    "lint": "oxlint",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "concurrently": "^10.0.7",
-    "cors": "^2.8.6",
-    "dotenv": "^18.0.10",
-    "express": "^5.3.0",
-    "lucide-react": "^1.80.0",
-    "msnodesqlv8": "^6.2.2",
-    "mssql": "^12.8.1",
-    "nodemailer": "^10.6.1",
-    "react": "^19.3.1",
-    "react-dom": "^19.3.1",
-    "react-router-dom": "^7.18.7"
+    "dev": "concurrently -k -n backend,frontend \"npm run dev --workspace rentify-backend\" \"npm run frontend:dev\"",
+    "frontend:dev": "node frontend/scripts/wait-for-api.js && npm run dev --workspace rentify-frontend",
+    "server": "npm run start --workspace rentify-backend",
+    "build": "npm run build --workspace rentify-frontend",
+    "lint": "npm run lint --workspace rentify-frontend",
+    "preview": "npm run preview --workspace rentify-frontend"
   },
   "devDependencies": {
-    "@types/react": "^19.3.0",
-    "@types/react-dom": "^19.3.0",
-    "@vitejs/plugin-react": "^6.1.2",
-    "oxlint": "^1.90.0",
-    "vite": "^8.3.6"
+    "concurrently": "^10.0.7"
   }
 }

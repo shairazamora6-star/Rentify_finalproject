@@ -46,10 +46,7 @@ export function AppProvider({ children }) {
     });
     const data = await response.json();
     if (!response.ok) throw new Error(data.error);
-    setUser(data.user);
-    setIsLoggedIn(true);
-    sessionStorage.removeItem('rentify_user');
-    localStorage.setItem('rentify_user', JSON.stringify(data.user));
+    return data.user;
   };
 
   const logout = () => {

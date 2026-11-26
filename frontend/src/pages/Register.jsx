@@ -21,7 +21,7 @@ export default function Register() {
     setIsSubmitting(true)
     try {
       await register({ name: name.trim(), email: email.trim(), password })
-      navigate('/')
+      navigate('/login', { replace: true, state: { registered: true } })
     } catch (submitError) {
       setError(submitError.message || 'Unable to create your account. Please try again.')
     } finally {
