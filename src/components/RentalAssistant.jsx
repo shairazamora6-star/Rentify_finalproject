@@ -77,7 +77,7 @@ export default function RentalAssistant() {
             />
             <button type="submit" aria-label="Send message" disabled={isLoading || !message.trim()}><Send size={17} /></button>
           </form>
-          <p className="assistant-disclaimer">Catalog-based helper, not a live AI chat.</p>
+          <p className="assistant-disclaimer">Your message may be sent to the configured chatbot API. Don’t include sensitive information.</p>
         </section>
       )}
       <button

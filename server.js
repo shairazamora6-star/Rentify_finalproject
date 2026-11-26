@@ -1,9 +1,12 @@
-import 'dotenv/config';
+import dotenv from 'dotenv';
 import express from 'express';
 import cors from 'cors';
 import sql from 'mssql/msnodesqlv8.js';
 import nodemailer from 'nodemailer';
 import { createHash, pbkdf2Sync, randomBytes, timingSafeEqual } from 'node:crypto';
+
+dotenv.config({ path: '.env.local' });
+dotenv.config();
 
 const sqlConfig = {
   server: process.env.SQL_SERVER || 'YURICHIEE\\SQL_VER2',
@@ -16,6 +19,41 @@ const sqlConfig = {
 };
 
 const pool = await sql.connect(sqlConfig);
+
+class ExternalApiError extends Error {}
+
+async function requestExternalJson(url, options) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 10000);
+  try {
+    const response = await fetch(url, { ...options, signal: controller.signal });
+    if (!response.ok) throw new ExternalApiError(`External API returned HTTP ${response.status}`);
+    try {
+      return await response.json();
+    } catch {
+      throw new ExternalApiError('External API returned invalid JSON');
+    }
+  } catch (error) {
+    if (error instanceof ExternalApiError) throw error;
+    console.error('External API request failed:', error.message);
+    throw new ExternalApiError('External API request failed');
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+function getHttpUrl(value, providerName) {
+  let url;
+  try {
+    url = new URL(value);
+  } catch {
+    throw new ExternalApiError(`${providerName} API URL is invalid`);
+  }
+  if (!['http:', 'https:'].includes(url.protocol)) {
+    throw new ExternalApiError(`${providerName} API URL must use HTTP or HTTPS`);
+  }
+  return url;
+}
 
 await pool.request().batch(`
 IF OBJECT_ID(N'dbo.users', N'U') IS NULL
@@ -217,31 +255,62 @@ app.get('/api/items/:id', async (req, res, next) => {
 app.get('/api/nearby', async (req, res, next) => {
   const hasCoordinates = req.query.lat !== undefined || req.query.lon !== undefined;
   let origin;
-  if (hasCoordinates) {
-    const latitude = Number(req.query.lat);
-    const longitude = Number(req.query.lon);
-    if (!Number.isFinite(latitude) || !Number.isFinite(longitude) ||
-        latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180) {
-      return res.status(400).json({ error: 'Valid latitude and longitude are required' });
-    }
-    origin = { latitude, longitude, label: 'your selected location' };
-  } else if (typeof req.query.location === 'string' && req.query.location.trim()) {
-    const city = getCityCenter(req.query.location);
-    if (!city) {
-      return res.status(422).json({
-        error: 'We could not match that city or ZIP code to a supported listing area.',
-      });
-    }
-    origin = {
-      latitude: city.latitude,
-      longitude: city.longitude,
-      label: `${city.city}, ${city.state}`,
-    };
-  } else {
-    return res.status(400).json({ error: 'Choose a city or provide device coordinates' });
-  }
-
   try {
+    if (hasCoordinates) {
+      const latitude = Number(req.query.lat);
+      const longitude = Number(req.query.lon);
+      if (!Number.isFinite(latitude) || !Number.isFinite(longitude) ||
+          latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180) {
+        return res.status(400).json({ error: 'Valid latitude and longitude are required' });
+      }
+      origin = { latitude, longitude, label: 'your selected location' };
+    } else if (typeof req.query.location === 'string' && req.query.location.trim()) {
+      const locationQuery = req.query.location.trim();
+      const locationApiUrl = (process.env.LOCATION_API_URL || '').trim();
+      const locationApiKey = (process.env.LOCATION_API_KEY || '').trim();
+      if (locationApiUrl || locationApiKey) {
+        if (!locationApiUrl || !locationApiKey) {
+          return res.status(503).json({ error: 'Set both LOCATION_API_URL and LOCATION_API_KEY to enable external location lookup.' });
+        }
+        const url = getHttpUrl(locationApiUrl, 'Location');
+        url.searchParams.set('q', locationQuery);
+        const data = await requestExternalJson(url, {
+          headers: {
+            Accept: 'application/json',
+            Authorization: `Bearer ${locationApiKey}`,
+          },
+        });
+        if (!data || typeof data !== 'object') {
+          throw new ExternalApiError('Location API response was invalid');
+        }
+        const latitude = Number(data.latitude);
+        const longitude = Number(data.longitude);
+        if (!Number.isFinite(latitude) || latitude < -90 || latitude > 90 ||
+            !Number.isFinite(longitude) || longitude < -180 || longitude > 180) {
+          throw new ExternalApiError('Location API returned invalid coordinates');
+        }
+        origin = {
+          latitude,
+          longitude,
+          label: typeof data.label === 'string' && data.label.trim() ? data.label.trim() : locationQuery,
+        };
+      } else {
+        const city = getCityCenter(locationQuery);
+        if (!city) {
+          return res.status(422).json({
+            error: 'We could not match that city or ZIP code to a supported listing area.',
+          });
+        }
+        origin = {
+          latitude: city.latitude,
+          longitude: city.longitude,
+          label: `${city.city}, ${city.state}`,
+        };
+      }
+    } else {
+      return res.status(400).json({ error: 'Choose a city or provide device coordinates' });
+    }
+
     const result = await pool.request().query('SELECT * FROM dbo.items WHERE available = 1');
     const items = result.recordset
       .map(row => {
@@ -269,6 +338,44 @@ app.post('/api/assistant/recommendations', async (req, res, next) => {
 
   try {
     const result = await pool.request().query('SELECT * FROM dbo.items WHERE available = 1');
+    const chatbotApiUrl = (process.env.CHATBOT_API_URL || '').trim();
+    const chatbotApiKey = (process.env.CHATBOT_API_KEY || '').trim();
+    if (chatbotApiUrl || chatbotApiKey) {
+      if (!chatbotApiUrl || !chatbotApiKey) {
+        return res.status(503).json({ error: 'Set both CHATBOT_API_URL and CHATBOT_API_KEY to enable the chatbot API.' });
+      }
+      const data = await requestExternalJson(getHttpUrl(chatbotApiUrl, 'Chatbot'), {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${chatbotApiKey}`,
+        },
+        body: JSON.stringify({
+          message,
+          listings: result.recordset.map(row => ({
+            id: row.id,
+            title: row.title,
+            category: row.category,
+            description: row.description,
+            price: Number(row.price),
+            pricePeriod: row.price_period,
+            location: row.location,
+          })),
+        }),
+      });
+      if (!data || typeof data.reply !== 'string' || !Array.isArray(data.itemIds)) {
+        throw new ExternalApiError('Chatbot API response did not match the configured contract');
+      }
+      const requestedIds = new Set(data.itemIds.map(Number).filter(Number.isInteger));
+      const items = result.recordset.filter(row => requestedIds.has(row.id)).map(getItem);
+      return res.json({
+        reply: data.reply.slice(0, 1000),
+        items,
+        external: true,
+      });
+    }
+
     const terms = message.toLowerCase().match(/[a-z0-9]+/g) || [];
     const stopWords = new Set(['a', 'an', 'and', 'for', 'i', 'in', 'is', 'it', 'looking', 'need', 'of', 'or', 'rent', 'the', 'to', 'want', 'with']);
     const keywords = terms.filter(term => !stopWords.has(term));
@@ -290,6 +397,7 @@ app.post('/api/assistant/recommendations', async (req, res, next) => {
     res.json({
       reply: ranked.length ? 'Here are a few listings that may fit what you need.' : 'I could not find an exact match, but these popular rentals may help.',
       items: suggestions,
+      external: false,
     });
   } catch (error) { next(error); }
 });
@@ -444,6 +552,9 @@ app.post('/api/rentals', async (req, res, next) => {
 
 app.use((error, _req, res, _next) => {
   console.error(error);
+  if (error instanceof ExternalApiError) {
+    return res.status(502).json({ error: 'A configured external API request failed.' });
+  }
   res.status(500).json({ error: 'SQL Server operation failed' });
 });
 
