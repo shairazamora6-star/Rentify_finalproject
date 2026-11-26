@@ -173,6 +173,7 @@ img { display: block; max-width: 100%; }
 .app-topbar-brand { display: flex; align-items: center; gap: 9px; color: #152840; font-weight: 750; font-size: 19px; letter-spacing: -.06em; }
 .app-topbar-brand-mark { width: 31px; height: 31px; display: grid; place-items: center; border-radius: 9px; color: white; background: var(--primary); }
 .app-topbar-links { display: flex; align-items: center; gap: 30px; }
+.app-topbar-links a { white-space: nowrap; }
 .app-topbar-links a { color: #617185; font-size: 12px; font-weight: 550; transition: color .15s; }
 .app-topbar-links a:hover,.app-topbar-links a.active { color: var(--primary); }
 .app-topbar-user { display: flex; align-items: center; gap: 11px; }

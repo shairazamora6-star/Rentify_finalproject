@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { ArrowDown, ArrowRight, ArrowUpRight, BadgeCheck, Camera, ChevronRight, Clock3, Heart, MapPin, Menu, Search, ShieldCheck, Sparkles, Star, Truck, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '../contexts/AppContext';
+import RentalAssistant from '../components/RentalAssistant';
 import './Landing.css';
 
 const categories = [
@@ -71,7 +72,7 @@ export default function Landing() {
               <input aria-label="Search rentals" value={query} onChange={event => setQuery(event.target.value)} placeholder="What are you looking to rent?" />
               <button type="submit">Find a rental <ArrowRight size={16} /></button>
             </form>
-            <div className="hero-note"><MapPin size={15} /> Renting made local, simple, and a little more sustainable.</div>
+            <button className="hero-note" onClick={() => navigate('/nearby')}><MapPin size={15} /> Explore rentals near you <ArrowRight size={14} /></button>
           </div>
           <div className="hero-art">
             <img className="hero-image" src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=1400&q=85" alt="Laptop and camera ready for a creative project" />
@@ -166,6 +167,7 @@ export default function Landing() {
         <span>Borrow a little. Live a lot.</span>
         <span>© 2025 Rentify · Made for sharing</span>
       </footer>
+      <RentalAssistant />
     </div>
   );
 }

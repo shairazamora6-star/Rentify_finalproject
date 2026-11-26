@@ -1,7 +1,9 @@
+import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import sql from 'mssql/msnodesqlv8.js';
-import { pbkdf2Sync, randomBytes, timingSafeEqual } from 'node:crypto';
+import nodemailer from 'nodemailer';
+import { createHash, pbkdf2Sync, randomBytes, timingSafeEqual } from 'node:crypto';
 
 const sqlConfig = {
   server: process.env.SQL_SERVER || 'YURICHIEE\\SQL_VER2',
@@ -64,6 +66,15 @@ CREATE TABLE dbo.favorites (
   item_id INT NOT NULL,
   PRIMARY KEY (user_id, item_id)
 );
+
+IF OBJECT_ID(N'dbo.password_reset_tokens', N'U') IS NULL
+CREATE TABLE dbo.password_reset_tokens (
+  id INT IDENTITY(1,1) PRIMARY KEY,
+  user_id INT NOT NULL,
+  token_hash CHAR(64) NOT NULL UNIQUE,
+  expires_at DATETIME2 NOT NULL,
+  used_at DATETIME2 NULL
+);
 `);
 
 const seedItems = [
@@ -104,6 +115,18 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+const smtpConfigured = Boolean(process.env.SMTP_HOST && process.env.SMTP_FROM);
+const mailer = smtpConfigured
+  ? nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: Number(process.env.SMTP_PORT || 587),
+      secure: process.env.SMTP_SECURE === 'true',
+      auth: process.env.SMTP_USER
+        ? { user: process.env.SMTP_USER, pass: process.env.SMTP_PASSWORD }
+        : undefined,
+    })
+  : null;
+
 function hashPassword(password) {
   const salt = randomBytes(16).toString('hex');
   const hash = pbkdf2Sync(password, salt, 100000, 32, 'sha256').toString('hex');
@@ -141,6 +164,38 @@ function getItem(row) {
   };
 }
 
+const listingCityCenters = [
+  { city: 'San Francisco', state: 'CA', latitude: 37.7749, longitude: -122.4194, zipPrefixes: ['941'] },
+  { city: 'Los Angeles', state: 'CA', latitude: 34.0522, longitude: -118.2437, zipPrefixes: ['900', '901', '902', '903', '904', '905', '906', '907', '908', '910', '911', '912', '913', '914', '915', '916', '917', '918'] },
+  { city: 'Austin', state: 'TX', latitude: 30.2672, longitude: -97.7431, zipPrefixes: ['733', '787'] },
+  { city: 'Seattle', state: 'WA', latitude: 47.6062, longitude: -122.3321, zipPrefixes: ['981'] },
+  { city: 'Portland', state: 'OR', latitude: 45.5152, longitude: -122.6784, zipPrefixes: ['972'] },
+  { city: 'Brooklyn', state: 'NY', latitude: 40.6782, longitude: -73.9442, zipPrefixes: ['112'] },
+  { city: 'Chicago', state: 'IL', latitude: 41.8781, longitude: -87.6298, zipPrefixes: ['606'] },
+  { city: 'Denver', state: 'CO', latitude: 39.7392, longitude: -104.9903, zipPrefixes: ['802'] },
+];
+
+function getCityCenter(location) {
+  const query = location.trim().toLowerCase();
+  const zip = query.match(/^\d{5}$/);
+  if (zip) return listingCityCenters.find(city => city.zipPrefixes.some(prefix => zip[0].startsWith(prefix)));
+  return listingCityCenters.find(city =>
+    query === city.city.toLowerCase() ||
+    query === `${city.city.toLowerCase()}, ${city.state.toLowerCase()}` ||
+    query === city.state.toLowerCase()
+  );
+}
+
+function distanceInMiles(fromLat, fromLon, toLat, toLon) {
+  const radians = value => value * Math.PI / 180;
+  const latitudeDelta = radians(toLat - fromLat);
+  const longitudeDelta = radians(toLon - fromLon);
+  const a = Math.sin(latitudeDelta / 2) ** 2 +
+    Math.cos(radians(fromLat)) * Math.cos(radians(toLat)) *
+    Math.sin(longitudeDelta / 2) ** 2;
+  return 3958.8 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
 app.get('/api/health', (_req, res) => res.json({ ok: true, database: 'SQL Server', name: 'RentifyDB' }));
 
 app.get('/api/items', async (_req, res, next) => {
@@ -156,6 +211,86 @@ app.get('/api/items/:id', async (req, res, next) => {
       .query('SELECT * FROM dbo.items WHERE id = @id');
     if (!result.recordset[0]) return res.status(404).json({ error: 'Item not found' });
     res.json(getItem(result.recordset[0]));
+  } catch (error) { next(error); }
+});
+
+app.get('/api/nearby', async (req, res, next) => {
+  const hasCoordinates = req.query.lat !== undefined || req.query.lon !== undefined;
+  let origin;
+  if (hasCoordinates) {
+    const latitude = Number(req.query.lat);
+    const longitude = Number(req.query.lon);
+    if (!Number.isFinite(latitude) || !Number.isFinite(longitude) ||
+        latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180) {
+      return res.status(400).json({ error: 'Valid latitude and longitude are required' });
+    }
+    origin = { latitude, longitude, label: 'your selected location' };
+  } else if (typeof req.query.location === 'string' && req.query.location.trim()) {
+    const city = getCityCenter(req.query.location);
+    if (!city) {
+      return res.status(422).json({
+        error: 'We could not match that city or ZIP code to a supported listing area.',
+      });
+    }
+    origin = {
+      latitude: city.latitude,
+      longitude: city.longitude,
+      label: `${city.city}, ${city.state}`,
+    };
+  } else {
+    return res.status(400).json({ error: 'Choose a city or provide device coordinates' });
+  }
+
+  try {
+    const result = await pool.request().query('SELECT * FROM dbo.items WHERE available = 1');
+    const items = result.recordset
+      .map(row => {
+        const city = getCityCenter(row.location || '');
+        if (!city) return null;
+        const approximateDistance = distanceInMiles(origin.latitude, origin.longitude, city.latitude, city.longitude);
+        return {
+          ...getItem(row),
+          approximateDistance: Math.round(approximateDistance * 10) / 10,
+        };
+      })
+      .filter(Boolean)
+      .filter(item => item.approximateDistance <= 100)
+      .sort((a, b) => a.approximateDistance - b.approximateDistance);
+    for (const item of items) {
+      item.distance = `~${item.approximateDistance} mi`;
+    }
+    res.json({ location: origin.label, approximate: true, items });
+  } catch (error) { next(error); }
+});
+
+app.post('/api/assistant/recommendations', async (req, res, next) => {
+  const message = typeof req.body.message === 'string' ? req.body.message.trim().slice(0, 500) : '';
+  if (!message) return res.status(400).json({ error: 'Tell us what you are looking to rent' });
+
+  try {
+    const result = await pool.request().query('SELECT * FROM dbo.items WHERE available = 1');
+    const terms = message.toLowerCase().match(/[a-z0-9]+/g) || [];
+    const stopWords = new Set(['a', 'an', 'and', 'for', 'i', 'in', 'is', 'it', 'looking', 'need', 'of', 'or', 'rent', 'the', 'to', 'want', 'with']);
+    const keywords = terms.filter(term => !stopWords.has(term));
+    const budget = message.match(/(?:under|below|less than)\s*\$?(\d+)/i);
+    const maxPrice = budget ? Number(budget[1]) : null;
+    const ranked = result.recordset
+      .map(row => {
+        const searchable = `${row.title} ${row.category} ${row.description}`.toLowerCase();
+        const score = keywords.reduce((total, term) => total + (searchable.includes(term) ? 1 : 0), 0);
+        return { row, score };
+      })
+      .filter(({ row, score }) => score > 0 && (maxPrice === null || Number(row.price) <= maxPrice))
+      .sort((a, b) => b.score - a.score || Number(b.row.featured) - Number(a.row.featured))
+      .slice(0, 3);
+    const suggestions = (ranked.length ? ranked.map(({ row }) => row) : result.recordset
+      .filter(row => maxPrice === null || Number(row.price) <= maxPrice)
+      .sort((a, b) => Number(b.featured) - Number(a.featured))
+      .slice(0, 3)).map(getItem);
+    res.json({
+      reply: ranked.length ? 'Here are a few listings that may fit what you need.' : 'I could not find an exact match, but these popular rentals may help.',
+      items: suggestions,
+    });
   } catch (error) { next(error); }
 });
 
@@ -175,6 +310,89 @@ app.post('/api/auth/register', async (req, res, next) => {
     res.status(201).json({ user: result.recordset[0] });
   } catch (error) {
     if (error.number === 2627 || error.number === 2601) return res.status(409).json({ error: 'An account with this email already exists' });
+    next(error);
+  }
+});
+
+app.post('/api/auth/forgot-password', async (req, res, next) => {
+  if (!mailer) return res.status(503).json({ error: 'Password recovery email is not configured on this server.' });
+  const email = typeof req.body.email === 'string' ? req.body.email.trim().toLowerCase() : '';
+  if (!email) return res.status(400).json({ error: 'Email address is required' });
+
+  try {
+    const result = await pool.request()
+      .input('email', sql.NVarChar, email)
+      .query('SELECT id,email FROM dbo.users WHERE LOWER(email)=@email');
+    const user = result.recordset[0];
+    if (user) {
+      const token = randomBytes(32).toString('hex');
+      const tokenHash = createHash('sha256').update(token).digest('hex');
+      await pool.request()
+        .input('userId', sql.Int, user.id)
+        .query('UPDATE dbo.password_reset_tokens SET used_at=SYSUTCDATETIME() WHERE user_id=@userId AND used_at IS NULL');
+      await pool.request()
+        .input('userId', sql.Int, user.id)
+        .input('tokenHash', sql.Char(64), tokenHash)
+        .query(`INSERT INTO dbo.password_reset_tokens (user_id,token_hash,expires_at)
+          VALUES (@userId,@tokenHash,DATEADD(MINUTE,30,SYSUTCDATETIME()))`);
+      const baseUrl = (process.env.APP_BASE_URL || 'http://localhost:5173').replace(/\/+$/, '');
+      try {
+        await mailer.sendMail({
+          from: process.env.SMTP_FROM,
+          to: user.email,
+          subject: 'Reset your Rentify password',
+          text: `Use this link within 30 minutes to reset your Rentify password: ${baseUrl}/reset-password?token=${token}`,
+          html: `<p>Use the link below within 30 minutes to reset your Rentify password.</p><p><a href="${baseUrl}/reset-password?token=${token}">Reset password</a></p><p>If you did not request this, you can ignore this email.</p>`,
+        });
+      } catch (mailError) {
+        await pool.request().input('tokenHash', sql.Char(64), tokenHash)
+          .query('UPDATE dbo.password_reset_tokens SET used_at=SYSUTCDATETIME() WHERE token_hash=@tokenHash');
+        console.error('Password recovery email delivery failed:', mailError);
+        return res.status(503).json({ error: 'We could not send a recovery email right now. Please try again later.' });
+      }
+    }
+    res.json({ message: 'If an account exists for that email, password reset instructions have been sent.' });
+  } catch (error) { next(error); }
+});
+
+app.post('/api/auth/reset-password', async (req, res, next) => {
+  const { token, password } = req.body;
+  if (typeof token !== 'string' || !token || typeof password !== 'string' || password.length < 6) {
+    return res.status(400).json({ error: 'A valid reset link and a password of at least 6 characters are required.' });
+  }
+  const tokenHash = createHash('sha256').update(token).digest('hex');
+  const transaction = new sql.Transaction(pool);
+  let transactionActive = false;
+  try {
+    await transaction.begin();
+    transactionActive = true;
+    const tokenResult = await transaction.request()
+      .input('tokenHash', sql.Char(64), tokenHash)
+      .query(`UPDATE dbo.password_reset_tokens
+        SET used_at=SYSUTCDATETIME()
+        OUTPUT INSERTED.user_id
+        WHERE token_hash=@tokenHash AND used_at IS NULL AND expires_at > SYSUTCDATETIME()`);
+    const userId = tokenResult.recordset[0]?.user_id;
+    if (!userId) {
+      await transaction.rollback();
+      transactionActive = false;
+      return res.status(400).json({ error: 'This reset link is invalid or has expired. Request a new one.' });
+    }
+    await transaction.request()
+      .input('userId', sql.Int, userId)
+      .input('password', sql.NVarChar, hashPassword(password))
+      .query('UPDATE dbo.users SET password=@password WHERE id=@userId');
+    await transaction.commit();
+    transactionActive = false;
+    res.json({ message: 'Your password has been updated. You can now sign in.' });
+  } catch (error) {
+    if (transactionActive) {
+      try {
+        await transaction.rollback();
+      } catch (rollbackError) {
+        console.error('Password reset transaction rollback failed:', rollbackError);
+      }
+    }
     next(error);
   }
 });

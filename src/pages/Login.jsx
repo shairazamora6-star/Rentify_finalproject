@@ -83,6 +83,7 @@ export default function Login() {
             <input type="checkbox" checked={remember} onChange={(event) => setRemember(event.target.checked)} />
             <span>Remember me</span>
           </label>
+          <Link to="/forgot-password">Forgot password?</Link>
         </div>
 
         {error && <div className="auth-error" role="alert">{error}</div>}

@@ -285,6 +285,16 @@
   line-height: 1.5;
 }
 
+.auth-success {
+  padding: 11px 13px;
+  border: 1px solid #b7e4c7;
+  border-radius: 10px;
+  color: #176b3a;
+  background: #f0fff4;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
 .auth-submit {
   width: 100%;
   min-height: 50px;

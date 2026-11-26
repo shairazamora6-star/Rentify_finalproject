@@ -109,7 +109,7 @@ export default function Home() {
         <div style={{ padding: '0 20px 20px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
             <h2 style={{ fontSize: 17, fontWeight: 700, color: '#0F172A' }}>Featured Items</h2>
-            <button onClick={() => navigate('/search')} style={{ fontSize: 13, color: '#2563EB', fontWeight: 600, padding: '4px 0' }}>See All →</button>
+            <button onClick={() => navigate('/nearby')} style={{ fontSize: 13, color: '#2563EB', fontWeight: 600, padding: '4px 0' }}>Find nearby →</button>
           </div>
           <div style={{ display: 'flex', gap: 12, overflowX: 'auto', scrollbarWidth: 'none', paddingBottom: 4 }}>
             {featured.map(item => (
@@ -124,7 +124,7 @@ export default function Home() {
       {/* Nearby Items */}
       <div style={{ padding: '0 20px 20px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
-          <h2 style={{ fontSize: 17, fontWeight: 700, color: '#0F172A' }}>Nearby Items</h2>
+          <h2 style={{ fontSize: 17, fontWeight: 700, color: '#0F172A' }}>Nearby listings</h2>
           <button onClick={() => navigate('/search')} style={{ fontSize: 13, color: '#2563EB', fontWeight: 600, padding: '4px 0' }}>See All →</button>
         </div>
         <div className="rental-grid">

@@ -34,6 +34,10 @@ import DeleteAccountSuccess from './pages/DeleteAccountSuccess'
 import DownloadData from './pages/DownloadData'
 import SubmitRequest from './pages/SubmitRequest'
 import LegalPage from './pages/LegalPage'
+import Nearby from './pages/Nearby'
+import ForgotPassword from './pages/ForgotPassword'
+import ResetPassword from './pages/ResetPassword'
+import RentalAssistant from './components/RentalAssistant'
 
 const PUBLIC_ROUTES = ['/login', '/register', '/landing']
 
@@ -50,6 +54,7 @@ function GetLayout({ children }) {
         <nav className="app-topbar-links" aria-label="Main navigation">
           <NavLink to="/" className={({ isActive }) => isActive ? 'active' : undefined}>Explore</NavLink>
           <NavLink to="/search" className={({ isActive }) => isActive ? 'active' : undefined}>Browse rentals</NavLink>
+          <NavLink to="/nearby" className={({ isActive }) => isActive ? 'active' : undefined}>Nearby</NavLink>
           {isLoggedIn && <NavLink to="/my-rentals" className={({ isActive }) => isActive ? 'active' : undefined}>My rentals</NavLink>}
         </nav>
         <div className="app-topbar-user">
@@ -68,6 +73,7 @@ function GetLayout({ children }) {
       </header>
       {children}
       {isLoggedIn && !PUBLIC_ROUTES.includes(window.location.pathname) && <BottomNav />}
+      {!PUBLIC_ROUTES.includes(window.location.pathname) && <RentalAssistant />}
     </div>
   )
 }
@@ -79,6 +85,8 @@ export default function App() {
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/landing" element={<Landing />} />
       <Route
         path="/"
@@ -91,6 +99,7 @@ export default function App() {
         }
       />
       <Route path="/search" element={<GetLayout><Search /></GetLayout>} />
+      <Route path="/nearby" element={<GetLayout><Nearby /></GetLayout>} />
       <Route
         path="/item/:id"
         element={

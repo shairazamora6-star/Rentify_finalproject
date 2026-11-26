@@ -5,8 +5,8 @@ export default function BottomNav() {
   const navItems = [
     { path: '/', icon: Home, label: 'Home' },
     { path: '/search', icon: Search, label: 'Search' },
-    { path: '/my-rentals', icon: Calendar, label: 'Rentals' },
-    { path: '/messages', icon: MessageCircle, label: 'Chat' },
+    { path: '/my-rentals', icon: Calendar, label: 'My Rentals' },
+    { path: '/messages', icon: MessageCircle, label: 'Messages' },
     { path: '/profile', icon: User, label: 'Profile' },
   ];
 
@@ -26,6 +26,7 @@ export default function BottomNav() {
         <NavLink
           key={path}
           to={path}
+          end={path === '/'}
           style={({ isActive }) => ({
             flex: 1,
             display: 'flex',
