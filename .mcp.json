@@ -3,6 +3,10 @@
 		"my-mcp-server-2cc959f2": {
 			"url": "https://mcp.figma.com/mcp",
 			"type": "http"
+		},
+		"my-mcp-server-215a3eb2": {
+			"url": "https://mcp.figma.com/mcp",
+			"type": "http"
 		}
 	}
 }

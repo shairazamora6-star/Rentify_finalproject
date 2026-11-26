@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "Bash(curl -s -X POST https://mcp.figma.com/mcp -H 'Content-Type: application/json' -d '{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"initialize\",\"params\":{\"protocolVersion\":\"2024-11-05\",\"capabilities\":{},\"clientInfo\":{\"name\":\"test\",\"version\":\"1.0\"}}}')",
+      "WebFetch(domain:help.figma.com)",
+      "WebFetch(domain:www.figma.com)",
+      "Bash(npx -y @modelcontextprotocol/inspector@latest --cli --server-url https://mcp.figma.com/mcp)",
+      "Bash(npx -y @modelcontextprotocol/inspector@latest --cli --server-url https://mcp.figma.com/mcp --method initialize)",
+      "Bash(MCP_AUTO_OPEN_ENABLED=true npx -y @modelcontextprotocol/inspector@latest --cli --server-url https://mcp.figma.com/mcp --method initialize)",
+      "Bash(curl -s -X POST https://mcp.figma.com/mcp -H \"Content-Type: application/json\" -d '{\"jsonrpc\":\"2.0\",\"method\":\"tools/list\",\"id\":1}')"
+    ]
+  }
+}
