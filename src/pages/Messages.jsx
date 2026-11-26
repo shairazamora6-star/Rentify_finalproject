@@ -30,7 +30,7 @@ const ChatView = ({ conversation, onBack }) => {
           <div style={{ position: 'relative' }}>
             <div style={{
               width: 40, height: 40, borderRadius: '50%',
-              background: 'linear-gradient(135deg, #2563EB, #7C3AED)',
+              background: 'linear-gradient(135deg, #3978D5, #73A7E5)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               color: 'white', fontWeight: 700, fontSize: 14,
             }}>
@@ -69,7 +69,7 @@ const ChatView = ({ conversation, onBack }) => {
             }}>
               <div style={{
                 maxWidth: '80%', padding: '12px 16px', borderRadius: msg.sent ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
-                background: msg.sent ? 'linear-gradient(135deg, #2563EB, #4F46E5)' : '#F1F5F9',
+                background: msg.sent ? 'linear-gradient(135deg, #3978D5, #73A7E5)' : '#EAF3FF',
                 color: msg.sent ? 'white' : '#0F172A',
                 fontSize: 14, lineHeight: 1.5,
               }}>
@@ -108,7 +108,7 @@ const ChatView = ({ conversation, onBack }) => {
         />
         <button onClick={handleSend} disabled={!messageText.trim()} style={{
           width: 40, height: 40, borderRadius: '50%',
-          border: 'none', background: messageText.trim() ? 'linear-gradient(135deg, #2563EB, #4F46E5)' : '#E2E8F0',
+          border: 'none', background: messageText.trim() ? 'linear-gradient(135deg, #3978D5, #73A7E5)' : '#DCE8F5',
           cursor: messageText.trim() ? 'pointer' : 'not-allowed',
           display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
         }}>
@@ -167,7 +167,7 @@ export default function Messages() {
                   <div style={{ position: 'relative' }}>
                     <div style={{
                       width: 52, height: 52, borderRadius: '50%',
-                      background: `linear-gradient(135deg, ${user.color1 || '#2563EB'}, ${user.color2 || '#7C3AED'})`,
+                      background: `linear-gradient(135deg, ${user.color1 || '#3978D5'}, ${user.color2 || '#73A7E5'})`,
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                       color: 'white', fontWeight: 700, fontSize: 16,
                     }}>
@@ -206,7 +206,7 @@ export default function Messages() {
               <div style={{ position: 'relative', flexShrink: 0 }}>
                 <div style={{
                   width: 48, height: 48, borderRadius: '50%',
-                  background: 'linear-gradient(135deg, #2563EB, #7C3AED)',
+                  background: 'linear-gradient(135deg, #3978D5, #73A7E5)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   color: 'white', fontWeight: 700, fontSize: 16,
                 }}>

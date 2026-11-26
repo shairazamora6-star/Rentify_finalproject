@@ -119,7 +119,7 @@ export default function ActivityStatus() {
               }}>
                 <div style={{
                   width: 40, height: 40, borderRadius: '50%',
-                  background: 'linear-gradient(135deg, #2563EB, #7C3AED)',
+                  background: 'linear-gradient(135deg, #3978D5, #73A7E5)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   color: 'white', fontWeight: 700, fontSize: 16,
                 }}>JM</div>

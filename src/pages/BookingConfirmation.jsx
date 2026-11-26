@@ -1,11 +1,14 @@
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { mockItems } from '../data/mockData';
 import { Star, MapPin } from 'lucide-react';
+import { useApp } from '../contexts/AppContext';
 
 export default function BookingConfirmation() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const item = mockItems.find(i => i.id === parseInt(id));
+  const { state } = useLocation();
+  const { items } = useApp();
+  const item = items.find(i => i.id === parseInt(id)) || mockItems.find(i => i.id === parseInt(id));
 
   if (!item) return <div>Item not found</div>;
 
@@ -56,8 +59,8 @@ export default function BookingConfirmation() {
           display: 'flex', justifyContent: 'space-around',
         }}>
           {[
-            { label: 'Owner', value: item.owner },
-            { label: 'Total', value: `$${item.price * 3}` },
+            { label: 'Owner', value: typeof item.owner === 'object' ? item.owner.name : item.owner },
+            { label: 'Total', value: state?.total != null ? `$${state.total}` : `$${item.price}/day` },
             { label: 'Status', value: 'Confirmed' },
           ].map(({ label, value }) => (
             <div key={label} style={{ textAlign: 'center' }}>
@@ -66,6 +69,12 @@ export default function BookingConfirmation() {
             </div>
           ))}
         </div>
+        {state?.startDate && state?.endDate && (
+          <p style={{ marginTop: 12, textAlign: 'center', color: '#60758D', fontSize: 12 }}>
+            {new Date(state.startDate).toLocaleDateString()} – {new Date(state.endDate).toLocaleDateString()}
+            {state.bookingId ? ` · Booking #${state.bookingId}` : ''}
+          </p>
+        )}
       </div>
 
       {/* Action Buttons */}

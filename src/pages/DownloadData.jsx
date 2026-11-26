@@ -58,7 +58,7 @@ export default function DownloadData() {
                 <div style={{
                   width: 22, height: 22, borderRadius: 6, flexShrink: 0,
                   border: on ? 'none' : '2px solid #CBD5E1',
-                  background: on ? 'linear-gradient(135deg, #2563EB, #4F46E5)' : 'white',
+                  background: on ? 'linear-gradient(135deg, #3978D5, #73A7E5)' : 'white',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   transition: 'all 0.15s',
                 }}>
@@ -96,7 +96,7 @@ export default function DownloadData() {
             disabled={downloadCount === 0 || status === 'preparing'}
             style={{
               width: '100%', padding: 15, borderRadius: 14, border: 'none',
-              background: downloadCount === 0 ? '#E2E8F0' : 'linear-gradient(135deg, #2563EB 0%, #4F46E5 100%)',
+              background: downloadCount === 0 ? '#DCE8F5' : 'linear-gradient(135deg, #3978D5 0%, #73A7E5 100%)',
               color: downloadCount === 0 ? '#94A3B8' : 'white',
               fontSize: 15, fontWeight: 700,
               cursor: downloadCount === 0 ? 'not-allowed' : 'pointer',

@@ -2,13 +2,15 @@ import { useState } from 'react';
 import { Search, Bell, User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import ItemCard from '../components/ItemCard';
-import { mockItems, categories } from '../data/mockData';
+import { categories } from '../data/mockData';
+import { useApp } from '../contexts/AppContext';
 
 export default function Home() {
   const navigate = useNavigate();
+  const { items } = useApp();
   const [activeCat, setActiveCat] = useState('all');
-  const filtered = activeCat === 'all' ? mockItems : mockItems.filter(i => i.category === activeCat);
-  const featured = mockItems.filter(i => i.featured);
+  const filtered = activeCat === 'all' ? items : items.filter(i => i.category === activeCat);
+  const featured = items.filter(i => i.featured);
 
   return (
     <div className="page">
@@ -25,7 +27,7 @@ export default function Home() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <div style={{
             width: 34, height: 34, borderRadius: 10,
-            background: 'linear-gradient(135deg, #2563EB 0%, #7C3AED 100%)',
+            background: 'linear-gradient(135deg, #3978D5 0%, #73A7E5 100%)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             color: 'white', fontWeight: 800, fontSize: 15,
             boxShadow: '0 2px 8px rgba(37,99,235,0.3)',

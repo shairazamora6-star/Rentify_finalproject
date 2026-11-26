@@ -91,7 +91,7 @@ export default function PersonalInfo() {
               <div style={{ position: 'relative', marginBottom: 16 }}>
                 <div style={{
                   width: 100, height: 100, borderRadius: '50%',
-                  background: 'linear-gradient(135deg, #2563EB, #7C3AED)',
+                  background: 'linear-gradient(135deg, #3978D5, #73A7E5)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   color: 'white', fontWeight: 700, fontSize: 36,
                 }}>

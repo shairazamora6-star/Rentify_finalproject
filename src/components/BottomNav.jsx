@@ -11,15 +11,13 @@ export default function BottomNav() {
   ];
 
   return (
-    <nav style={{
+    <nav className="bottom-nav" style={{
       position: 'fixed',
       bottom: 0,
-      left: '50%',
-      transform: 'translateX(-50%)',
+      left: 0,
       width: '100%',
-      maxWidth: 480,
       background: 'white',
-      borderTop: '1px solid #E2E8F0',
+      borderTop: '1px solid #DCE8F5',
       display: 'flex',
       padding: '8px 0 env(safe-area-inset-bottom, 8px)',
       zIndex: 100,

@@ -21,14 +21,14 @@ export default function Login() {
     transition: 'border 0.15s, box-shadow 0.15s, background 0.15s',
   });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!email.trim() || !password.trim()) { setError('Please fill in all fields'); return; }
-    if (email === 'test@rentify.com' && password === 'password') {
-      login({ name: 'Alex Johnson', email });
+    try {
+      await login({ email, password });
       navigate('/');
-    } else {
-      setError('Invalid credentials. Use test@rentify.com / password');
+    } catch (err) {
+      setError(err.message || 'Invalid credentials');
     }
   };
 
@@ -44,7 +44,7 @@ export default function Login() {
       {/* Gradient Header */}
       <div className="lf-header" style={{
         height: 220,
-        background: 'linear-gradient(135deg, #2563EB 0%, #7C3AED 60%, #EC4899 100%)',
+        background: 'linear-gradient(135deg, #3978D5 0%, #5B96E0 60%, #8FC5F2 100%)',
         borderRadius: '0 0 32px 32px',
         display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
         position: 'relative', overflow: 'hidden',
@@ -118,7 +118,7 @@ export default function Login() {
             <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: 13, color: '#64748B', marginBottom: 20 }}>
               <div onClick={() => setRemember(!remember)} style={{
                 width: 18, height: 18, borderRadius: 5, border: remember ? 'none' : '2px solid #CBD5E1',
-                background: remember ? 'linear-gradient(135deg, #2563EB, #4F46E5)' : 'white',
+                background: remember ? 'linear-gradient(135deg, #3978D5, #73A7E5)' : 'white',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.15s',
                 flexShrink: 0, cursor: 'pointer',
               }}>

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { ChevronLeft, CalendarDays } from 'lucide-react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { mockItems } from '../data/mockData';
+import { useApp } from '../contexts/AppContext';
 
 // Custom date range picker
 function DateRangePicker({ startDate, endDate, onSelect }) {
@@ -102,11 +103,14 @@ function DateRangePicker({ startDate, endDate, onSelect }) {
 export default function Reserve() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const item = mockItems.find(i => i.id === parseInt(id));
+  const { items, user } = useApp();
+  const item = items.find(i => i.id === parseInt(id)) || mockItems.find(i => i.id === parseInt(id));
   const [step, setStep] = useState(1);
   const [dates, setDates] = useState({ start: null, end: null });
   const [agreed, setAgreed] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState(0);
+  const [bookingError, setBookingError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (!item) return <div>Item not found</div>;
 
@@ -118,6 +122,43 @@ export default function Reserve() {
   const total = subtotal + serviceFee;
 
   const steps = ['Select Dates', 'Review & Agree', 'Payment'];
+
+  const confirmRental = async () => {
+    setBookingError('');
+    if (!dates.start || !dates.end || days < 1) {
+      setBookingError('Choose a valid rental date range before continuing.');
+      setStep(1);
+      return;
+    }
+    if (!user?.id) {
+      navigate('/login');
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const response = await fetch('/api/rentals', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: user.id,
+          itemId: item.id,
+          startDate: dates.start,
+          endDate: dates.end,
+          total,
+        }),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || 'Unable to save this reservation.');
+      navigate(`/booking-confirmation/${id}`, {
+        state: { total, startDate: dates.start, endDate: dates.end, bookingId: result.id },
+      });
+    } catch (error) {
+      setBookingError(error.message || 'Unable to save this reservation. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="page">
@@ -196,8 +237,8 @@ export default function Reserve() {
                 </div>
               </div>
             )}
-            <button onClick={() => setStep(2)} disabled={!dates.start}
-              className="btn-primary" style={{ marginTop: 24, opacity: dates.start ? 1 : 0.5, cursor: dates.start ? 'pointer' : 'not-allowed' }}>
+            <button onClick={() => setStep(2)} disabled={!dates.start || !dates.end || days < 1}
+              className="btn-primary" style={{ marginTop: 24, opacity: dates.start && dates.end && days > 0 ? 1 : 0.5, cursor: dates.start && dates.end && days > 0 ? 'pointer' : 'not-allowed' }}>
               Continue
             </button>
           </>
@@ -308,8 +349,9 @@ export default function Reserve() {
               ))}
             </div>
 
-            <button onClick={() => navigate(`/booking-confirmation/${id}`)} className="btn-primary">
-              Pay ${total} & Confirm
+            {bookingError && <p role="alert" style={{ marginBottom: 14, color: '#B42318', fontSize: 13 }}>{bookingError}</p>}
+            <button onClick={confirmRental} disabled={isSubmitting} className="btn-primary" style={{ opacity: isSubmitting ? 0.7 : 1 }}>
+              {isSubmitting ? 'Saving reservation…' : `Confirm reservation · $${total}`}
             </button>
           </>
         )}

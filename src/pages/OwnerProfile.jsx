@@ -89,7 +89,7 @@ export default function OwnerProfile() {
           <div style={{ position: 'relative', flexShrink: 0 }}>
             <div style={{
               width: 80, height: 80, borderRadius: '50%',
-              background: 'linear-gradient(135deg, #EC4899, #8B5CF6)',
+              background: 'linear-gradient(135deg, #3978D5, #73A7E5)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               color: 'white', fontWeight: 700, fontSize: 28,
             }}>SC</div>

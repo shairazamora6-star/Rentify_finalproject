@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route, Navigate, Link, NavLink, useNavigate } from 'react-router-dom'
 import { useApp } from './contexts/AppContext'
 import BottomNav from './components/BottomNav'
 import Home from './pages/Home'
@@ -38,12 +38,37 @@ import LegalPage from './pages/LegalPage'
 const PUBLIC_ROUTES = ['/login', '/register', '/landing']
 
 function GetLayout({ children }) {
-  const { isLoggedIn } = useApp()
+  const { isLoggedIn, user, logout } = useApp()
+  const navigate = useNavigate()
   return (
-    <>
+    <div className="app-frame">
+      <header className="app-topbar">
+        <Link className="app-topbar-brand" to="/">
+          <span className="app-topbar-brand-mark">R</span>
+          <span>Rentify</span>
+        </Link>
+        <nav className="app-topbar-links" aria-label="Main navigation">
+          <NavLink to="/" className={({ isActive }) => isActive ? 'active' : undefined}>Explore</NavLink>
+          <NavLink to="/search" className={({ isActive }) => isActive ? 'active' : undefined}>Browse rentals</NavLink>
+          {isLoggedIn && <NavLink to="/my-rentals" className={({ isActive }) => isActive ? 'active' : undefined}>My rentals</NavLink>}
+        </nav>
+        <div className="app-topbar-user">
+          {isLoggedIn ? (
+            <>
+              <span>{user?.name}</span>
+              <button onClick={logout}>Sign out</button>
+            </>
+          ) : (
+            <>
+              <button onClick={() => navigate('/login')}>Log in</button>
+              <button onClick={() => navigate('/register')}>Join</button>
+            </>
+          )}
+        </div>
+      </header>
       {children}
       {isLoggedIn && !PUBLIC_ROUTES.includes(window.location.pathname) && <BottomNav />}
-    </>
+    </div>
   )
 }
 
@@ -65,24 +90,11 @@ export default function App() {
           )
         }
       />
-      <Route
-        path="/search"
-        element={
-          isLoggedIn ? (
-            <GetLayout><Search /></GetLayout>
-          ) : (
-            <Navigate to="/login" replace />
-          )
-        }
-      />
+      <Route path="/search" element={<GetLayout><Search /></GetLayout>} />
       <Route
         path="/item/:id"
         element={
-          isLoggedIn ? (
-            <GetLayout><ItemDetails /></GetLayout>
-          ) : (
-            <Navigate to="/login" replace />
-          )
+          <GetLayout><ItemDetails /></GetLayout>
         }
       />
       <Route

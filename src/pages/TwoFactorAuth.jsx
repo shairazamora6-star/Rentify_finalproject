@@ -41,7 +41,7 @@ export default function TwoFactorAuth() {
                 onClick={() => setEnabled(!enabled)}
                 style={{
                   width: 52, height: 30, borderRadius: 15, position: 'relative',
-                  background: enabled ? 'linear-gradient(135deg, #2563EB, #4F46E5)' : '#E2E8F0',
+                  background: enabled ? 'linear-gradient(135deg, #3978D5, #73A7E5)' : '#DCE8F5',
                   transition: 'background 0.2s', flexShrink: 0, border: 'none', cursor: 'pointer',
                 }}
               >

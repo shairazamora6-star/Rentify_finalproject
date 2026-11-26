@@ -1,205 +1,171 @@
+import { useState } from 'react';
+import { ArrowDown, ArrowRight, ArrowUpRight, BadgeCheck, Camera, ChevronRight, Clock3, Heart, MapPin, Menu, Search, ShieldCheck, Sparkles, Star, Truck, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import {
-  Zap, ShieldCheck, MapPin, Star, Users, Clock, ArrowRight, Sparkles,
-} from 'lucide-react';
+import { useApp } from '../contexts/AppContext';
+import './Landing.css';
+
+const categories = [
+  { label: 'Camera & tech', value: 'cameras', icon: Camera },
+  { label: 'Tools & DIY', value: 'tools', icon: Sparkles },
+  { label: 'Gaming', value: 'gaming', icon: ArrowUpRight },
+  { label: 'Outdoor & sport', value: 'sports', icon: MapPin },
+  { label: 'Electronics', value: 'electronics', icon: ShieldCheck },
+  { label: 'Everything else', value: 'all', icon: ArrowRight },
+];
+
+const formatPrice = value => new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+  maximumFractionDigits: 0,
+}).format(value);
 
 export default function Landing() {
   const navigate = useNavigate();
+  const { items, toggleFavorite, isFavorited } = useApp();
+  const [query, setQuery] = useState('');
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const search = (event) => {
+    event.preventDefault();
+    navigate(`/search${query.trim() ? `?q=${encodeURIComponent(query.trim())}` : ''}`);
+  };
+
+  const browseCategory = (category) => navigate(`/search?category=${category}`);
 
   return (
-    <div style={{
-      minHeight: '100vh', background: '#F8FAFC', fontFamily: 'Inter, system-ui, sans-serif',
-      overflowX: 'hidden',
-    }}>
-      {/* ───────── Hero ───────── */}
-      <div style={{
-        background: 'linear-gradient(160deg, #2563EB 0%, #7C3AED 55%, #EC4899 100%)',
-        borderRadius: '0 0 48px 48px',
-        padding: '64px 28px 96px',
-        position: 'relative', overflow: 'hidden',
-        color: 'white', textAlign: 'center',
-      }}>
-        {/* decorative glows */}
-        <div style={{
-          position: 'absolute', width: 280, height: 280, borderRadius: '50%',
-          background: 'rgba(255,255,255,0.12)', filter: 'blur(60px)',
-          top: -80, left: -60,
-        }} />
-        <div style={{
-          position: 'absolute', width: 240, height: 240, borderRadius: '50%',
-          background: 'rgba(255,255,255,0.1)', filter: 'blur(60px)',
-          bottom: -60, right: -40,
-        }} />
-        <div style={{
-          position: 'absolute', inset: 0, opacity: 0.12,
-          backgroundImage: 'radial-gradient(circle at 20% 30%, white 1px, transparent 1px), radial-gradient(circle at 80% 70%, white 1px, transparent 1px)',
-          backgroundSize: '48px 48px',
-        }} />
-
-        {/* Logo */}
-        <div style={{ position: 'relative', marginBottom: 28 }}>
-          <div style={{
-            width: 72, height: 72, borderRadius: 22, margin: '0 auto',
-            background: 'rgba(255,255,255,0.16)', backdropFilter: 'blur(12px)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 34, fontWeight: 900,
-            border: '1px solid rgba(255,255,255,0.3)',
-            boxShadow: '0 8px 32px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.25)',
-            position: 'relative',
-          }}>
-            <div style={{
-              position: 'absolute', inset: -8, borderRadius: 28,
-              background: 'radial-gradient(circle, rgba(255,255,255,0.35) 0%, transparent 70%)',
-              filter: 'blur(6px)', zIndex: -1,
-            }} />
-            R
-          </div>
-        </div>
-
-        <h1 style={{
-          fontSize: 34, fontWeight: 800, letterSpacing: -1, lineHeight: 1.15,
-          margin: 0, marginBottom: 14,
-        }}>
-          Rent anything.<br /><span style={{ opacity: 0.85 }}>Anywhere. Anytime.</span>
-        </h1>
-        <p style={{
-          fontSize: 15, lineHeight: 1.6, color: 'rgba(255,255,255,0.85)',
-          maxWidth: 300, margin: '0 auto 32px',
-        }}>
-          The marketplace where neighbors list everything — cameras, tools, bikes,
-          drones and more — and you grab it in minutes.
-        </p>
-
-        {/* CTAs */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12, maxWidth: 300, margin: '0 auto' }}>
-          <button onClick={() => navigate('/register')} style={{
-            padding: '16px 24px', borderRadius: 16, border: 'none',
-            background: 'white', color: '#2563EB',
-            fontSize: 16, fontWeight: 800, cursor: 'pointer',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-            boxShadow: '0 8px 24px rgba(0,0,0,0.2)',
-            transition: 'transform 0.15s',
-          }}>
-            <Sparkles size={18} /> Get started — it's free
-          </button>
-          <button onClick={() => navigate('/login')} style={{
-            padding: '14px 24px', borderRadius: 16,
-            border: '1.5px solid rgba(255,255,255,0.45)',
-            background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(8px)',
-            color: 'white', fontSize: 15, fontWeight: 700, cursor: 'pointer',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-          }}>
-            I already have an account <ArrowRight size={16} />
-          </button>
-        </div>
-
-        {/* trust stats */}
-        <div style={{
-          display: 'flex', justifyContent: 'center', gap: 24,
-          marginTop: 36, position: 'relative',
-        }}>
-          {[
-            { n: '50k+', l: 'members' },
-            { n: '12k', l: 'items listed' },
-            { n: '4.9', l: 'avg. rating' },
-          ].map((s, i) => (
-            <div key={i} style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: 20, fontWeight: 800, letterSpacing: -0.5 }}>{s.n}</div>
-              <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.7)', fontWeight: 500, marginTop: 2 }}>{s.l}</div>
-            </div>
-          ))}
-        </div>
+    <div className="storefront">
+      <div className="store-announcement">
+        <span>Good things are closer than you think</span>
+        <span className="announcement-divider">·</span>
+        <span>Rent from people in your neighborhood</span>
+        <ArrowRight size={14} aria-hidden="true" />
       </div>
 
-      {/* ───────── How it works ───────── */}
-      <div style={{ padding: '40px 24px 24px' }}>
-        <h2 style={{ fontSize: 20, fontWeight: 800, color: '#0F172A', textAlign: 'center', margin: '0 0 24px' }}>
-          How it works
-        </h2>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-          {[
-            { icon: MapPin, title: 'Find it nearby', desc: 'Browse verified items within a few blocks of your location.' },
-            { icon: Clock, title: 'Pick your dates', desc: 'Reserve by the hour or by the day — flexible, like the rest of Rentify.' },
-            { icon: ShieldCheck, title: 'Meet & enjoy', desc: 'Pick up in person from trusted owners, backed by our protection program.' },
-          ].map((f, i) => (
-            <div key={i} style={{
-              display: 'flex', alignItems: 'center', gap: 16,
-              background: 'white', borderRadius: 20, padding: '18px 20px',
-              boxShadow: '0 2px 12px rgba(15,23,42,0.05)',
-              border: '1px solid #F1F5F9',
-            }}>
-              <div style={{
-                width: 48, height: 48, borderRadius: 14, flexShrink: 0,
-                background: 'linear-gradient(135deg, #EFF6FF, #EEF2FF)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-              }}>
-                <f.icon size={22} color="#2563EB" />
-              </div>
-              <div style={{ flex: 1 }}>
-                <p style={{ fontSize: 15, fontWeight: 700, color: '#0F172A', margin: 0 }}>{f.title}</p>
-                <p style={{ fontSize: 13, color: '#64748B', margin: '4px 0 0', lineHeight: 1.5 }}>{f.desc}</p>
-              </div>
-              <div style={{
-                width: 28, height: 28, borderRadius: '50%', flexShrink: 0,
-                background: '#0F172A', color: 'white',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 13, fontWeight: 800,
-              }}>{i + 1}</div>
-            </div>
-          ))}
+      <header className="store-header">
+        <a className="store-brand" href="/" aria-label="Rentify home">
+          <span className="brand-mark">R</span>
+          <span>rentify<span className="brand-period">.</span></span>
+        </a>
+        <nav className={`store-nav${menuOpen ? ' is-open' : ''}`} aria-label="Main navigation">
+          <a href="#discover" onClick={() => setMenuOpen(false)}>Discover</a>
+          <a href="#categories" onClick={() => setMenuOpen(false)}>Categories</a>
+          <a href="#how-it-works" onClick={() => setMenuOpen(false)}>How it works</a>
+        </nav>
+        <div className="store-account">
+          <button className="store-signin" onClick={() => navigate('/login')}>Log in</button>
+          <button className="store-join" onClick={() => navigate('/register')}>Join Rentify <ArrowRight size={15} /></button>
         </div>
-      </div>
-
-      {/* ───────── Social proof ───────── */}
-      <div style={{ padding: '16px 24px 48px' }}>
-        <div style={{
-          background: 'white', borderRadius: 24, padding: '24px 22px',
-          boxShadow: '0 2px 12px rgba(15,23,42,0.05)',
-          border: '1px solid #F1F5F9', textAlign: 'center',
-        }}>
-          <div style={{ display: 'flex', justifyContent: 'center', gap: 3, marginBottom: 12 }}>
-            {[...Array(5)].map((_, i) => <Star key={i} size={16} color="#F59E0B" fill="#F59E0B" />)}
-          </div>
-          <p style={{ fontSize: 15, color: '#334155', lineHeight: 1.6, fontStyle: 'italic', margin: '0 0 16px' }}>
-            "I rented a drone for the weekend for less than a third of buying one.
-            Picking it up took five minutes — like renting a movie, but for everything."
-          </p>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}>
-            <div style={{
-              width: 36, height: 36, borderRadius: '50%',
-              background: 'linear-gradient(135deg, #2563EB, #7C3AED)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              color: 'white', fontWeight: 800, fontSize: 13,
-            }}>MJ</div>
-            <div style={{ textAlign: 'left' }}>
-              <p style={{ fontSize: 13, fontWeight: 700, color: '#0F172A', margin: 0 }}>Maya Johnson</p>
-              <p style={{ fontSize: 12, color: '#94A3B8', margin: 0 }}>Member since 2024</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* ───────── Bottom CTA ───────── */}
-      <div style={{ padding: '0 24px 48px', textAlign: 'center' }}>
-        <p style={{ fontSize: 14, color: '#64748B', marginBottom: 16 }}>
-          Ready to stop owning and start sharing?
-        </p>
-        <button onClick={() => navigate('/register')} style={{
-          width: '100%', padding: '16px', borderRadius: 16, border: 'none',
-          background: 'linear-gradient(135deg, #2563EB 0%, #4F46E5 100%)',
-          color: 'white', fontSize: 15, fontWeight: 800, cursor: 'pointer',
-          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-          boxShadow: '0 8px 24px rgba(37,99,235,0.3)',
-        }}>
-          Create your free account <Zap size={17} />
+        <button className="store-menu-button" onClick={() => setMenuOpen(open => !open)} aria-label={menuOpen ? 'Close menu' : 'Open menu'}>
+          {menuOpen ? <X size={21} /> : <Menu size={21} />}
         </button>
-        <p style={{
-          fontSize: 11, color: '#94A3B8', marginTop: 14,
-          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-        }}>
-          <Users size={12} /> Join 50,000+ neighbors who already share
-        </p>
-      </div>
+      </header>
+
+      <main>
+        <section className="store-hero">
+          <div className="hero-copy">
+            <div className="eyebrow"><span className="eyebrow-dot" /> THE NEIGHBORHOOD RENTAL MARKETPLACE</div>
+            <h1>Big plans.<br />No big <span>purchases.</span></h1>
+            <p className="hero-description">From weekend projects to once-in-a-lifetime moments, find the things you need — right around the corner.</p>
+            <form className="hero-search" onSubmit={search}>
+              <Search size={20} aria-hidden="true" />
+              <input aria-label="Search rentals" value={query} onChange={event => setQuery(event.target.value)} placeholder="What are you looking to rent?" />
+              <button type="submit">Find a rental <ArrowRight size={16} /></button>
+            </form>
+            <div className="hero-note"><MapPin size={15} /> Renting made local, simple, and a little more sustainable.</div>
+          </div>
+          <div className="hero-art">
+            <img className="hero-image" src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=1400&q=85" alt="Laptop and camera ready for a creative project" />
+            <div className="hero-image-shade" />
+            <div className="hero-photo-caption"><span className="caption-pip" /> YOUR NEXT GREAT IDEA STARTS HERE</div>
+            <div className="hero-float-card">
+              <div className="float-icon"><ShieldCheck size={19} /></div>
+              <div><strong>Good gear. Good people.</strong><span>Verified local community</span></div>
+              <BadgeCheck size={18} className="float-check" />
+            </div>
+            <div className="hero-sticker"><span>USE MORE</span><ArrowDown size={18} /><span>OWN LESS</span></div>
+          </div>
+        </section>
+
+        <div className="trust-strip" aria-label="Why rent with Rentify">
+          <div><ShieldCheck /><span><strong>Rent with confidence</strong><small>Verified people, safer handoffs</small></span></div>
+          <div><MapPin /><span><strong>Close to home</strong><small>Discover great finds nearby</small></span></div>
+          <div><Clock3 /><span><strong>Only as long as you need</strong><small>Flexible rentals, easy returns</small></span></div>
+          <div><Truck /><span><strong>Keep things in use</strong><small>A smarter way to get what you need</small></span></div>
+        </div>
+
+        <section className="store-section category-section" id="categories">
+          <div className="section-heading">
+            <div><span className="section-kicker">A LITTLE BIT OF EVERYTHING</span><h2>What do you need today?</h2></div>
+            <button className="text-link" onClick={() => browseCategory('all')}>Explore all categories <ArrowRight size={16} /></button>
+          </div>
+          <div className="category-grid">
+            {categories.map(({ label, value, icon: Icon }, index) => (
+              <button className={`category-tile category-tone-${index + 1}`} key={value} onClick={() => browseCategory(value)}>
+                <span className="category-icon"><Icon size={21} strokeWidth={1.8} /></span>
+                <span>{label}</span>
+                <ArrowUpRight className="category-arrow" size={17} />
+              </button>
+            ))}
+          </div>
+        </section>
+
+        <section className="discover-section" id="discover">
+          <div className="store-section">
+            <div className="section-heading">
+              <div><span className="section-kicker">GOOD FINDS, READY WHEN YOU ARE</span><h2>Popular around Rentify</h2></div>
+              <button className="text-link" onClick={() => browseCategory('all')}>See everything <ArrowRight size={16} /></button>
+            </div>
+            <div className="listing-grid">
+              {items.slice(0, 4).map((item, index) => (
+                <article className="listing-card" key={item.id}>
+                  <button className="listing-image-button" onClick={() => navigate(`/item/${item.id}`)} aria-label={`View ${item.title}`}>
+                    <img className="listing-image" src={item.image} alt={item.title} loading={index > 1 ? 'lazy' : 'eager'} />
+                    {item.featured && <span className="listing-badge"><Sparkles size={12} /> COMMUNITY PICK</span>}
+                  </button>
+                  <button className={`listing-favorite${isFavorited(item.id) ? ' is-favorite' : ''}`} onClick={() => toggleFavorite(item.id)} aria-label={isFavorited(item.id) ? `Remove ${item.title} from favorites` : `Add ${item.title} to favorites`}>
+                    <Heart size={17} fill={isFavorited(item.id) ? 'currentColor' : 'none'} />
+                  </button>
+                  <button className="listing-info" onClick={() => navigate(`/item/${item.id}`)}>
+                    <span className="listing-category">{item.category}</span>
+                    <span className="listing-title">{item.title}</span>
+                    <span className="listing-meta"><span><Star size={13} fill="currentColor" /> {item.rating}</span><span><MapPin size={12} /> {item.distance}</span></span>
+                    <span className="listing-price">{formatPrice(item.price)} <small>/ {item.pricePeriod || 'day'}</small><ChevronRight size={16} /></span>
+                  </button>
+                </article>
+              ))}
+            </div>
+            <button className="browse-all-button" onClick={() => browseCategory('all')}>Browse all rentals <ArrowRight size={16} /></button>
+          </div>
+        </section>
+
+        <section className="how-section" id="how-it-works">
+          <div className="store-section how-layout">
+            <div className="how-intro">
+              <span className="section-kicker">EASY AS IT SHOULD BE</span>
+              <h2>Find it. Book it.<br /><span>Get on with it.</span></h2>
+              <p>Skip the ownership, not the experience. Your next rental is just around the corner.</p>
+              <button className="text-link" onClick={() => navigate('/register')}>Get started for free <ArrowRight size={16} /></button>
+            </div>
+            <div className="how-steps">
+              <article><span className="step-number">01</span><div><h3>Find your thing</h3><p>Search local listings and discover just what you need.</p></div><Search size={20} /></article>
+              <article><span className="step-number">02</span><div><h3>Choose your dates</h3><p>Book the days that work for your plans. No long-term commitment.</p></div><Clock3 size={20} /></article>
+              <article><span className="step-number">03</span><div><h3>Pick up & enjoy</h3><p>Meet your local host, grab your gear, and make it happen.</p></div><ArrowUpRight size={20} /></article>
+            </div>
+          </div>
+        </section>
+
+        <section className="community-cta">
+          <div className="cta-pattern" />
+          <div className="cta-copy"><span>MAKE ROOM FOR MORE</span><h2>Less owning.<br />More doing.</h2><p>Join a community that believes the best things are better when shared.</p></div>
+          <button onClick={() => navigate('/register')}>Find your next rental <ArrowRight size={17} /></button>
+        </section>
+      </main>
+
+      <footer className="store-footer">
+        <a className="store-brand" href="/" aria-label="Rentify home"><span className="brand-mark">R</span><span>rentify<span className="brand-period">.</span></span></a>
+        <span>Borrow a little. Live a lot.</span>
+        <span>© 2025 Rentify · Made for sharing</span>
+      </footer>
     </div>
   );
 }

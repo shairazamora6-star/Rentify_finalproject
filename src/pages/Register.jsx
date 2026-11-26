@@ -5,7 +5,7 @@ import { useApp } from '../contexts/AppContext';
 
 export default function Register() {
   const navigate = useNavigate();
-  const { login } = useApp();
+  const { register } = useApp();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -17,20 +17,24 @@ export default function Register() {
   const inputStyle = (key, extra = {}) => ({
     ...extra,
     fontSize: 15, borderRadius: 14, padding: '13px 42px 13px 42px', width: '100%',
-    border: focused === key ? '1.5px solid #7C3AED' : '1.5px solid #E2E8F0',
+    border: focused === key ? '1.5px solid #3978D5' : '1.5px solid #E2E8F0',
     background: focused === key ? '#FAF8FF' : '#F8FAFC',
     boxShadow: focused === key ? '0 0 0 4px rgba(124,58,237,0.08)' : 'none',
     transition: 'border 0.15s, box-shadow 0.15s, background 0.15s',
     outline: 'none',
   });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!name || !email || !password) { setError('Please fill in all fields'); return; }
     if (password.length < 6) { setError('Password must be at least 6 characters'); return; }
     if (!agree) { setError('Please accept the terms & conditions'); return; }
-    login({ name, email });
-    navigate('/');
+    try {
+      await register({ name, email, password });
+      navigate('/');
+    } catch (err) {
+      setError(err.message || 'Unable to create account');
+    }
   };
 
   const field = (key, icon, label, value, setValue, type, ph, extraStyle = {}) => (
@@ -68,7 +72,7 @@ export default function Register() {
       {/* Gradient Header */}
       <div className="rf-header" style={{
         height: 200,
-        background: 'linear-gradient(135deg, #7C3AED 0%, #2563EB 60%, #0891B2 100%)',
+        background: 'linear-gradient(135deg, #3978D5 0%, #5B96E0 60%, #8FC5F2 100%)',
         borderRadius: '0 0 32px 32px',
         display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
         position: 'relative', overflow: 'hidden',
@@ -95,9 +99,9 @@ export default function Register() {
           border: '1px solid rgba(255,255,255,0.8)',
         }}>
           <form onSubmit={handleSubmit}>
-            {field('name', <User size={16} color={focused === 'name' ? '#7C3AED' : '#94A3B8'} />, 'Full Name', name, setName, 'text', 'John Doe')}
-            {field('email', <Mail size={16} color={focused === 'email' ? '#7C3AED' : '#94A3B8'} />, 'Email', email, setEmail, 'email', 'you@example.com')}
-            {field('password', <Lock size={16} color={focused === 'password' ? '#7C3AED' : '#94A3B8'} />, 'Password', password, setPassword, showPass ? 'text' : 'password', 'Min. 6 characters', { paddingRight: 44 })}
+            {field('name', <User size={16} color={focused === 'name' ? '#3978D5' : '#94A3B8'} />, 'Full Name', name, setName, 'text', 'John Doe')}
+            {field('email', <Mail size={16} color={focused === 'email' ? '#3978D5' : '#94A3B8'} />, 'Email', email, setEmail, 'email', 'you@example.com')}
+            {field('password', <Lock size={16} color={focused === 'password' ? '#3978D5' : '#94A3B8'} />, 'Password', password, setPassword, showPass ? 'text' : 'password', 'Min. 6 characters', { paddingRight: 44 })}
 
             {error && (
               <div style={{
@@ -113,16 +117,16 @@ export default function Register() {
             <label style={{ display: 'flex', alignItems: 'flex-start', gap: 8, cursor: 'pointer', fontSize: 12, color: '#64748B', marginBottom: 18, lineHeight: 1.5 }}>
               <div onClick={() => setAgree(!agree)} style={{
                 width: 18, height: 18, borderRadius: 5, border: agree ? 'none' : '2px solid #CBD5E1',
-                background: agree ? 'linear-gradient(135deg, #7C3AED, #2563EB)' : 'white',
+                background: agree ? 'linear-gradient(135deg, #3978D5, #5B96E0)' : 'white',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 transition: 'all 0.15s', flexShrink: 0, marginTop: 1,
               }}>
                 {agree && <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>}
               </div>
-              <span>I agree to the <span style={{ color: '#7C3AED', fontWeight: 600, textDecoration: 'underline' }}>Terms & Conditions</span> and <span style={{ color: '#7C3AED', fontWeight: 600, textDecoration: 'underline' }}>Privacy Policy</span></span>
+              <span>I agree to the <span style={{ color: '#3978D5', fontWeight: 600, textDecoration: 'underline' }}>Terms & Conditions</span> and <span style={{ color: '#3978D5', fontWeight: 600, textDecoration: 'underline' }}>Privacy Policy</span></span>
             </label>
 
-            <button type="submit" className="btn-primary" style={{ borderRadius: 14, padding: '15px', fontSize: 15, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, width: '100%', background: 'linear-gradient(135deg, #7C3AED 0%, #2563EB 100%)' }}>
+            <button type="submit" className="btn-primary" style={{ borderRadius: 14, padding: '15px', fontSize: 15, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, width: '100%', background: 'linear-gradient(135deg, #3978D5 0%, #5B96E0 100%)' }}>
               <UserPlus size={17} /> Create Account
             </button>
           </form>
@@ -158,7 +162,7 @@ export default function Register() {
 
           <p style={{ textAlign: 'center', marginTop: 14, fontSize: 14, color: '#64748B' }}>
             Already have an account?{' '}
-            <button onClick={() => navigate('/login')} style={{ color: '#7C3AED', fontWeight: 700, background: 'none', border: 'none', cursor: 'pointer', fontSize: 14, padding: 0 }}>Sign in</button>
+            <button onClick={() => navigate('/login')} style={{ color: '#3978D5', fontWeight: 700, background: 'none', border: 'none', cursor: 'pointer', fontSize: 14, padding: 0 }}>Sign in</button>
           </p>
         </div>
       </div>

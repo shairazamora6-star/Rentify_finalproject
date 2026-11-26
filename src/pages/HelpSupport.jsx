@@ -54,7 +54,7 @@ export default function HelpSupport() {
 
       {/* Hero Section */}
       <div style={{
-        background: 'linear-gradient(135deg, #2563EB, #7C3AED)',
+        background: 'linear-gradient(135deg, #3978D5, #73A7E5)',
         padding: '32px 20px', textAlign: 'center', color: 'white',
       }}>
         <LifeBuoy size={48} strokeWidth={1.5} style={{ margin: '0 auto 16px' }} />

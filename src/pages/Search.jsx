@@ -1,16 +1,19 @@
 import { useState } from 'react';
 import { ChevronDown, SlidersHorizontal, Search as SearchIcon } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import ItemCard from '../components/ItemCard';
-import { mockItems, categories } from '../data/mockData';
+import { categories } from '../data/mockData';
+import { useApp } from '../contexts/AppContext';
 
 export default function Search() {
   const navigate = useNavigate();
-  const [query, setQuery] = useState('');
-  const [category, setCategory] = useState('all');
+  const [searchParams] = useSearchParams();
+  const { items } = useApp();
+  const [query, setQuery] = useState(() => searchParams.get('q') || '');
+  const [category, setCategory] = useState(() => searchParams.get('category') || 'all');
   const [sortBy, setSortBy] = useState('nearest');
 
-  let results = mockItems.filter(item => {
+  let results = items.filter(item => {
     const matchQ = !query || item.title.toLowerCase().includes(query.toLowerCase()) || item.category.toLowerCase().includes(query.toLowerCase());
     const matchCat = category === 'all' || item.category === category;
     return matchQ && matchCat;
@@ -62,7 +65,7 @@ export default function Search() {
           display: 'flex', gap: 8, overflowX: 'auto', scrollbarWidth: 'none',
           paddingBottom: 14, marginBottom: 14,
         }}>
-          {[{ id: 'all', label: 'All' }, ...categories].map(cat => (
+          {categories.map(cat => (
             <button key={cat.id} onClick={() => setCategory(cat.id)} style={{
               padding: '7px 16px', borderRadius: 20, fontSize: 13, fontWeight: 600,
               whiteSpace: 'nowrap', border: 'none', cursor: 'pointer',
@@ -77,14 +80,18 @@ export default function Search() {
         {/* Sort bar */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
           <span style={{ fontSize: 14, color: '#64748B', fontWeight: 500 }}>{results.length} results</span>
-          <div style={{
+          <label style={{
             display: 'flex', alignItems: 'center', gap: 6,
-            padding: '7px 14px', background: 'white', border: '1.5px solid #E2E8F0',
-            borderRadius: 10, fontSize: 13, color: '#0F172A', fontWeight: 600, cursor: 'pointer',
+            padding: '0 10px', background: 'white', border: '1.5px solid #E2E8F0',
+            borderRadius: 10, fontSize: 13, color: '#0F172A', fontWeight: 600,
           }}>
-            {sortBy === 'nearest' ? 'Nearest' : sortBy === 'price' ? 'Price: Low → High' : 'Rating'}
+            <select aria-label="Sort results" value={sortBy} onChange={event => setSortBy(event.target.value)} style={{ border: 0, outline: 0, padding: '9px 0', background: 'transparent', font: 'inherit', color: 'inherit' }}>
+              <option value="nearest">Nearest</option>
+              <option value="price">Price: Low to High</option>
+              <option value="rating">Top rated</option>
+            </select>
             <ChevronDown size={14} color="#64748B" />
-          </div>
+          </label>
         </div>
       </div>
 

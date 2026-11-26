@@ -7,9 +7,10 @@ import { useApp } from '../contexts/AppContext';
 export default function ItemDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { toggleFavorite, isFavorited, login, isLoggedIn, addNotification } = useApp();
+  const { toggleFavorite, isFavorited, isLoggedIn, addNotification, items } = useApp();
+  const isFavoritedItem = (itemId) => isFavorited(itemId);
 
-  const item = mockItems.find(i => i.id === parseInt(id));
+  const item = items.find(i => i.id === parseInt(id)) || mockItems.find(i => i.id === parseInt(id));
   const [selectedImage, setSelectedImage] = useState(0);
 
   if (!item) return <div className="page">Item not found</div>;
@@ -50,7 +51,7 @@ export default function ItemDetails() {
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               boxShadow: '0 2px 12px rgba(0,0,0,0.1)',
             }}>
-              <Heart size={18} color={isFavorited(item.id) ? '#EF4444' : '#64748B'} fill={isFavorited(item.id) ? '#EF4444' : 'none'} />
+              <Heart size={18} color={isFavoritedItem(item.id) ? '#EF4444' : '#64748B'} fill={isFavoritedItem(item.id) ? '#EF4444' : 'none'} />
             </button>
             <button onClick={() => addNotification({ type: 'system', title: 'Link copied', message: 'Share link copied to clipboard' })} style={{
               width: 40, height: 40, borderRadius: '50%',
@@ -109,24 +110,24 @@ export default function ItemDetails() {
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <div style={{
               width: 48, height: 48, borderRadius: '50%',
-              background: 'linear-gradient(135deg, #2563EB, #7C3AED)',
+              background: 'linear-gradient(135deg, #3978D5, #73A7E5)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               color: 'white', fontWeight: 700, fontSize: 18, flexShrink: 0,
             }}>
-              {item.owner.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
+              {(typeof item.owner === 'object' ? item.owner.name : item.owner).split(' ').map(n => n[0]).join('').slice(0, 2)}
             </div>
             <div style={{ flex: 1 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <span style={{ fontWeight: 700, fontSize: 15, color: '#0F172A' }}>{item.owner.name}</span>
-                {item.owner.verified && (
+                <span style={{ fontWeight: 700, fontSize: 15, color: '#0F172A' }}>{typeof item.owner === 'object' ? item.owner.name : item.owner}</span>
+                {(typeof item.owner !== 'object' || item.owner.verified) && (
                   <span style={{ background: '#EEF2FF', borderRadius: 6, padding: '2px 6px', fontSize: 11, fontWeight: 600, color: '#2563EB' }}>Verified</span>
                 )}
               </div>
               <p style={{ fontSize: 13, color: '#64748B', margin: '2px 0 0' }}>
-                Member since {item.owner.memberSince} · {item.owner.responseRate} response rate
+                Member since {typeof item.owner === 'object' ? item.owner.memberSince : '2023'} · {typeof item.owner === 'object' ? item.owner.responseRate : '98%'} response rate
               </p>
             </div>
-            <button onClick={() => navigate(`/owner-profile/${item.ownerId}`)} style={{
+            <button onClick={() => navigate(`/owner-profile/${item.ownerId || item.id}`)} style={{
               padding: '8px 14px', borderRadius: 10,
               border: '1.5px solid #E2E8F0', background: 'white',
               fontSize: 13, fontWeight: 600, color: '#0F172A',
