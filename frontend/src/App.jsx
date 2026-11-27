@@ -1,4 +1,5 @@
 import { Routes, Route, Navigate, Link, NavLink, useNavigate } from 'react-router-dom'
+import { Bell, User } from 'lucide-react'
 import { useApp } from './contexts/AppContext'
 import BottomNav from './components/BottomNav'
 import Home from './pages/Home'
@@ -69,6 +70,12 @@ function GetLayout({ children }) {
         <div className="app-topbar-user">
           {isLoggedIn ? (
             <>
+              <Link className="app-topbar-icon" to="/notifications" aria-label="Notifications">
+                <Bell size={18} />
+              </Link>
+              <Link className="app-topbar-icon" to="/profile" aria-label="Profile">
+                <User size={18} />
+              </Link>
               <span>{user?.name}</span>
               <button onClick={logout}>Sign out</button>
             </>

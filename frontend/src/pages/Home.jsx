@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Search, Bell, User } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import ItemCard from '../components/ItemCard';
 import { categories } from '../data/mockData';
@@ -11,46 +11,10 @@ export default function Home() {
   const [activeCat, setActiveCat] = useState('all');
   const filtered = activeCat === 'all' ? items : items.filter(i => i.category === activeCat);
   const featured = items.filter(i => i.featured);
+  const nearbyItems = activeCat === 'all' ? filtered.filter(item => !item.featured) : filtered;
 
   return (
     <div className="page">
-      {/* Header */}
-      <div style={{
-        background: 'white',
-        padding: '14px 20px 10px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        position: 'sticky', top: 0, zIndex: 50,
-        borderBottom: '1px solid #F1F5F9',
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{
-            width: 34, height: 34, borderRadius: 10,
-            background: 'linear-gradient(135deg, #3978D5 0%, #73A7E5 100%)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            color: 'white', fontWeight: 800, fontSize: 15,
-            boxShadow: '0 2px 8px rgba(37,99,235,0.3)',
-          }}>R</div>
-          <span style={{ fontWeight: 800, fontSize: 18, color: '#0F172A', letterSpacing: -0.3 }}>Rentify</span>
-        </div>
-        <div style={{ display: 'flex', gap: 8 }}>
-          {[{icon: Bell, action: () => navigate('/notifications')}, {icon: User, action: () => navigate('/profile')}].map(({ icon: Icon, action }, i) => (
-            <button key={i} onClick={action} style={{
-              width: 38, height: 38, borderRadius: 12,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              border: '1px solid #E2E8F0', background: 'white',
-              transition: 'all 0.15s',
-            }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = '#2563EB'; e.currentTarget.style.background = '#EEF2FF'; }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor = '#E2E8F0'; e.currentTarget.style.background = 'white'; }}
-            >
-              <Icon size={18} color="#64748B" />
-            </button>
-          ))}
-        </div>
-      </div>
-
       {/* Location & Greeting */}
       <div style={{ padding: '14px 20px 0' }}>
         <p style={{ fontSize: 13, color: '#94A3B8', marginBottom: 2, fontWeight: 500 }}>Good morning 👋</p>
@@ -68,13 +32,13 @@ export default function Home() {
           padding: '14px 16px', background: '#F8FAFC',
           border: '1.5px solid #E2E8F0', borderRadius: 14,
           textAlign: 'left', color: '#94A3B8', fontSize: 15, fontWeight: 500,
-          transition: 'all 0.15s',
+          transition: 'all 0.15s', minHeight: 50,
         }}
         onMouseEnter={e => { e.currentTarget.style.borderColor = '#BFDBFE'; e.currentTarget.style.background = '#EFF6FF'; }}
         onMouseLeave={e => { e.currentTarget.style.borderColor = '#E2E8F0'; e.currentTarget.style.background = '#F8FAFC'; }}
         >
           <Search size={18} color="#94A3B8" />
-          Search for cameras, tools, electronics…
+          <span style={{ flex: 1, minWidth: 0, lineHeight: 1.35 }}>Search cameras, tools, and more</span>
         </button>
       </div>
 
@@ -92,7 +56,7 @@ export default function Home() {
           boxShadow: activeCat === 'all' ? '0 2px 8px rgba(37,99,235,0.25)' : '0 1px 3px rgba(0,0,0,0.06)',
           transition: 'all 0.15s',
         }}>{'All'}</button>
-        {categories.map(cat => (
+        {categories.filter(cat => cat.id !== 'all').map(cat => (
           <button key={cat.id} onClick={() => setActiveCat(cat.id)} style={{
             padding: '8px 18px', borderRadius: 20, fontSize: 13, fontWeight: 600,
             whiteSpace: 'nowrap', border: 'none', cursor: 'pointer',
@@ -128,7 +92,7 @@ export default function Home() {
           <button onClick={() => navigate('/search')} style={{ fontSize: 13, color: '#2563EB', fontWeight: 600, padding: '4px 0' }}>See All →</button>
         </div>
         <div className="rental-grid">
-          {filtered.slice(0, 6).map(item => <ItemCard key={item.id} item={item} />)}
+          {nearbyItems.slice(0, 6).map(item => <ItemCard key={item.id} item={item} />)}
         </div>
       </div>
 
@@ -143,7 +107,7 @@ export default function Home() {
             { name: 'Tools', emoji: '🔧', bg: '#FFF1F2' },
             { name: 'Sports', emoji: '⚽', bg: '#F5F3FF' },
             { name: 'Fashion', emoji: '👗', bg: '#FEF3C7' },
-          ].map((cat, i) => (
+          ].map(cat => (
             <button key={cat.name} onClick={() => navigate('/search')} style={{
               padding: '16px 8px', borderRadius: 14, background: cat.bg,
               border: 'none', cursor: 'pointer',
