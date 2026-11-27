@@ -39,6 +39,8 @@ import ForgotPassword from './pages/ForgotPassword'
 import ResetPassword from './pages/ResetPassword'
 import RentalAssistant from './components/RentalAssistant'
 import { isDemoMode } from './lib/api'
+import AdminLogin from './pages/AdminLogin'
+import AdminDashboardPlaceholder from './pages/AdminDashboardPlaceholder'
 
 const PUBLIC_ROUTES = ['/login', '/register', '/landing']
 
@@ -423,6 +425,8 @@ export default function App() {
           )
         }
       />
+      <Route path="/admin/login" element={<AdminLogin />} />
+      <Route path="/admin" element={<AdminDashboardPlaceholder />} />
       </Routes>
     </>
   )

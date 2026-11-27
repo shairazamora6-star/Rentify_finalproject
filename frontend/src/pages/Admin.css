@@ -1,0 +1,61 @@
+/* ---- Admin: shared styles ---- */
+.admin-login-page {
+  min-height: 100vh;
+  min-height: 100svh;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.admin-login-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: #18395f;
+  font-size: 19px;
+  font-weight: 750;
+  letter-spacing: -.05em;
+}
+
+.admin-brand-mark {
+  width: 36px;
+  height: 36px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 11px;
+  color: #fff;
+  background: var(--primary);
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.admin-badge {
+  padding: 3px 9px;
+  border-radius: var(--radius-full);
+  color: var(--primary);
+  background: var(--primary-light);
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: .12em;
+}
+
+.admin-demo-note {
+  margin-top: 16px;
+  padding: 12px 14px;
+  border: 1px solid #F3D19C;
+  border-radius: var(--radius-md);
+  color: #744210;
+  background: #FFF8E8;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.admin-placeholder {
+  width: min(100% - 32px, 560px);
+  margin: 60px auto;
+  padding: 28px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-md);
+}
+.admin-placeholder p { margin: 8px 0 18px; color: var(--text-muted); }
