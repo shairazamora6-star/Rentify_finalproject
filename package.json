@@ -4,20 +4,16 @@
   "version": "0.0.0",
   "type": "module",
   "workspaces": [
-    "backend",
     "frontend"
   ],
   "scripts": {
     "dev": "npm run dev --workspace rentify-frontend",
-    "dev:full": "concurrently -k -n backend,frontend \"npm run dev --workspace rentify-backend\" \"npm run frontend:dev:wait\"",
     "frontend:dev": "npm run dev --workspace rentify-frontend",
-    "frontend:dev:wait": "node frontend/scripts/wait-for-api.js && npm run dev --workspace rentify-frontend",
-    "server": "npm run start --workspace rentify-backend",
     "build": "npm run build --workspace rentify-frontend",
     "lint": "npm run lint --workspace rentify-frontend",
     "preview": "npm run preview --workspace rentify-frontend"
   },
   "devDependencies": {
-    "concurrently": "^10.0.7"
+    "vite-plugin-pwa": "^2.0.0"
   }
 }

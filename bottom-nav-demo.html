@@ -1,0 +1,352 @@
+<title>Rentify Responsive Nav</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap">
+<style>
+/* Layout: left = resizable device mockup of the app, right = live rule inspector.
+   The device screen is intentionally fixed to the app's light palette: it is a
+   mock of Rentify's UI, not part of the themed page chrome. */
+:root{
+  --bg:#eef2f8; --fg:#16233c; --surface:#ffffff; --surface-2:#f5f8fd;
+  --border:#d8e1f0; --accent:#2563eb; --accent-soft:#dfeafe; --muted:#5d6d88;
+  --ok-fg:#0f9d6e; --ok-bg:#d9f2e7; --seg1:#d6e5fd; --seg2:#d9ecdf; --seg3:#eef2f8;
+  --app-bg:#ffffff; --app-text:#152840;
+  --font-display:"Space Grotesk","Inter",system-ui,sans-serif;
+  --font-body:"Inter",system-ui,-apple-system,sans-serif;
+  --font-mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --shadow:0 12px 32px rgba(21,40,80,.12);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0c1322; --fg:#dfe7f5; --surface:#141e34; --surface-2:#101a30;
+    --border:#273454; --accent:#7aa2ff; --accent-soft:#1d2c52; --muted:#8fa0c2;
+    --ok-fg:#4ade80; --ok-bg:#143023; --seg1:#22355e; --seg2:#1e3a2c; --seg3:#18223a;
+    --shadow:0 12px 32px rgba(0,0,0,.45);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0c1322; --fg:#dfe7f5; --surface:#141e34; --surface-2:#101a30;
+  --border:#273454; --accent:#7aa2ff; --accent-soft:#1d2c52; --muted:#8fa0c2;
+  --ok-fg:#4ade80; --ok-bg:#143023; --seg1:#22355e; --seg2:#1e3a2c; --seg3:#18223a;
+  --shadow:0 12px 32px rgba(0,0,0,.45);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:14px;margin:0}
+.wrap{max-width:1140px;margin:0 auto;padding:26px max(16px,env(safe-area-inset-left,0px)) 44px max(16px,env(safe-area-inset-right,0px))}
+.eyebrow{font:600 11px var(--font-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--font-display);font-weight:700;font-size:clamp(22px,3.2vw,32px);line-height:1.15;margin:6px 0 8px;text-wrap:balance}
+.lede{color:var(--muted);max-width:62ch;line-height:1.6;font-size:13.5px;margin:0}
+.lede b{color:var(--fg);font-weight:600}
+
+.stage{display:grid;grid-template-columns:minmax(0,1fr) 312px;gap:22px;margin-top:22px;align-items:start}
+@media (max-width:940px){.stage{grid-template-columns:1fr}.inspector{order:2}}
+
+/* ---- presets ---- */
+.presets{display:flex;gap:8px;flex-wrap:wrap}
+.preset{border:1px solid var(--border);background:var(--surface);color:var(--fg);border-radius:999px;padding:6px 12px;font:600 12px var(--font-body);cursor:pointer;transition:border-color .15s,color .15s}
+.preset small{color:var(--muted);font-weight:500;margin-left:5px}
+.preset:hover{border-color:var(--accent);color:var(--accent)}
+.preset.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+
+/* ---- device ---- */
+.frame-box{position:relative;margin-top:14px}
+.wrap-frame{display:flex;justify-content:center}
+.device{flex:none;transform-origin:top center;box-shadow:var(--shadow);border-radius:16px;overflow:hidden;border:1px solid var(--border);background:var(--app-bg)}
+.chrome{height:34px;display:flex;align-items:center;gap:5px;padding:0 14px;background:var(--surface-2);border-bottom:1px solid var(--border)}
+.chrome i{width:10px;height:10px;border-radius:50%}
+.chrome i:nth-child(1){background:#f4665e}.chrome i:nth-child(2){background:#ffbd3e}.chrome i:nth-child(3){background:#28c840}
+.url{margin-left:8px;flex:1;max-width:220px;height:18px;border-radius:9px;background:var(--app-bg);border:1px solid var(--border);font:500 10px var(--font-mono);color:var(--muted);display:flex;align-items:center;padding:0 8px}
+.screen{height:530px;display:flex;flex-direction:column;background:var(--app-bg);color:var(--app-text);overflow:hidden;font-family:var(--font-body)}
+
+/* topbar (mirrors index.css .app-topbar) */
+.topbar{flex:none;display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:66px;padding:0 24px;border-bottom:1px solid #e4edf8}
+.brand{display:flex;gap:9px;align-items:center;font:700 19px var(--font-display);color:#152840;letter-spacing:-.04em}
+.mark{width:31px;height:31px;border-radius:9px;background:#2563eb;color:#fff;display:grid;place-items:center;font:700 15px var(--font-body);flex:none}
+.topbar-links{display:flex;align-items:center;gap:26px}
+.topbar-links a{white-space:nowrap;color:#617185;font-size:12px;font-weight:550;text-decoration:none}
+.topbar-links a.active{color:#2563eb}
+.topbar-user{display:flex;gap:10px;align-items:center}
+.topbar-user .name{color:#536579;font-size:11px}
+.topbar-user button{padding:7px 11px;border:1px solid #dbe5f2;border-radius:8px;color:#435b77;background:#fff;font:600 11px var(--font-body)}
+/* @media (max-width:640px) from index.css:200-209 */
+.device.compact .topbar{min-height:54px;padding:0 16px}
+.device.compact .brand{font-size:17px}
+.device.compact .mark{width:29px;height:29px;font-size:14px}
+.device.compact .topbar-links{display:none}
+.device.compact .topbar-user .name{display:none}
+
+/* page content */
+.page{flex:1;min-height:0;overflow:hidden;padding:18px 24px 24px;background:#fff}
+.device.compact .page{padding:14px 14px}
+.page h2{font:600 18px/1.2 var(--font-body);color:#172a45;margin:2px 0 0}
+.sub{font-size:11px;color:#8494ac;margin:3px 0 14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,140px),1fr));gap:10px}
+.card{border:1px solid #e2eaf5;border-radius:12px;overflow:hidden;background:#fff;min-width:0}
+.thumb{height:74px;display:grid;place-items:center;font:700 24px var(--font-display);color:#28467b}
+.t1{background:linear-gradient(135deg,#d8e6fa,#b9d0f2)}.t2{background:linear-gradient(135deg,#d5ece5,#aed8cb)}.t3{background:linear-gradient(135deg,#e4e2f5,#c6c2ea)}.t4{background:linear-gradient(135deg,#f2e9d8,#e5d3b2)}
+.card-body{padding:9px 11px}
+.nm{font:600 12.5px/1.3 var(--font-body);color:#22334d}
+.pr{margin-top:3px;font:600 12px var(--font-body);color:#2563eb}
+.pr span{color:#8494ac;font-weight:500}
+.rt{font-size:10.5px;color:#8494ac;margin-top:2px}
+
+/* bottom nav (mirrors BottomNav.jsx) */
+.nav-wrap{flex:none;width:100%;display:flex;justify-content:center}
+.bottom-nav{max-width:720px;width:100%;display:flex;background:#fff;border-top:1px solid #dce8f5;box-shadow:0 -8px 26px rgba(45,93,150,.10);border-radius:14px 14px 0 0;padding:8px 0}
+.bn-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;color:#94a3b8;font:400 10.5px var(--font-body);text-decoration:none;min-width:0}
+.bn-item.active{color:#2563eb}
+.bn-item svg{width:22px;height:22px}
+/* @media (min-width:760px) from index.css:210-212 */
+.device.hide-nav .bottom-nav{display:none}
+.nav-slot{display:none;width:100%;justify-content:center;align-items:center;gap:8px;padding:12px;font:500 11px var(--font-mono);color:#8494ac;background:#f6f9fd;border-top:1px dashed #c9d6ea;text-align:center}
+.device.hide-nav .nav-slot{display:flex}
+.nav-slot code{background:#e8eefb;color:#37558d;padding:2px 7px;border-radius:6px;font:inherit}
+
+/* drag handle */
+.handle{position:absolute;top:34%;width:16px;height:68px;border-radius:9px;background:var(--accent);color:#fff;display:grid;place-items:center;font:600 14px var(--font-body);cursor:col-resize;box-shadow:var(--shadow);user-select:none;touch-action:none;z-index:5}
+.handle:focus-visible{outline:3px solid var(--accent-soft)}
+
+/* width bar */
+.widthbar{display:flex;align-items:center;gap:12px;margin-top:16px;padding:10px 14px;border:1px solid var(--border);background:var(--surface);border-radius:12px}
+.widthbar label{font:600 10px var(--font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+#frame-width{flex:1;min-width:60px;accent-color:var(--accent);height:4px}
+.readout{font:600 13px var(--font-mono);min-width:58px;text-align:right;font-variant-numeric:tabular-nums}
+
+/* ---- inspector ---- */
+.inspector{border:1px solid var(--border);background:var(--surface);border-radius:14px;padding:18px}
+.big-w{font:700 42px/1 var(--font-display);font-variant-numeric:tabular-nums}
+.big-w small{font:500 14px var(--font-body);color:var(--muted);margin-left:3px}
+.band{display:inline-block;margin-left:8px;font:600 10.5px var(--font-mono);padding:3px 9px;border-radius:999px;vertical-align:14px}
+.band.b1{background:var(--seg1);color:var(--fg)}
+.band.b2{background:var(--seg2);color:var(--fg)}
+.band.b3{background:var(--seg3);color:var(--fg)}
+.sec-t{font:700 10px var(--font-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:18px 0 9px}
+.rule{display:flex;flex-direction:column;gap:4px;padding:10px 11px;border:1px solid var(--border);border-radius:10px;background:var(--surface-2);margin-bottom:8px}
+.rule-head{display:flex;align-items:center;gap:8px;min-width:0}
+.rule-head strong{font:600 11.5px var(--font-body);flex:none}
+.badge{margin-left:auto;font:600 9.5px var(--font-mono);letter-spacing:.06em;padding:2px 8px;border-radius:999px;background:var(--seg3);color:var(--muted);white-space:nowrap}
+.badge.on{background:var(--ok-bg);color:var(--ok-fg)}
+.rule code{font:500 10.5px/1.5 var(--font-mono);word-break:break-word;color:var(--fg)}
+.rule .ref{font:500 9.5px var(--font-mono);color:var(--muted)}
+.ladder{position:relative;height:64px;margin-top:2px}
+.lad-track{position:absolute;left:0;right:0;top:18px;height:14px;border-radius:7px;overflow:hidden;display:flex}
+.lad-track div{height:100%}
+.s1{background:var(--seg1);width:28.6%}.s2{background:var(--seg2);width:10.7%}.s3{background:var(--seg3);flex:1}
+.marker{position:absolute;top:12px;width:3px;height:26px;background:var(--accent);border-radius:2px;transform:translateX(-50%)}
+.lad-labels{position:absolute;left:0;right:0;top:38px;font:500 9.5px var(--font-mono);color:var(--muted)}
+.lad-labels span{position:absolute;transform:translateX(-50%);white-space:nowrap}
+.lad-labels .edge-l{transform:none}
+.lad-labels .edge-r{transform:translateX(-100%)}
+.verdict{display:flex;align-items:center;gap:9px;padding:11px 13px;border:1px solid var(--border);background:var(--surface-2);border-radius:10px;font:600 12.5px/1.45 var(--font-body);margin-top:6px}
+.verdict .dot{width:9px;height:9px;border-radius:50%;flex:none;background:#94a3b8}
+.verdict.show .dot{background:var(--ok-fg)}
+.rule-note{font-size:11px;color:var(--muted);line-height:1.55;margin:12px 0 0}
+.foot{margin-top:22px;font-size:11.5px;color:var(--muted);line-height:1.5}
+.foot code{font:500 10.5px var(--font-mono)}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+
+<header>
+  <div class="eyebrow">Responsive behavior</div>
+  <h1>Bottom nav by screen width</h1>
+  <p class="lede">Drag the blue handle (or use the slider) to resize the Rentify frame. It applies the same media queries from <b>index.css</b>: <b>640px</b> switches the top bar to compact and hides its links, <b>760px</b> hides the bottom nav entirely.</p>
+</header>
+
+<main class="stage">
+  <section>
+    <div class="presets" role="group" aria-label="Width presets">
+      <button class="preset" data-w="390">Phone<small>390</small></button>
+      <button class="preset" data-w="640">Compact break<small>640</small></button>
+      <button class="preset" data-w="700">In between<small>700</small></button>
+      <button class="preset" data-w="768">Tablet<small>768</small></button>
+      <button class="preset" data-w="1280">Desktop<small>1280</small></button>
+    </div>
+
+    <div class="frame-box">
+      <div class="wrap-frame" id="wrap-frame">
+        <div class="device" id="device">
+          <div class="chrome"><i></i><i></i><i></i><div class="url">localhost:5173</div></div>
+          <div class="screen">
+            <div class="topbar">
+              <div class="brand"><span class="mark">R</span>Rentify</div>
+              <nav class="topbar-links" aria-label="Main navigation">
+                <a href="#" class="active">Explore</a>
+                <a href="#">Browse rentals</a>
+                <a href="#">Nearby</a>
+                <a href="#">My rentals</a>
+              </nav>
+              <div class="topbar-user">
+                <span class="name">Jordan</span>
+                <button type="button">Sign out</button>
+              </div>
+            </div>
+            <div class="page">
+              <h2>Home</h2>
+              <div class="sub">Popular rentals near you</div>
+              <div class="grid">
+                <div class="card"><div class="thumb t1">M</div><div class="card-body"><div class="nm">MacBook Pro 16"</div><div class="pr">$32 <span>/day</span></div><div class="rt">4.8 · 132 rentals</div></div></div>
+                <div class="card"><div class="thumb t2">C</div><div class="card-body"><div class="nm">Canon EOS R5</div><div class="pr">$28 <span>/day</span></div><div class="rt">4.9 · 87 rentals</div></div></div>
+                <div class="card"><div class="thumb t3">G</div><div class="card-body"><div class="nm">GoPro Hero 12</div><div class="pr">$14 <span>/day</span></div><div class="rt">4.7 · 204 rentals</div></div></div>
+                <div class="card"><div class="thumb t4">T</div><div class="card-body"><div class="nm">Camping Tent, 4P</div><div class="pr">$9 <span>/day</span></div><div class="rt">4.6 · 58 rentals</div></div></div>
+              </div>
+            </div>
+            <div class="nav-wrap">
+              <nav class="bottom-nav" aria-label="Bottom navigation">
+                <a class="bn-item active" href="#">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>
+                  <span>Home</span>
+                </a>
+                <a class="bn-item" href="#">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                  <span>Search</span>
+                </a>
+                <a class="bn-item" href="#">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                  <span>My Rentals</span>
+                </a>
+                <a class="bn-item" href="#">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
+                  <span>Messages</span>
+                </a>
+                <a class="bn-item" href="#">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  <span>Profile</span>
+                </a>
+              </nav>
+            </div>
+            <div class="nav-slot">BottomNav is <code>display:none</code> at this width <code>index.css:211</code></div>
+          </div>
+        </div>
+      </div>
+      <button class="handle" id="handle" aria-label="Drag to resize the device frame">⇔</button>
+    </div>
+
+    <div class="widthbar">
+      <label for="frame-width">Frame width</label>
+      <input type="range" id="frame-width" min="320" max="1440" step="2" value="390">
+      <div class="readout" id="readout">390px</div>
+    </div>
+  </section>
+
+  <aside class="inspector" aria-label="Live CSS rule inspector">
+    <div class="big-w"><span id="wtext">390</span><small>px</small><span class="band b1" id="band">compact + nav</span></div>
+
+    <div class="sec-t">Rules in play</div>
+    <div class="rule">
+      <div class="rule-head"><strong>Hide bottom nav</strong><span class="badge" id="b-nav">not matched</span></div>
+      <code>@media (min-width: 760px) { .bottom-nav { display: none !important } }</code>
+      <span class="ref">index.css:210–212</span>
+    </div>
+    <div class="rule">
+      <div class="rule-head"><strong>Compact top bar</strong><span class="badge" id="b-top">active</span></div>
+      <code>@media (max-width: 640px) { .app-topbar-links { display: none } }</code>
+      <span class="ref">index.css:200–209</span>
+    </div>
+    <div class="rule">
+      <div class="rule-head"><strong>Render condition</strong><span class="badge on">always here</span></div>
+      <code>{isLoggedIn &amp;&amp; &lt;BottomNav /&gt;}</code>
+      <span class="ref">App.jsx:76 — mockup assumes a logged-in user</span>
+    </div>
+
+    <div class="sec-t">Breakpoint ladder · 320–1440px</div>
+    <div class="ladder">
+      <div class="lad-track"><div class="s1"></div><div class="s2"></div><div class="s3"></div></div>
+      <div class="marker" id="marker" style="left:2.7%"></div>
+      <div class="lad-labels">
+        <span class="edge-l">320</span>
+        <span style="left:28.6%">640</span>
+        <span style="left:39.3%">760</span>
+        <span class="edge-r" style="left:100%">1440</span>
+      </div>
+    </div>
+
+    <div class="verdict show" id="verdict"><span class="dot"></span><span id="vtext">Bottom nav visible — mobile band (&lt; 760px)</span></div>
+    <p class="rule-note">On desktop the bottom nav disappears on purpose: the top-bar links (Explore, Browse rentals, Nearby, My rentals) take over navigation instead.</p>
+  </aside>
+</main>
+
+<p class="foot">Built from <code>frontend/src/index.css</code>, <code>frontend/src/App.jsx:76</code> and <code>frontend/src/components/BottomNav.jsx</code>. The on-screen app mockup stays light-themed — that matches the real app.</p>
+
+<script>
+(function(){
+  var device = document.getElementById('device');
+  var wrap = document.getElementById('wrap-frame');
+  var slider = document.getElementById('frame-width');
+  var readout = document.getElementById('readout');
+  var wtext = document.getElementById('wtext');
+  var band = document.getElementById('band');
+  var bnav = document.getElementById('b-nav');
+  var btop = document.getElementById('b-top');
+  var marker = document.getElementById('marker');
+  var verdict = document.getElementById('verdict');
+  var vtext = document.getElementById('vtext');
+  var handle = document.getElementById('handle');
+  var presets = Array.prototype.slice.call(document.querySelectorAll('.preset'));
+  var DEV_H = 564;
+  var state = { w: 390, s: 1 };
+
+  function setW(w){
+    state.w = Math.max(320, Math.min(1440, Math.round(w)));
+    render();
+  }
+
+  function render(){
+    var w = state.w;
+    var avail = wrap.parentElement ? Math.max(280, wrap.parentElement.clientWidth - 32) : w;
+    state.s = Math.min(1, avail / w);
+    device.style.width = w + 'px';
+    device.style.transform = 'scale(' + state.s + ')';
+    wrap.style.height = Math.round(DEV_H * state.s) + 'px';
+
+    var hideNav = w >= 760;
+    var compact = w <= 640;
+    device.classList.toggle('hide-nav', hideNav);
+    device.classList.toggle('compact', compact);
+
+    slider.value = w;
+    readout.textContent = w + 'px';
+    wtext.textContent = w;
+
+    band.className = 'band ' + (hideNav ? 'b3' : compact ? 'b1' : 'b2');
+    band.textContent = hideNav ? 'desktop, no nav' : compact ? 'compact + nav' : 'full + nav';
+
+    bnav.textContent = hideNav ? 'active' : 'not matched';
+    bnav.classList.toggle('on', hideNav);
+    btop.textContent = compact ? 'active' : 'not matched';
+    btop.classList.toggle('on', compact);
+
+    marker.style.left = ((w - 320) / 1120 * 100) + '%';
+
+    verdict.classList.toggle('show', !hideNav);
+    vtext.textContent = hideNav
+      ? 'Bottom nav hidden — desktop band (≥ 760px). Top-bar links take over.'
+      : 'Bottom nav visible — mobile band (< 760px).';
+
+    handle.style.left = 'calc(50% + ' + (w * state.s / 2 - 8) + 'px)';
+    presets.forEach(function(p){ p.classList.toggle('on', +p.dataset.w === w); });
+  }
+
+  slider.addEventListener('input', function(){ setW(+slider.value); });
+  presets.forEach(function(p){ p.addEventListener('click', function(){ setW(+p.dataset.w); }); });
+
+  var dragging = false;
+  handle.addEventListener('pointerdown', function(e){
+    dragging = true;
+    handle.setPointerCapture(e.pointerId);
+  });
+  handle.addEventListener('pointermove', function(e){
+    if(!dragging) return;
+    var r = wrap.getBoundingClientRect();
+    var cx = r.left + r.width / 2;
+    setW(2 * (e.clientX - cx) / state.s);
+  });
+  ['pointerup','pointercancel'].forEach(function(t){
+    handle.addEventListener(t, function(){ dragging = false; });
+  });
+
+  new ResizeObserver(function(){ render(); }).observe(wrap.parentElement);
+  window.addEventListener('resize', render);
+  render();
+})();
+</script>
