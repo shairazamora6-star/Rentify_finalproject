@@ -7,7 +7,7 @@ import { useApp } from '../contexts/AppContext';
 export default function ExtendRental() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { rentals, addNotification } = useApp();
+  const { rentals, addNotification, updateRental } = useApp();
 
   const rental = rentals.find(r => r.id === parseInt(id));
   const item = rental ? mockItems.find(i => i.id === rental.itemId || i.title === rental.item) : null;
@@ -48,14 +48,15 @@ export default function ExtendRental() {
     setProcessing(true);
     await new Promise(r => setTimeout(r, 1500));
 
-    // Update rental with extension
+    // Update rental with extension in context (demo mode persistence)
     if (rental) {
-      const updatedRentals = rentals.map(r =>
-        r.id === rental.id
-          ? { ...r, endDate, status: 'active', extended: true, extensionPending: true }
-          : r
-      );
-      // Would update context in real app
+      updateRental(rental.id, {
+        endDate: new Date(endDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+        extendedEndDate: new Date(endDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+        extensionStatus: 'pending',
+        extended: true,
+        extensionPending: true,
+      });
     }
 
     addNotification({

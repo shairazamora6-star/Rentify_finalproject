@@ -113,12 +113,23 @@ async function mockApiFetch(url, options = {}) {
 
   if (requestUrl.pathname === '/api/nearby' && method === 'GET') {
     const location = requestUrl.searchParams.get('location')?.trim() || ''
-    const normalizedLocation = location.toLowerCase()
-    const items = location
-      ? mockItems.filter(item => item.location.toLowerCase().includes(normalizedLocation))
-      : mockItems
+    const lat = requestUrl.searchParams.get('lat')
+    const lon = requestUrl.searchParams.get('lon')
+    let items = mockItems
+    let displayLocation = 'your selected location'
+    if (location) {
+      const normalizedLocation = location.toLowerCase()
+      items = mockItems.filter(item => item.location.toLowerCase().includes(normalizedLocation))
+      displayLocation = location
+    } else if (lat && lon) {
+      // Demo: real geocoding is not available, so return all listings sorted by their seeded distance.
+      items = [...mockItems].sort(
+        (a, b) => (Number.parseFloat(a.distance) || 0) - (Number.parseFloat(b.distance) || 0)
+      )
+      displayLocation = 'your current location'
+    }
     return jsonResponse({
-      location: location || 'your selected location',
+      location: displayLocation,
       approximate: true,
       items: items.map(item => ({ ...item, approximateDistance: Number.parseFloat(item.distance) || 0 })),
     })

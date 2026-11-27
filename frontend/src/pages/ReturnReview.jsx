@@ -7,7 +7,7 @@ import { useApp } from '../contexts/AppContext';
 export default function ReturnReview() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { rentals, addNotification } = useApp();
+  const { rentals, addNotification, updateRental } = useApp();
 
   const rental = rentals.find(r => r.id === parseInt(id));
   const item = rental ? mockItems.find(i => i.id === rental.itemId || i.title === rental.item) : null;
@@ -18,13 +18,24 @@ export default function ReturnReview() {
   const [photos, setPhotos] = useState([]);
   const [submitting, setSubmitting] = useState(false);
   const [showCamera, setShowCamera] = useState(false);
+  const [checklist, setChecklist] = useState({ 0: false, 1: false, 2: false, 3: false });
+  const [detailedRatings, setDetailedRatings] = useState({
+    'Condition Accuracy': 4,
+    'Owner Communication': 4,
+    'Pickup/Return Process': 4,
+    'Value for Money': 4,
+  });
 
   const handleSubmitReview = async () => {
     if (rating === 0) return;
     setSubmitting(true);
     await new Promise(r => setTimeout(r, 1000));
 
-    // Update rental with review
+    // Mark rental as rated in context (demo mode persistence)
+    if (rental) {
+      updateRental(rental.id, { rated: true });
+    }
+
     addNotification({
       type: 'review_submitted',
       title: 'Review Submitted',
@@ -39,7 +50,27 @@ export default function ReturnReview() {
     setStep(2);
   };
 
-  if (!rental || !item) return <div className="page">Loading...</div>;
+  const toggleChecklist = (index) => {
+    setChecklist(prev => ({ ...prev, [index]: !prev[index] }));
+  };
+
+  const setDetailRating = (category, value) => {
+    setDetailedRatings(prev => ({ ...prev, [category]: value }));
+  };
+
+  // Guard: if rental not found, show not found
+  if (!rental || !item) {
+    return (
+      <div className="page" style={{ padding: '60px 20px', textAlign: 'center' }}>
+        <div style={{ fontSize: 56, marginBottom: 16 }}>🔍</div>
+        <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 8 }}>Rental Not Found</h2>
+        <p style={{ color: '#64748B', marginBottom: 24 }}>This rental doesn't exist or has been removed.</p>
+        <button className="btn-primary" onClick={() => navigate('/my-rentals')}>
+          Back to My Rentals
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="page">
@@ -103,7 +134,12 @@ export default function ReturnReview() {
                 'Received confirmation from owner',
               ].map((check, i) => (
                 <label key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10, cursor: 'pointer' }}>
-                  <input type="checkbox" style={{ width: 20, height: 20, accentColor: '#2563EB' }} />
+                  <input
+                    type="checkbox"
+                    checked={checklist[i]}
+                    onChange={() => toggleChecklist(i)}
+                    style={{ width: 20, height: 20, accentColor: '#2563EB' }}
+                  />
                   <span style={{ fontSize: 14, color: '#334155' }}>{check}</span>
                 </label>
               ))}
@@ -153,10 +189,22 @@ export default function ReturnReview() {
                 <div key={cat} style={{ marginBottom: 12 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
                     <span style={{ fontSize: 13, color: '#334155' }}>{cat}</span>
-                    <span style={{ fontSize: 13, fontWeight: 600, color: '#2563EB' }}>★★★★☆</span>
-                  </div>
-                  <div style={{ height: 6, background: '#E2E8F0', borderRadius: 3, overflow: 'hidden' }}>
-                    <div style={{ width: '80%', height: '100%', background: '#2563EB', borderRadius: 3 }} />
+                    <div style={{ display: 'flex', gap: 4 }}>
+                      {[1, 2, 3, 4, 5].map(star => (
+                        <button
+                          key={star}
+                          onClick={() => setDetailRating(cat, star)}
+                          style={{ padding: 2, background: 'none', border: 'none', cursor: 'pointer' }}
+                        >
+                          <Star
+                            size={20}
+                            fill={star <= detailedRatings[cat] ? '#F59E0B' : 'none'}
+                            stroke={star <= detailedRatings[cat] ? '#F59E0B' : '#E2E8F0'}
+                            strokeWidth={star <= detailedRatings[cat] ? 0 : 1.5}
+                          />
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
               ))}

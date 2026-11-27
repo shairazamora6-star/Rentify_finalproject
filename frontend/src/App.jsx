@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate, Link, NavLink, useNavigate } from 'react-router-dom'
+import { Routes, Route, Navigate, Link, NavLink, useNavigate, useLocation } from 'react-router-dom'
 import { useApp } from './contexts/AppContext'
 import BottomNav from './components/BottomNav'
 import Home from './pages/Home'
@@ -38,6 +38,7 @@ import Nearby from './pages/Nearby'
 import ForgotPassword from './pages/ForgotPassword'
 import ResetPassword from './pages/ResetPassword'
 import RentalAssistant from './components/RentalAssistant'
+import AdminConsole from './admin/AdminConsole'
 import { isDemoMode } from './lib/api'
 
 const PUBLIC_ROUTES = ['/login', '/register', '/landing']
@@ -45,6 +46,7 @@ const PUBLIC_ROUTES = ['/login', '/register', '/landing']
 function GetLayout({ children }) {
   const { isLoggedIn, user, logout } = useApp()
   const navigate = useNavigate()
+  const { pathname } = useLocation()
   return (
     <div className="app-frame">
       <header className="app-topbar">
@@ -73,8 +75,8 @@ function GetLayout({ children }) {
         </div>
       </header>
       {children}
-      {isLoggedIn && !PUBLIC_ROUTES.includes(window.location.pathname) && <BottomNav />}
-      {!PUBLIC_ROUTES.includes(window.location.pathname) && <RentalAssistant />}
+      {isLoggedIn && !PUBLIC_ROUTES.includes(pathname) && <BottomNav />}
+      {!PUBLIC_ROUTES.includes(pathname) && <RentalAssistant />}
     </div>
   )
 }
@@ -423,6 +425,17 @@ export default function App() {
           )
         }
       />
+      <Route
+        path="/admin"
+        element={
+          isLoggedIn ? (
+            <GetLayout><AdminConsole /></GetLayout>
+          ) : (
+            <Navigate to="/login" replace />
+          )
+        }
+      />
+      <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </>
   )

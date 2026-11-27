@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronLeft, Send, CheckCircle, Loader2, Paperclip } from 'lucide-react';
+import { ChevronLeft, Send, CheckCircle, Loader2, Paperclip, X, FileText } from 'lucide-react';
 
 const categories = [
   { id: 'booking', label: 'Booking issue' },
@@ -15,9 +15,31 @@ export default function SubmitRequest() {
   const [category, setCategory] = useState('');
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
+  const [attachments, setAttachments] = useState([]);
   const [error, setError] = useState('');
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
+
+  const handleAttachFiles = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.multiple = true;
+    input.onchange = (e) => {
+      const files = Array.from(e.target.files || []);
+      setAttachments(prev => [...prev, ...files.map(f => ({ name: f.name, size: f.size }))]);
+    };
+    input.click();
+  };
+
+  const handleRemoveAttachment = (index) => {
+    setAttachments(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const formatSize = (bytes) => {
+    if (!Number.isFinite(bytes)) return '';
+    if (bytes < 1024) return `${bytes} B`;
+    return `${(bytes / 1024).toFixed(1)} KB`;
+  };
 
   const handleSubmit = async () => {
     if (!category || !subject || !message) {
@@ -105,14 +127,39 @@ export default function SubmitRequest() {
           }}
         />
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
-          <button style={{
-            display: 'flex', alignItems: 'center', gap: 6, padding: '9px 14px',
-            borderRadius: 10, border: '1.5px dashed #CBD5E1', background: '#F8FAFC',
-            fontSize: 12, fontWeight: 600, color: '#64748B', cursor: 'pointer',
-          }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 16 }}>
+          <button
+            onClick={handleAttachFiles}
+            style={{
+              display: 'inline-flex', alignItems: 'center', gap: 6, padding: '9px 14px',
+              borderRadius: 10, border: '1.5px dashed #CBD5E1', background: '#F8FAFC',
+              fontSize: 12, fontWeight: 600, color: '#64748B', cursor: 'pointer',
+              alignSelf: 'flex-start',
+            }}
+          >
             <Paperclip size={14} /> Attach files
           </button>
+
+          {attachments.length > 0 && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {attachments.map((file, index) => (
+                <div key={`${file.name}-${index}`} style={{
+                  display: 'flex', alignItems: 'center', gap: 8,
+                  background: 'white', border: '1px solid #E2E8F0', borderRadius: 10,
+                  padding: '8px 12px',
+                }}>
+                  <FileText size={14} color="#64748B" style={{ flexShrink: 0 }} />
+                  <div style={{ flex: 1, overflow: 'hidden' }}>
+                    <p style={{ fontSize: 13, color: '#0F172A', fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{file.name}</p>
+                    <p style={{ fontSize: 11, color: '#94A3B8' }}>{formatSize(file.size)}</p>
+                  </div>
+                  <button onClick={() => handleRemoveAttachment(index)} style={{ padding: 4, cursor: 'pointer', background: 'none', border: 'none' }}>
+                    <X size={14} color="#94A3B8" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {error && (

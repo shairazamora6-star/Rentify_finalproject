@@ -12,11 +12,16 @@ export default function Search() {
   const [query, setQuery] = useState(() => searchParams.get('q') || '');
   const [category, setCategory] = useState(() => searchParams.get('category') || 'all');
   const [sortBy, setSortBy] = useState('nearest');
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [maxPrice, setMaxPrice] = useState('');
+  const [inStockOnly, setInStockOnly] = useState(false);
 
   let results = items.filter(item => {
     const matchQ = !query || item.title.toLowerCase().includes(query.toLowerCase()) || item.category.toLowerCase().includes(query.toLowerCase());
     const matchCat = category === 'all' || item.category === category;
-    return matchQ && matchCat;
+    const matchPrice = !maxPrice || item.price <= Number(maxPrice);
+    const matchStock = !inStockOnly || item.available;
+    return matchQ && matchCat && matchPrice && matchStock;
   });
 
   if (sortBy === 'price') results = [...results].sort((a, b) => a.price - b.price);
@@ -50,13 +55,40 @@ export default function Search() {
                 fontSize: 14, color: '#0F172A',
               }} />
           </div>
-          <button style={{
+          <button onClick={() => setFiltersOpen(open => !open)} aria-pressed={filtersOpen} style={{
             width: 44, height: 44, borderRadius: 12,
-            background: '#2563EB', display: 'flex', alignItems: 'center', justifyContent: 'center',
+            background: filtersOpen ? '#2563EB' : '#F8FAFC',
+            border: filtersOpen ? 'none' : '1px solid #E2E8F0',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
           }}>
-            <SlidersHorizontal size={18} color="white" />
+            <SlidersHorizontal size={18} color={filtersOpen ? 'white' : '#64748B'} />
           </button>
         </div>
+        {filtersOpen && (
+          <div style={{
+            display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap',
+            marginTop: 12, padding: 12, background: '#F8FAFC',
+            borderRadius: 12, border: '1px solid #E2E8F0',
+          }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 600, color: '#0F172A' }}>
+              Max $/day
+              <input
+                type="number" min="0" value={maxPrice}
+                onChange={e => setMaxPrice(e.target.value)}
+                style={{ width: 70, padding: '8px 10px', fontSize: 13, borderRadius: 8, border: '1px solid #E2E8F0', background: 'white', outline: 'none' }}
+              />
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 600, color: '#0F172A' }}>
+              <input type="checkbox" checked={inStockOnly} onChange={e => setInStockOnly(e.target.checked)} />
+              Available now
+            </label>
+            {(maxPrice || inStockOnly) && (
+              <button onClick={() => { setMaxPrice(''); setInStockOnly(false); }} style={{
+                fontSize: 12, fontWeight: 600, color: '#2563EB', background: 'none', border: 'none', cursor: 'pointer',
+              }}>Clear filters</button>
+            )}
+          </div>
+        )}
       </div>
 
       <div style={{ padding: '14px 20px 0' }}>

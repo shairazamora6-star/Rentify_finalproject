@@ -60,7 +60,7 @@ export default function HelpSupport() {
         <LifeBuoy size={48} strokeWidth={1.5} style={{ margin: '0 auto 16px' }} />
         <h1 style={{ fontSize: 24, fontWeight: 700, marginBottom: 8 }}>Need Help?</h1>
         <p style={{ fontSize: 16, opacity: 0.9, marginBottom: 24 }}>We're here to assist you with any questions or issues.</p>
-        <button className="btn-primary" style={{
+        <button className="btn-primary" onClick={() => navigate('/submit-request')} style={{
           background: 'white', color: '#2563EB', padding: '12px 24px',
           borderRadius: 8, fontWeight: 600,
         }}>

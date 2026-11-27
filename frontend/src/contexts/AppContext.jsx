@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { mockItems, mockRentals } from '../data/mockData';
+import { mockItems, mockNotifications, mockRentals } from '../data/mockData';
 import { apiFetch, isDemoMode } from '../lib/api';
 
 const AppContext = createContext();
@@ -35,7 +35,7 @@ export function AppProvider({ children }) {
     ...Object.values(mockRentals).flat(),
     ...readStoredRentals(),
   ]);
-  const [notifications, setNotifications] = useState([]);
+  const [notifications, setNotifications] = useState(isDemoMode ? mockNotifications : []);
   const [items, setItems] = useState(mockItems);
 
   useEffect(() => {
@@ -82,6 +82,18 @@ export function AppProvider({ children }) {
     setNotifications(prev => [{ id: Date.now(), read: false, ...notification }, ...prev]);
   };
 
+  const markNotificationRead = (id) => {
+    setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
+  };
+
+  const markAllNotificationsRead = () => {
+    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+  };
+
+  const clearNotifications = () => {
+    setNotifications([]);
+  };
+
   const toggleFavorite = (id) => {
     setFavorites(prev => {
       const next = new Set(prev);
@@ -111,13 +123,25 @@ export function AppProvider({ children }) {
     });
   };
 
+  const updateRental = (id, updates) => {
+    setRentals(prev => {
+      const next = prev.map(r => r.id === id ? { ...r, ...updates } : r);
+      if (isDemoMode) {
+        const demoRentals = next.filter(item => !Object.values(mockRentals).flat().some(sample => sample.id === item.id));
+        localStorage.setItem('rentify_demo_rentals', JSON.stringify(demoRentals));
+      }
+      return next;
+    });
+  };
+
   const isFavorited = (id) => favorites.has(id);
 
   return (
     <AppContext.Provider value={{
       isLoggedIn, setIsLoggedIn, user, setUser, login, register, logout, items,
       favorites, toggleFavorite, isFavorited,
-      rentals, addRental, notifications, addNotification,
+      rentals, addRental, updateRental, notifications, addNotification,
+      markNotificationRead, markAllNotificationsRead, clearNotifications,
     }}>
       {children}
     </AppContext.Provider>

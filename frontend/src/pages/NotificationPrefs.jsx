@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronLeft, Bell, BellOff, Mail, MessageSquare, Smartphone, Save, CheckCircle } from 'lucide-react';
+import { ChevronLeft, Bell, Mail, Smartphone, CheckCircle } from 'lucide-react';
 
 export default function NotificationPrefs() {
   const navigate = useNavigate();
