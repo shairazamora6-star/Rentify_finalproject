@@ -53,9 +53,18 @@ export default function Landing() {
           <a href="#how-it-works" onClick={() => setMenuOpen(false)}>How it works</a>
         </nav>
         <div className="store-account">
-          <button className="store-signin" onClick={() => navigate('/login')}>Log in</button>
-          <button className="store-join" onClick={() => navigate('/register')}>Join Rentify <ArrowRight size={15} /></button>
-        </div>
+  <button className="store-signin" onClick={() => navigate('/login')}>
+    Log in
+  </button>
+
+  <button className="store-admin" onClick={() => navigate('/admin/login')}>
+    Admin
+  </button>
+
+  <button className="store-join" onClick={() => navigate('/register')}>
+    Join Rentify <ArrowRight size={15} />
+  </button>
+</div>
         <button className="store-menu-button" onClick={() => setMenuOpen(open => !open)} aria-label={menuOpen ? 'Close menu' : 'Open menu'}>
           {menuOpen ? <X size={21} /> : <Menu size={21} />}
         </button>
