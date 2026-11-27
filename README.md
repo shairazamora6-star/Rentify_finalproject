@@ -1,12 +1,12 @@
 # Rentify
 
-Rentify is a mobile-first rental marketplace built with React and Vite.
+Rentify is a mobile-first rental marketplace built with JavaScript, React, and Vite.
 
 ## Project layout
 
 - `frontend/` contains the React/Vite application, static assets, and its package manifest.
 - `backend/` contains the Express API, SQL Server integration, backend package manifest, and environment-variable example.
-- The root package manifest manages both workspaces and provides the combined development command.
+- The root package manifest manages both workspaces and provides frontend-only and full-stack development commands.
 
 ## Run locally
 
@@ -15,15 +15,17 @@ npm install
 npm run dev
 ```
 
-The app runs on port `5173` (`http://localhost:5173`). The Vite dev and preview servers bind to all network interfaces so other devices on your private network can use `http://<computer-LAN-IP>:5173`. The API runs on `http://127.0.0.1:5175` and stays bound to loopback; the frontend proxies API requests to it.
+The frontend runs on port `5173` (`http://localhost:5173`). The default `npm run dev` starts only Vite and uses browser-local demo data, so SQL Server and the API are not required. To change the frontend port, update `server.port` and `preview.port` in `frontend/vite.config.js`. The Vite dev and preview servers bind to all network interfaces so other devices on your private network can use `http://<computer-LAN-IP>:5173`.
 
-Run both workspaces together with `npm run dev`; the frontend waits for the backend health endpoint before starting. To run a workspace independently, use `npm run dev --workspace rentify-frontend` or `npm run dev --workspace rentify-backend`. Root commands `npm run build`, `npm run lint`, and `npm run server` target the appropriate workspace.
+For frontend-only walkthroughs, sign-in accepts any valid email and non-empty password. Registrations, favorites, and reservations are simulated and stored only in this browser; they are not sent to the database. To use the API instead, set `VITE_DEMO_MODE=false` in `frontend/.env.local`, then start the backend with `npm run server`. `npm run dev:full` starts both workspaces and waits for the API before opening Vite.
+
+The API port defaults to `5175` and can be changed with `PORT` in `.env.local`. If you change it, also update the API proxy in `frontend/vite.config.js` and the health-check URL in `frontend/scripts/wait-for-api.js`. Root commands `npm run build` and `npm run lint` (ESLint) target the frontend.
 
 Vite keeps port 5173 strict and will exit with an error if another process already owns it rather than silently switching ports. Access from another device requires both devices to be on the same network and Windows Firewall to allow inbound TCP 5173. This is development-server access for a trusted private network, not public internet hosting.
 
 ## Database
 
-SQL Server 2019 uses Windows Authentication. The default connection is `YURICHIEE\SQL_VER2` / `RentifyDB`. The API creates the required tables and seeds the catalog on first startup.
+The full-stack backend uses SQL Server with Windows Authentication. Configure its `SQL_SERVER` and `SQL_DATABASE` values in `.env.local`. When the API starts, it creates any missing tables and seeds the catalog if the items table is empty.
 
 ## Nearby rentals
 

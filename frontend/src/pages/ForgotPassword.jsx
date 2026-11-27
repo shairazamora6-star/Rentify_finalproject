@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Mail } from 'lucide-react'
 import AuthLayout from '../components/AuthLayout'
+import { apiFetch, isDemoMode } from '../lib/api'
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState('')
@@ -15,7 +16,7 @@ export default function ForgotPassword() {
     setMessage('')
     setIsSubmitting(true)
     try {
-      const response = await fetch('/api/auth/forgot-password', {
+      const response = await apiFetch('/api/auth/forgot-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: email.trim() }),
@@ -54,7 +55,12 @@ export default function ForgotPassword() {
           </div>
         </div>
         {error && <div className="auth-error" role="alert">{error}</div>}
-        {message && <div className="auth-success" role="status">{message}</div>}
+        {message && (
+          <div className="auth-success" role="status">
+            {message}
+            {isDemoMode && <><br /><Link to="/reset-password?token=demo">Preview the reset form</Link></>}
+          </div>
+        )}
         <button className="auth-submit" type="submit" disabled={isSubmitting}>
           {isSubmitting ? 'Sending…' : 'Send reset link'}
         </button>

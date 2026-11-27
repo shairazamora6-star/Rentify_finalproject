@@ -1,14 +1,13 @@
 import { Heart } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import ItemCard from '../components/ItemCard';
-import { mockItems } from '../data/mockData';
 import { useApp } from '../contexts/AppContext';
 
 export default function Favorites() {
   const navigate = useNavigate();
-  const { isFavorited } = useApp();
+  const { isFavorited, items } = useApp();
 
-  const favorites = mockItems.filter(item => isFavorited(item.id));
+  const favorites = items.filter(item => isFavorited(item.id));
 
   return (
     <div className="page">

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { ArrowUpRight, MessageCircle, Send, X } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { apiFetch, isDemoMode } from '../lib/api'
 import './RentalAssistant.css'
 
 export default function RentalAssistant() {
@@ -19,7 +20,7 @@ export default function RentalAssistant() {
     setIsLoading(true)
     setMessages(previous => [...previous, { id: `user-${Date.now()}`, role: 'user', text }])
     try {
-      const response = await fetch('/api/assistant/recommendations', {
+      const response = await apiFetch('/api/assistant/recommendations', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: text }),
@@ -77,7 +78,7 @@ export default function RentalAssistant() {
             />
             <button type="submit" aria-label="Send message" disabled={isLoading || !message.trim()}><Send size={17} /></button>
           </form>
-          <p className="assistant-disclaimer">Your message may be sent to the configured chatbot API. Don’t include sensitive information.</p>
+          <p className="assistant-disclaimer">{isDemoMode ? 'Demo mode: recommendations use sample listings in your browser.' : 'Your message may be sent to the configured chatbot API. Don’t include sensitive information.'}</p>
         </section>
       )}
       <button

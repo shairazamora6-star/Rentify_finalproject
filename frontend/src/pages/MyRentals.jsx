@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Clock, CheckCircle, XCircle, CalendarDays, RefreshCw } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { mockRentals } from '../data/mockData';
+import { useApp } from '../contexts/AppContext';
 
 const tabs = [
   { id: 'active', label: 'Active', icon: Clock },
@@ -12,8 +12,9 @@ const tabs = [
 
 export default function MyRentals() {
   const navigate = useNavigate();
+  const { rentals } = useApp();
   const [activeTab, setActiveTab] = useState('active');
-  const rentals = mockRentals[activeTab] || [];
+  const visibleRentals = rentals.filter(rental => rental.status === activeTab);
 
   return (
     <div className="page">
@@ -37,10 +38,7 @@ export default function MyRentals() {
         <div style={{ display: 'flex', paddingLeft: '20px' }}>
           {tabs.map(tab => {
             const Icon = tab.icon;
-            const count = tab.id === 'active' ? mockRentals.active.length
-              : tab.id === 'upcoming' ? mockRentals.upcoming.length
-              : tab.id === 'completed' ? mockRentals.completed.length
-              : mockRentals.cancelled.length;
+            const count = rentals.filter(rental => rental.status === tab.id).length;
             return (
               <button key={tab.id} onClick={() => setActiveTab(tab.id)} style={{
                 flex: 'none',
@@ -68,7 +66,7 @@ export default function MyRentals() {
 
       {/* Content */}
       <div style={{ padding: '20px' }}>
-        {rentals.length === 0 ? (
+        {visibleRentals.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '60px 20px' }}>
             <div style={{ fontSize: 56, marginBottom: 12 }}>
               {activeTab === 'cancelled' ? '🚫' : activeTab === 'completed' ? '✅' : '📦'}
@@ -86,7 +84,7 @@ export default function MyRentals() {
             )}
           </div>
         ) : (
-          rentals.map(rental => (
+          visibleRentals.map(rental => (
             <div key={rental.id} className="card card-hoverable" style={{ marginBottom: 12 }}>
               <div style={{ display: 'flex', gap: 14, padding: '16px 18px' }}>
                 <img src={rental.image} alt={rental.item}

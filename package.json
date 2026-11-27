@@ -8,8 +8,10 @@
     "frontend"
   ],
   "scripts": {
-    "dev": "concurrently -k -n backend,frontend \"npm run dev --workspace rentify-backend\" \"npm run frontend:dev\"",
-    "frontend:dev": "node frontend/scripts/wait-for-api.js && npm run dev --workspace rentify-frontend",
+    "dev": "npm run dev --workspace rentify-frontend",
+    "dev:full": "concurrently -k -n backend,frontend \"npm run dev --workspace rentify-backend\" \"npm run frontend:dev:wait\"",
+    "frontend:dev": "npm run dev --workspace rentify-frontend",
+    "frontend:dev:wait": "node frontend/scripts/wait-for-api.js && npm run dev --workspace rentify-frontend",
     "server": "npm run start --workspace rentify-backend",
     "build": "npm run build --workspace rentify-frontend",
     "lint": "npm run lint --workspace rentify-frontend",

@@ -3,6 +3,7 @@ import { ChevronLeft, CalendarDays } from 'lucide-react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { mockItems } from '../data/mockData';
 import { useApp } from '../contexts/AppContext';
+import { apiFetch } from '../lib/api';
 
 // Custom date range picker
 function DateRangePicker({ startDate, endDate, onSelect }) {
@@ -103,7 +104,7 @@ function DateRangePicker({ startDate, endDate, onSelect }) {
 export default function Reserve() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { items, user } = useApp();
+  const { items, user, addRental } = useApp();
   const item = items.find(i => i.id === parseInt(id)) || mockItems.find(i => i.id === parseInt(id));
   const [step, setStep] = useState(1);
   const [dates, setDates] = useState({ start: null, end: null });
@@ -137,7 +138,7 @@ export default function Reserve() {
 
     setIsSubmitting(true);
     try {
-      const response = await fetch('/api/rentals', {
+      const response = await apiFetch('/api/rentals', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -150,6 +151,14 @@ export default function Reserve() {
       });
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || 'Unable to save this reservation.');
+      addRental({
+        id: result.id,
+        item,
+        startDate: dates.start,
+        endDate: dates.end,
+        total,
+        status: 'upcoming',
+      });
       navigate(`/booking-confirmation/${id}`, {
         state: { total, startDate: dates.start, endDate: dates.end, bookingId: result.id },
       });

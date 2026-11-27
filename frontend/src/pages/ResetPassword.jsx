@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Eye, EyeOff, LockKeyhole } from 'lucide-react'
 import { Link, useSearchParams } from 'react-router-dom'
 import AuthLayout from '../components/AuthLayout'
+import { apiFetch } from '../lib/api'
 
 export default function ResetPassword() {
   const [searchParams] = useSearchParams()
@@ -18,7 +19,7 @@ export default function ResetPassword() {
     setMessage('')
     setIsSubmitting(true)
     try {
-      const response = await fetch('/api/auth/reset-password', {
+      const response = await apiFetch('/api/auth/reset-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token, password }),

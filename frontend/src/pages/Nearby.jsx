@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { LocateFixed, MapPin, Search } from 'lucide-react'
 import ItemCard from '../components/ItemCard'
+import { apiFetch } from '../lib/api'
 import './Nearby.css'
 
 export default function Nearby() {
@@ -15,7 +16,7 @@ export default function Nearby() {
     setIsLoading(true)
     try {
       const query = new URLSearchParams(params)
-      const response = await fetch(`/api/nearby?${query}`)
+      const response = await apiFetch(`/api/nearby?${query}`)
       const data = await response.json()
       if (!response.ok) throw new Error(data.error || 'Unable to find nearby rentals.')
       setResults(data.items)

@@ -38,6 +38,7 @@ import Nearby from './pages/Nearby'
 import ForgotPassword from './pages/ForgotPassword'
 import ResetPassword from './pages/ResetPassword'
 import RentalAssistant from './components/RentalAssistant'
+import { isDemoMode } from './lib/api'
 
 const PUBLIC_ROUTES = ['/login', '/register', '/landing']
 
@@ -82,7 +83,13 @@ export default function App() {
   const { isLoggedIn } = useApp()
 
   return (
-    <Routes>
+    <>
+      {isDemoMode && (
+        <div className="demo-mode-banner" role="status">
+          Frontend demo mode — sample data only; changes stay in this browser and are not saved to the database.
+        </div>
+      )}
+      <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -416,6 +423,7 @@ export default function App() {
           )
         }
       />
-    </Routes>
+      </Routes>
+    </>
   )
 }
