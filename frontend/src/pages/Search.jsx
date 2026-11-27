@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ChevronDown, SlidersHorizontal, Search as SearchIcon } from 'lucide-react';
+import { SlidersHorizontal, Search as SearchIcon } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import ItemCard from '../components/ItemCard';
 import { categories } from '../data/mockData';
@@ -90,7 +90,6 @@ export default function Search() {
               <option value="price">Price: Low to High</option>
               <option value="rating">Top rated</option>
             </select>
-            <ChevronDown size={14} color="#64748B" />
           </label>
         </div>
       </div>
