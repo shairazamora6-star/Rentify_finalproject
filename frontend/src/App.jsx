@@ -40,7 +40,13 @@ import ResetPassword from './pages/ResetPassword'
 import RentalAssistant from './components/RentalAssistant'
 import { isDemoMode } from './lib/api'
 import AdminLogin from './pages/AdminLogin'
-import AdminDashboardPlaceholder from './pages/AdminDashboardPlaceholder'
+import AdminLayout from './components/AdminLayout'
+import Dashboard from './pages/Dashboard'
+import Rentals from './pages/Rentals'
+import Bookings from './pages/Bookings'
+import Reports from './pages/Reports'
+import Complaints from './pages/Complaints'
+import Settings from './pages/Settings'
 
 const PUBLIC_ROUTES = ['/login', '/register', '/landing']
 
@@ -425,8 +431,15 @@ export default function App() {
           )
         }
       />
-      <Route path="/admin/login" element={<AdminLogin />} />
-      <Route path="/admin" element={<AdminDashboardPlaceholder />} />
+            <Route path="/admin/login" element={<AdminLogin />} />
+      <Route path="/admin" element={<AdminLayout />}>
+        <Route index element={<Dashboard />} />
+        <Route path="listings" element={<Rentals />} />
+        <Route path="bookings" element={<Bookings />} />
+        <Route path="reports" element={<Reports />} />
+        <Route path="complaints" element={<Complaints />} />
+        <Route path="settings" element={<Settings />} />
+      </Route>
       </Routes>
     </>
   )
