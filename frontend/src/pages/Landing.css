@@ -31,6 +31,16 @@
 .store-nav a:hover,.store-signin:hover { color: var(--store-green); }
 .store-account { display: flex; align-items: center; gap: 22px; }
 .store-signin { color: var(--store-ink); font-size: 13px; font-weight: 600; }
+.store-admin {
+  color: #3978d5;
+  font-size: 13px;
+  font-weight: 600;
+  transition: color .18s;
+}
+
+.store-admin:hover {
+  color: #285fae;
+}
 .store-join { min-height: 42px; padding: 0 17px; border-radius: 8px; display: flex; align-items: center; gap: 9px; color: #fff; background: var(--store-green); font-size: 12px!important; font-weight: 650!important; transition: background .2s, transform .2s; }
 .store-join:hover,.community-cta button:hover { background: #285fae; transform: translateY(-1px); }
 .store-menu-button { display: none; }
