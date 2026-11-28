@@ -637,15 +637,15 @@
 .admin-avatar {
   width: 32px; height: 32px;
   display: grid; place-items: center;
-  border-radius: 50%; color: #fff; background: #2563EB;
+  border-radius: 50%; color: #fff; background: var(--accent);
   font-size: 12px; font-weight: 700; flex-shrink: 0;
 }
 .admin-signout {
   display: inline-flex; align-items: center; gap: 6px;
-  padding: 8px 12px; border: 1px solid #DCE8F5; border-radius: 8px;
-  color: #435b77; background: #fff; font-size: 12px; font-weight: 600; cursor: pointer;
+  padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px;
+  color: var(--ink-2); background: var(--surface); font-size: 12px; font-weight: 600; cursor: pointer;
 }
-.admin-signout:hover { border-color: #2563EB; color: #2563EB; }
+.admin-signout:hover { border-color: var(--accent); color: var(--accent); }
 
 /* ============================================================
    MOBILE OVERLAY + SIDEBAR DRAWER
