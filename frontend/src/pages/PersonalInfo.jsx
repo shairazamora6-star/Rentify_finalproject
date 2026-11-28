@@ -1,8 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { ChevronLeft, User, Mail, MapPin, Camera, Save, CheckCircle, X } from 'lucide-react';
+import { ChevronLeft, User, Mail, MapPin, Camera, CheckCircle, X } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
-import { useRef } from 'react';
 
 export default function PersonalInfo() {
   const navigate = useNavigate();
