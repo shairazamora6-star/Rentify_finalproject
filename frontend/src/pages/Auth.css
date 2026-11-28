@@ -56,12 +56,7 @@
   height: 36px;
   display: inline-grid;
   place-items: center;
-  border: 1px solid rgba(255,255,255,.32);
-  border-radius: 11px;
-  color: #fff;
-  background: rgba(255,255,255,.16);
-  font-size: 18px;
-  font-weight: 800;
+  flex-shrink: 0;
 }
 
 .auth-pitch {
@@ -414,7 +409,6 @@
   .auth-aside { display: none; }
   .auth-main { min-height: 100vh; min-height: 100svh; padding: 26px 20px; flex-direction: column; align-items: stretch; }
   .auth-mobile-brand { display: inline-flex; margin: 0 auto 34px; color: #18395f; }
-  .auth-mobile-brand .auth-brand-mark { border: 0; color: white; background: #3978d5; }
   .auth-content { width: min(100%, 440px); margin: auto; }
 }
 

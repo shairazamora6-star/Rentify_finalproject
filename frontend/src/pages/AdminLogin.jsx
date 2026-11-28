@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Eye, EyeOff, LockKeyhole, Mail, ShieldCheck } from 'lucide-react'
 import { Link, Navigate } from 'react-router-dom'
 import { useAdmin } from '../contexts/AdminContext'
+import RentifyLogo from '../components/RentifyLogo'
 import './Admin.css'
 
 export default function AdminLogin() {
@@ -31,7 +32,7 @@ export default function AdminLogin() {
   return (
     <div className="auth-main admin-login-page">
       <Link className="admin-login-brand" to="/">
-        <span className="admin-brand-mark">R</span>
+        <span className="admin-brand-mark"><RentifyLogo size={36} /></span>
         <span>Rentify</span>
         <span className="admin-badge">ADMIN</span>
       </Link>

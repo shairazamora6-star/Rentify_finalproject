@@ -1,21 +1,51 @@
-import { useState, useRef } from 'react';
-import { Camera, User, Mail, MapPin, Calendar, Edit2, Shield, Bell, LogOut, Trash2, LayoutDashboard } from 'lucide-react';
+import { useRef, useState } from 'react';
+import { Camera, User, Mail, MapPin, Calendar, Edit2, Shield, Bell, LogOut, Trash2, LayoutDashboard, Check } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '../contexts/AppContext';
 
 export default function Profile() {
   const navigate = useNavigate();
-  const { logout, user } = useApp();
-  const fileRef = useRef(null);
-  const [avatar, setAvatar] = useState(null);
+  const { logout, user, updateUser } = useApp();
+  const fileInputRef = useRef(null);
   const [editMode, setEditMode] = useState(false);
   const [profile, setProfile] = useState({
     name: user?.name || 'John Mitchell',
     email: user?.email || 'john.mitchell@email.com',
-    phone: '+1 (555) 123-4567',
+    phone: user?.phone || '+1 (555) 123-4567',
     location: user?.location || 'San Francisco, CA',
     joined: 'January 2024',
   });
+  const [profileImage, setProfileImage] = useState(user?.profileImage || '');
+
+  const handlePhotoChange = (event) => {
+    const file = event.target.files?.[0];
+    if (!file || !file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const image = new Image();
+      image.onload = () => {
+        const canvas = document.createElement('canvas');
+        const size = 256;
+        canvas.width = size;
+        canvas.height = size;
+        const scale = Math.max(size / image.width, size / image.height);
+        const width = image.width * scale;
+        const height = image.height * scale;
+        const context = canvas.getContext('2d');
+        context.drawImage(image, (size - width) / 2, (size - height) / 2, width, height);
+        const resized = canvas.toDataURL('image/jpeg', 0.88);
+        setProfileImage(resized);
+        updateUser({ profileImage: resized });
+      };
+      image.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const toggleEdit = () => {
+    if (editMode) updateUser(profile);
+    setEditMode(!editMode);
+  };
 
   const initials = (profile.name || 'R')
     .split(' ')
@@ -28,11 +58,6 @@ export default function Profile() {
   const handleLogout = () => {
     logout();
     navigate('/login');
-  };
-
-  const handleAvatarChange = (event) => {
-    const file = event.target.files?.[0];
-    if (file) setAvatar(URL.createObjectURL(file));
   };
 
   return (
@@ -48,11 +73,19 @@ export default function Profile() {
         position: 'sticky', top: 0, zIndex: 50,
       }}>
         <h1 style={{ fontSize: 20, fontWeight: 700 }}>Profile</h1>
-        <button onClick={() => setEditMode(!editMode)} style={{
+        <button onClick={toggleEdit} style={{
           display: 'flex', alignItems: 'center', gap: 4,
           fontSize: 14, color: '#2563EB', fontWeight: 600,
         }}>
-          {editMode ? <><CheckmarkIcon /> Done</> : <><Edit2 size={16} /> Edit</>}
+          {editMode ? (
+            <>
+              <Check size={16} /> Done
+            </>
+          ) : (
+            <>
+              <Edit2 size={16} /> Edit
+            </>
+          )}
         </button>
       </div>
 
@@ -69,10 +102,8 @@ export default function Profile() {
           width: 88, height: 88, borderRadius: '50%',
           position: 'relative',
         }}>
-          {avatar ? (
-            <img src={avatar} alt={profile.name} style={{
-              width: 88, height: 88, borderRadius: '50%', objectFit: 'cover',
-            }} />
+          {profileImage ? (
+            <img src={profileImage} alt={profile.name} style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
           ) : (
             <div style={{
               width: 88, height: 88, borderRadius: '50%',
@@ -81,7 +112,7 @@ export default function Profile() {
               color: 'white', fontWeight: 700, fontSize: 32,
             }}>{initials}</div>
           )}
-          <button onClick={() => fileRef.current?.click()} aria-label="Change photo" style={{
+          <button type="button" onClick={() => fileInputRef.current?.click()} aria-label="Change profile photo" style={{
             position: 'absolute', bottom: 0, right: 0,
             width: 28, height: 28, borderRadius: '50%',
             background: '#2563EB',
@@ -90,7 +121,7 @@ export default function Profile() {
           }}>
             <Camera size={14} color="white" />
           </button>
-          <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleAvatarChange} />
+          <input ref={fileInputRef} type="file" accept="image/*" onChange={handlePhotoChange} style={{ display: 'none' }} />
         </div>
         <h2 style={{ fontSize: 22, fontWeight: 700, marginTop: 12 }}>{profile.name}</h2>
         <p style={{ fontSize: 14, color: '#64748B' }}>{profile.email}</p>
@@ -221,13 +252,5 @@ export default function Profile() {
 
       <div style={{ height: 20 }} />
     </div>
-  );
-}
-
-function CheckmarkIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-      <polyline points="20 6 9 17 4 12" />
-    </svg>
   );
 }

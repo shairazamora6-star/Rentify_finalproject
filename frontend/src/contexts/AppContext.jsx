@@ -60,6 +60,18 @@ export function AppProvider({ children }) {
     (remember ? localStorage : sessionStorage).setItem('rentify_user', JSON.stringify(data.user));
   };
 
+  const updateUser = (updates) => {
+    setUser(prev => {
+      const next = { ...(prev || {}), ...updates };
+      if (localStorage.getItem('rentify_user')) {
+        localStorage.setItem('rentify_user', JSON.stringify(next));
+      } else if (sessionStorage.getItem('rentify_user')) {
+        sessionStorage.setItem('rentify_user', JSON.stringify(next));
+      }
+      return next;
+    });
+  };
+
   const register = async ({ name, email, password }) => {
     const response = await apiFetch('/api/auth/register', {
       method: 'POST',
@@ -138,7 +150,7 @@ export function AppProvider({ children }) {
 
   return (
     <AppContext.Provider value={{
-      isLoggedIn, setIsLoggedIn, user, setUser, login, register, logout, items,
+      isLoggedIn, setIsLoggedIn, user, setUser, updateUser, login, register, logout, items,
       favorites, toggleFavorite, isFavorited,
       rentals, addRental, updateRental, notifications, addNotification,
       markNotificationRead, markAllNotificationsRead, clearNotifications,

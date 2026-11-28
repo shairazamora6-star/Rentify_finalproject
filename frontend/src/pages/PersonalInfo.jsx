@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { ChevronLeft, User, Mail, MapPin, Camera, CheckCircle, X } from 'lucide-react';
+import { ChevronLeft, User, Mail, MapPin, Camera, Save, CheckCircle, X } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
+import { useRef } from 'react';
 
 export default function PersonalInfo() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { user, setUser, addNotification } = useApp();
+  const { user, setUser, addNotification, updateUser } = useApp();
+  const fileInputRef = useRef(null);
 
   // Read initial tab from URL ?tab= param
   const initialTab = searchParams.get('tab') || 'profile';
@@ -14,6 +16,7 @@ export default function PersonalInfo() {
   const [activeTab, setActiveTab] = useState(initialTab);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [profileImage, setProfileImage] = useState(user?.profileImage || '');
 
   // Initialize profile from user context
   const [profile, setProfile] = useState(() => {
@@ -29,6 +32,31 @@ export default function PersonalInfo() {
       avatar: user.avatar || null,
     };
   });
+
+  const handlePhotoChange = (event) => {
+    const file = event.target.files?.[0];
+    if (!file || !file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const image = new Image();
+      image.onload = () => {
+        const canvas = document.createElement('canvas');
+        const size = 256;
+        canvas.width = size;
+        canvas.height = size;
+        const scale = Math.max(size / image.width, size / image.height);
+        const width = image.width * scale;
+        const height = image.height * scale;
+        const context = canvas.getContext('2d');
+        context.drawImage(image, (size - width) / 2, (size - height) / 2, width, height);
+        const resized = canvas.toDataURL('image/jpeg', 0.88);
+        setProfileImage(resized);
+        updateUser({ profileImage: resized });
+      };
+      image.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  };
 
   // Sync activeTab to URL
   useEffect(() => {
@@ -52,8 +80,16 @@ export default function PersonalInfo() {
       phone: profile.phone,
       location: profile.location,
       avatar: profile.avatar,
+      profileImage,
     };
     setUser(updatedUser);
+    updateUser({
+      name: profile.fullName,
+      email: profile.email,
+      phone: profile.phone,
+      location: profile.location,
+      profileImage,
+    });
 
     setSaving(false);
     setSaved(true);
@@ -66,24 +102,13 @@ export default function PersonalInfo() {
   };
 
   const handleAvatarUpload = () => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
-    input.onchange = (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (ev) => {
-          setProfile(prev => ({ ...prev, avatar: ev.target.result }));
-        };
-        reader.readAsDataURL(file);
-      }
-    };
-    input.click();
+    fileInputRef.current?.click();
   };
 
   const handleRemoveAvatar = () => {
     setProfile(prev => ({ ...prev, avatar: null }));
+    setProfileImage('');
+    updateUser({ profileImage: '' });
   };
 
   const tabs = [
@@ -177,23 +202,26 @@ export default function PersonalInfo() {
                       background: 'linear-gradient(135deg, #3978D5, #73A7E5)',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                       color: 'white', fontWeight: 700, fontSize: 36,
+                      overflow: 'hidden',
                     }}>
-                      {initials}
+                      {profileImage ? (
+                        <img src={profileImage} alt={profile.fullName} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      ) : (
+                        initials
+                      )}
                     </div>
-                    <button
-                      onClick={handleAvatarUpload}
-                      style={{
-                        position: 'absolute', bottom: 0, right: 0,
-                        width: 32, height: 32, borderRadius: '50%',
-                        background: '#2563EB',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        border: '2px solid white', cursor: 'pointer',
-                      }}
-                    >
+                    <button type="button" onClick={handleAvatarUpload} aria-label="Change profile photo" style={{
+                      position: 'absolute', bottom: 0, right: 0,
+                      width: 32, height: 32, borderRadius: '50%',
+                      background: '#2563EB',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      border: '2px solid white', cursor: 'pointer',
+                    }}>
                       <Camera size={16} color="white" />
                     </button>
                   </>
                 )}
+                <input ref={fileInputRef} type="file" accept="image/*" onChange={handlePhotoChange} style={{ display: 'none' }} />
               </div>
               <p style={{ fontSize: 13, color: '#64748B' }}>Tap to change photo</p>
             </div>
