@@ -233,6 +233,25 @@ function ListingIcon({ type, color }) {
   return <Camera size={16} style={style} />
 }
 
+// Tiny decorative bar chart for stat cards
+function MiniBarChart({ color, heights }) {
+  return (
+    <div className="ov-mini-chart" aria-hidden="true">
+      {heights.map((h, i) => (
+        <div
+          key={i}
+          className="ov-mini-bar"
+          style={{
+            height: `${h}%`,
+            background: color,
+            opacity: i === heights.length - 1 ? 1 : 0.35 + (i / heights.length) * 0.55,
+          }}
+        />
+      ))}
+    </div>
+  )
+}
+
 // ─── Main Component ─────────────────────────────────────────
 export default function AdminOverview() {
   const navigate = useNavigate()
@@ -319,60 +338,86 @@ export default function AdminOverview() {
 
       {/* ── Stat Cards ── */}
       <div className="ov-stats">
-        <div className="ov-stat-card">
-          <div className="ov-stat-top">
-            <span className="ov-stat-label">Total Earnings</span>
-            <span className="ov-stat-icon" style={{ background: '#DBEAFE', color: '#2563EB' }}>
-              <Wallet size={18} />
-            </span>
+
+        {/* Card 1 — Total Earnings — Blue */}
+        <div className="ov-stat-card ov-stat-blue">
+          <div className="ov-stat-body">
+            <div className="ov-stat-top">
+              <span className="ov-stat-label">Total Earnings</span>
+              <span className="ov-stat-icon ov-icon-blue">
+                <Wallet size={18} />
+              </span>
+            </div>
+            <div className="ov-stat-value">₱12,450</div>
+            <div className="ov-stat-change positive">
+              <TrendingUp size={13} />
+              +12% this month
+            </div>
           </div>
-          <div className="ov-stat-value">₱12,450</div>
-          <div className="ov-stat-change positive">
-            <TrendingUp size={13} />
-            +12% this month
+          <div className="ov-stat-chart-col">
+            <MiniBarChart color="#2563EB" heights={[40, 55, 35, 70, 60, 85, 75]} />
           </div>
         </div>
 
-        <div className="ov-stat-card">
-          <div className="ov-stat-top">
-            <span className="ov-stat-label">Active Rentals</span>
-            <span className="ov-stat-icon" style={{ background: '#D1FAE5', color: '#059669' }}>
-              <Package size={18} />
-            </span>
+        {/* Card 2 — Active Rentals — Mint Green */}
+        <div className="ov-stat-card ov-stat-green">
+          <div className="ov-stat-body">
+            <div className="ov-stat-top">
+              <span className="ov-stat-label">Active Rentals</span>
+              <span className="ov-stat-icon ov-icon-green">
+                <Package size={18} />
+              </span>
+            </div>
+            <div className="ov-stat-value">3 Items</div>
+            <div className="ov-stat-change green">
+              <ArrowUpRight size={13} />
+              2 returns this week
+            </div>
           </div>
-          <div className="ov-stat-value">3 Items</div>
-          <div className="ov-stat-change muted">
-            <ArrowUpRight size={13} />
-            2 returns this week
-          </div>
-        </div>
-
-        <div className="ov-stat-card">
-          <div className="ov-stat-top">
-            <span className="ov-stat-label">Listed Items</span>
-            <span className="ov-stat-icon" style={{ background: '#FEF3C7', color: '#D97706' }}>
-              <BarChart2 size={18} />
-            </span>
-          </div>
-          <div className="ov-stat-value">8 Listings</div>
-          <div className="ov-stat-change muted">
-            6 active · 1 pending
+          <div className="ov-stat-chart-col">
+            <MiniBarChart color="#10B981" heights={[50, 40, 65, 45, 70, 55, 80]} />
           </div>
         </div>
 
-        <div className="ov-stat-card">
-          <div className="ov-stat-top">
-            <span className="ov-stat-label">Pending Requests</span>
-            <span className="ov-stat-icon" style={{ background: '#FEE2E2', color: '#DC2626' }}>
-              <Clock size={18} />
-            </span>
+        {/* Card 3 — Listed Items — Violet */}
+        <div className="ov-stat-card ov-stat-violet">
+          <div className="ov-stat-body">
+            <div className="ov-stat-top">
+              <span className="ov-stat-label">Listed Items</span>
+              <span className="ov-stat-icon ov-icon-violet">
+                <BarChart2 size={18} />
+              </span>
+            </div>
+            <div className="ov-stat-value">8 Listings</div>
+            <div className="ov-stat-change violet">
+              6 active · 1 pending
+            </div>
           </div>
-          <div className="ov-stat-value">5 Requests</div>
-          <div className="ov-stat-change warning">
-            <Clock size={13} />
-            Oldest waiting 2h
+          <div className="ov-stat-chart-col">
+            <MiniBarChart color="#7C3AED" heights={[60, 45, 75, 55, 65, 50, 70]} />
           </div>
         </div>
+
+        {/* Card 4 — Pending Requests — Soft Orange */}
+        <div className="ov-stat-card ov-stat-orange">
+          <div className="ov-stat-body">
+            <div className="ov-stat-top">
+              <span className="ov-stat-label">Pending Requests</span>
+              <span className="ov-stat-icon ov-icon-orange">
+                <Clock size={18} />
+              </span>
+            </div>
+            <div className="ov-stat-value">5 Requests</div>
+            <div className="ov-stat-change warning">
+              <Clock size={13} />
+              Oldest waiting 2h
+            </div>
+          </div>
+          <div className="ov-stat-chart-col">
+            <MiniBarChart color="#F97316" heights={[35, 60, 45, 80, 55, 70, 65]} />
+          </div>
+        </div>
+
       </div>
 
       {/* ── Mid Row: Requests + Listings ── */}
