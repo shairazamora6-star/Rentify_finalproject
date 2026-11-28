@@ -77,7 +77,7 @@
   display: grid;
   grid-template-rows: 64px minmax(0, 1fr);
   grid-template-columns: minmax(0, 1fr);
-  background: #EBF2FF;
+  background: #E8EFFE;
 }
 
 /* ============================================================
@@ -435,9 +435,19 @@
    ============================================================ */
 .admin-main {
   grid-column: 2;
-  background: #EBF2FF;
   min-height: calc(100vh - 64px);
   overflow-y: auto;
+  /* Same decorative background used by all admin content pages */
+  background-color: #E8EFFE;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320' preserveAspectRatio='xMidYMax slice'%3E%3Cpath fill='%23C7D7F8' fill-opacity='0.18' d='M0,224 L60,224 L60,180 L80,180 L80,160 L100,160 L100,180 L120,180 L120,224 L160,224 L160,190 L175,190 L175,170 L185,170 L185,155 L195,155 L195,170 L205,170 L205,190 L220,190 L220,224 L260,224 L260,195 L270,195 L270,175 L280,175 L280,165 L290,165 L290,175 L300,175 L300,195 L340,195 L340,224 L380,224 L380,185 L395,185 L395,160 L405,160 L405,145 L420,145 L420,160 L430,160 L430,185 L460,185 L460,224 L520,224 L520,200 L530,200 L530,185 L540,185 L540,200 L550,200 L550,224 L600,224 L600,195 L615,195 L615,170 L625,170 L625,155 L635,155 L635,170 L645,170 L645,195 L680,195 L680,224 L720,224 L720,180 L735,180 L735,158 L748,158 L748,142 L760,142 L760,158 L773,158 L773,180 L800,180 L800,224 L850,224 L850,200 L860,200 L860,185 L870,185 L870,200 L880,200 L880,224 L920,224 L920,190 L935,190 L935,168 L948,168 L948,152 L960,152 L960,168 L973,168 L973,190 L1000,190 L1000,224 L1040,224 L1040,195 L1050,195 L1050,178 L1060,178 L1060,195 L1070,195 L1070,224 L1120,224 L1120,185 L1135,185 L1135,162 L1148,162 L1148,148 L1160,148 L1160,162 L1173,162 L1173,185 L1200,185 L1200,224 L1250,224 L1250,200 L1260,200 L1260,185 L1270,185 L1270,200 L1280,200 L1280,224 L1320,224 L1320,190 L1335,190 L1335,170 L1348,170 L1348,155 L1360,155 L1360,170 L1373,170 L1373,190 L1400,190 L1400,224 L1440,224 L1440,320 L0,320 Z'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 560'%3E%3Cellipse cx='1200' cy='80' rx='380' ry='180' fill='%23C4B5FD' fill-opacity='0.1'/%3E%3Cellipse cx='1300' cy='200' rx='260' ry='120' fill='%23A5B4FC' fill-opacity='0.08'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 560'%3E%3Cellipse cx='160' cy='460' rx='320' ry='160' fill='%2393C5FD' fill-opacity='0.1'/%3E%3Cellipse cx='80' cy='340' rx='200' ry='100' fill='%23BAE6FD' fill-opacity='0.08'/%3E%3C/svg%3E"),
+    linear-gradient(145deg, #EEF2FF 0%, #E8EFFE 30%, #EBF5FF 65%, #F0F7FF 100%);
+  background-size: 100% auto, 100% 100%, 100% 100%, 100% 100%;
+  background-position: bottom, top right, bottom left, center;
+  background-repeat: no-repeat, no-repeat, no-repeat, no-repeat;
+  background-attachment: local, local, local, local;
 }
 
 /* ── Legacy .page class override ── */

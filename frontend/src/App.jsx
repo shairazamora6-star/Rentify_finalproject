@@ -44,13 +44,13 @@ import { isDemoMode } from './lib/api'
 import AdminLogin from './pages/AdminLogin'
 import AdminLayout from './components/AdminLayout'
 import AdminOverview from './pages/AdminOverview'
+import AdminRentalRequests from './pages/AdminRentalRequests'
 import Rentals from './pages/Rentals'
 import Bookings from './pages/Bookings'
 import Reports from './pages/Reports'
 import Complaints from './pages/Complaints'
 import Settings from './pages/Settings'
 import AdminStub from './pages/AdminStub'
-import RentifyLogo from './components/RentifyLogo'
 
 const PUBLIC_ROUTES = ['/login', '/register', '/landing']
 
@@ -512,7 +512,7 @@ export default function App() {
         {/* Overview — Marketplace Overview (new Figma page) */}
         <Route index element={<AdminOverview />} />
         {/* Workspace */}
-        <Route path="rental-requests" element={<AdminStub title="Rental Requests" />} />
+        <Route path="rental-requests" element={<AdminRentalRequests />} />
         <Route path="active-tracking" element={<AdminStub title="Active Tracking" />} />
         {/* Marketplace */}
         <Route path="listings" element={<Rentals />} />
