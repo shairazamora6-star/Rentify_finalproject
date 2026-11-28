@@ -29,17 +29,19 @@ export default function ActivityStatus() {
   ];
 
   return (
-    <div className="page">
+    <div className="page" style={{ minHeight: '100vh', background: 'var(--surface-2)' }}>
       {/* Header */}
       <div style={{
-        background: 'white', padding: '16px 20px',
+        background: 'var(--surface)', padding: '16px 20px',
         display: 'flex', alignItems: 'center', gap: 12,
-        borderBottom: '1px solid #E2E8F0', position: 'sticky', top: 0, zIndex: 50,
+        borderBottom: '1px solid var(--line-1)', position: 'sticky', top: 0, zIndex: 50,
       }}>
-        <button onClick={() => navigate(-1)} style={{ padding: 4 }}>
-          <ChevronLeft size={24} color="#0F172A" />
+        <button onClick={() => navigate(-1)} style={{ padding: 4, transition: 'all 0.15s' }}
+          onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.05)'; }}
+          onMouseLeave={e => { e.currentTarget.style.transform = ''; }}>
+          <ChevronLeft size={24} color="var(--ink-1)" />
         </button>
-        <span style={{ fontWeight: 700, fontSize: 18 }}>Activity Status</span>
+        <span style={{ fontWeight: 700, fontSize: 18, color: 'var(--ink-1)' }}>Activity Status</span>
       </div>
 
       <div style={{ padding: '20px' }}>
@@ -48,30 +50,31 @@ export default function ActivityStatus() {
             position: 'fixed', top: 80, left: '50%', transform: 'translateX(-50%)', zIndex: 200,
             background: '#087F73', color: 'white', padding: '12px 24px', borderRadius: 10,
             display: 'flex', alignItems: 'center', gap: 8, fontWeight: 600, fontSize: 14,
-            boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
+            boxShadow: 'var(--shadow-lg)',
           }}>
             <CheckCircle size={18} /> Status saved
           </div>
         )}
 
         {/* Main Toggle */}
-        <div style={{ background: 'white', borderRadius: 12, border: '1px solid #E2E8F0', padding: 20, marginBottom: 20, textAlign: 'center' }}>
+        <div style={{ background: 'var(--surface)', borderRadius: 12, border: '1px solid var(--line-1)', padding: 20, marginBottom: 20, textAlign: 'center' }}>
           <div style={{
             width: 80, height: 80, borderRadius: '50%', margin: '0 auto 16px',
-            background: status === 'on' ? '#E7F7F4' : '#F8FAFC',
-            border: `3px solid ${status === 'on' ? '#087F73' : '#CBD5E1'}`,
+            background: status === 'on' ? 'var(--accent-softer)' : 'var(--surface-2)',
+            border: `3px solid ${status === 'on' ? 'var(--accent)' : 'var(--line-1)'}`,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
+            transition: 'all 0.2s',
           }}>
             {status === 'on' ? (
-              <Eye size={36} color="#087F73" />
+              <Eye size={36} color="var(--accent)" />
             ) : (
-              <EyeOff size={36} color="#94A3B8" />
+              <EyeOff size={36} color="var(--ink-4)" />
             )}
           </div>
-          <h3 style={{ fontSize: 18, fontWeight: 700, marginBottom: 8 }}>
+          <h3 style={{ fontSize: 18, fontWeight: 700, marginBottom: 8, color: 'var(--ink-1)' }}>
             {status === 'on' ? 'You\'re Online' : 'You\'re Invisible'}
           </h3>
-          <p style={{ fontSize: 14, color: '#64748B', marginBottom: 20 }}>
+          <p style={{ fontSize: 14, color: 'var(--ink-3)', marginBottom: 20 }}>
             {status === 'on'
               ? 'Others can see you\'re active and your current message'
               : 'No one can see when you\'re last seen or your activity'}
@@ -80,14 +83,17 @@ export default function ActivityStatus() {
           <label style={{
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12,
             cursor: 'pointer', padding: '12px 20px', borderRadius: 10,
-            border: '2px solid #E2E8F0', background: 'white', width: '100%',
-          }}>
-            <span style={{ fontSize: 15, fontWeight: 500, color: '#0F172A' }}>
+            border: '2px solid var(--line-1)', background: 'var(--surface)', width: '100%',
+            transition: 'all 0.15s',
+          }}
+          onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--accent-line)'; }}
+          onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--line-1)'; }}>
+            <span style={{ fontSize: 15, fontWeight: 500, color: 'var(--ink-1)' }}>
               {status === 'on' ? 'Go Offline' : 'Go Online'}
             </span>
             <div style={{
               width: 48, height: 28, borderRadius: 14,
-              background: status === 'on' ? '#2563EB' : '#CBD5E1',
+              background: status === 'on' ? 'var(--accent)' : 'var(--line-1)',
               position: 'relative', transition: 'background 0.2s',
             }}>
               <div style={{
@@ -109,13 +115,13 @@ export default function ActivityStatus() {
         {status === 'on' && (
           <>
             {/* Current Status Display */}
-            <div style={{ background: 'white', borderRadius: 12, border: '1px solid #E2E8F0', padding: 20, marginBottom: 20 }}>
-              <p style={{ fontSize: 13, fontWeight: 600, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 12 }}>
+            <div style={{ background: 'var(--surface)', borderRadius: 12, border: '1px solid var(--line-1)', padding: 20, marginBottom: 20 }}>
+              <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--ink-4)', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 12 }}>
                 Your Status
               </p>
               <div style={{
                 display: 'flex', alignItems: 'center', gap: 12, padding: 16,
-                background: '#F8FAFC', borderRadius: 10, marginBottom: 12,
+                background: 'var(--surface-2)', borderRadius: 10, marginBottom: 12,
               }}>
                 <div style={{
                   width: 40, height: 40, borderRadius: '50%',
@@ -124,19 +130,21 @@ export default function ActivityStatus() {
                   color: 'white', fontWeight: 700, fontSize: 16,
                 }}>JM</div>
                 <div style={{ flex: 1 }}>
-                  <p style={{ fontSize: 14, fontWeight: 700, color: '#0F172A', marginBottom: 2 }}>
+                  <p style={{ fontSize: 14, fontWeight: 700, color: 'var(--ink-1)', marginBottom: 2 }}>
                     John Mitchell
                   </p>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                     <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#10B981' }} />
-                    <span style={{ fontSize: 13, color: '#64748B' }}>{customMessage || 'Online now'}</span>
+                    <span style={{ fontSize: 13, color: 'var(--ink-3)' }}>{customMessage || 'Online now'}</span>
                   </div>
                 </div>
                 <button
                   onClick={() => { setShowInput(true); setInputValue(customMessage || 'Online now'); }}
-                  style={{ padding: 8, background: '#EFF6FF', borderRadius: 8, border: 'none', cursor: 'pointer' }}
+                  style={{ padding: 8, background: 'var(--accent-softer)', borderRadius: 8, border: 'none', cursor: 'pointer', transition: 'opacity 0.15s' }}
+                  onMouseEnter={e => { e.currentTarget.style.opacity = '0.8'; }}
+                  onMouseLeave={e => { e.currentTarget.style.opacity = '1'; }}
                 >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2">
                     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
                     <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                   </svg>
@@ -146,9 +154,11 @@ export default function ActivityStatus() {
                 onClick={() => setShowCustom(!showCustom)}
                 style={{
                   width: '100%', padding: '12px', borderRadius: 8,
-                  border: '1px dashed #E2E8F0', background: 'transparent',
-                  fontSize: 14, color: '#64748B', cursor: 'pointer',
+                  border: '1px dashed var(--line-1)', background: 'transparent',
+                  fontSize: 14, color: 'var(--ink-3)', cursor: 'pointer', transition: 'all 0.15s',
                 }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--accent-line)'; e.currentTarget.style.color = 'var(--accent)'; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--line-1)'; e.currentTarget.style.color = 'var(--ink-3)'; }}
               >
                 {showCustom ? 'Cancel Custom Message' : '+ Customize Status Message'}
               </button>
@@ -163,10 +173,14 @@ export default function ActivityStatus() {
                     maxLength={30}
                     style={{
                       width: '100%', padding: '12px', borderRadius: 8,
-                      border: '1px solid #E2E8F0', fontSize: 14, boxSizing: 'border-box',
+                      border: '1px solid var(--line-1)', fontSize: 14, boxSizing: 'border-box',
+                      background: 'var(--surface)', color: 'var(--ink-1)', outline: 'none',
+                      transition: 'border-color 0.15s',
                     }}
+                    onFocus={e => { e.currentTarget.style.borderColor = 'var(--accent)'; }}
+                    onBlur={e => { e.currentTarget.style.borderColor = 'var(--line-1)'; }}
                   />
-                  <p style={{ fontSize: 11, color: '#94A3B8', marginTop: 6, textAlign: 'right' }}>
+                  <p style={{ fontSize: 11, color: 'var(--ink-4)', marginTop: 6, textAlign: 'right' }}>
                     {inputValue.length}/30 characters
                   </p>
                 </div>
@@ -174,8 +188,8 @@ export default function ActivityStatus() {
             </div>
 
             {/* Quick Presets */}
-            <div style={{ background: 'white', borderRadius: 12, border: '1px solid #E2E8F0', overflow: 'hidden', marginBottom: 20 }}>
-              <p style={{ fontSize: 13, fontWeight: 600, color: '#94A3B8', margin: '16px 20px 12px', textTransform: 'uppercase', letterSpacing: 0.5 }}>
+            <div style={{ background: 'var(--surface)', borderRadius: 12, border: '1px solid var(--line-1)', overflow: 'hidden', marginBottom: 20 }}>
+              <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--ink-4)', margin: '16px 20px 12px', textTransform: 'uppercase', letterSpacing: 0.5 }}>
                 Quick Presets
               </p>
               {quickMessages.map(msg => (
@@ -189,16 +203,19 @@ export default function ActivityStatus() {
                   }}
                   style={{
                     width: '100%', display: 'flex', alignItems: 'center', gap: 12,
-                    padding: '14px 20px', borderBottom: '1px solid #F1F5F9',
-                    background: customMessage === msg ? '#EFF6FF' : 'transparent',
+                    padding: '14px 20px', borderBottom: '1px solid var(--line-2)',
+                    background: customMessage === msg ? 'var(--accent-softer)' : 'transparent',
                     border: 'none', cursor: 'pointer', textAlign: 'left',
+                    transition: 'background 0.15s',
                   }}
+                  onMouseEnter={e => { if (customMessage !== msg) e.currentTarget.style.background = 'var(--surface-2)'; }}
+                  onMouseLeave={e => { if (customMessage !== msg) e.currentTarget.style.background = 'transparent'; }}
                 >
-                  <Clock size={18} color={customMessage === msg ? '#2563EB' : '#94A3B8'} />
-                  <span style={{ flex: 1, fontSize: 15, fontWeight: customMessage === msg ? 600 : 500, color: customMessage === msg ? '#2563EB' : '#0F172A' }}>
+                  <Clock size={18} color={customMessage === msg ? 'var(--accent)' : 'var(--ink-4)'} />
+                  <span style={{ flex: 1, fontSize: 15, fontWeight: customMessage === msg ? 600 : 500, color: customMessage === msg ? 'var(--accent)' : 'var(--ink-1)' }}>
                     {msg}
                   </span>
-                  {customMessage === msg && <CheckCircle size={18} color="#2563EB" />}
+                  {customMessage === msg && <CheckCircle size={18} color="var(--accent)" />}
                 </button>
               ))}
             </div>
@@ -206,8 +223,8 @@ export default function ActivityStatus() {
         )}
 
         {/* Visibility Options */}
-        <div style={{ background: 'white', borderRadius: 12, border: '1px solid #E2E8F0', overflow: 'hidden', marginBottom: 20 }}>
-          <p style={{ fontSize: 13, fontWeight: 600, color: '#94A3B8', margin: '16px 20px 12px', textTransform: 'uppercase', letterSpacing: 0.5 }}>
+        <div style={{ background: 'var(--surface)', borderRadius: 12, border: '1px solid var(--line-1)', overflow: 'hidden', marginBottom: 20 }}>
+          <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--ink-4)', margin: '16px 20px 12px', textTransform: 'uppercase', letterSpacing: 0.5 }}>
             Who Can See My Status
           </p>
           {[
@@ -217,16 +234,19 @@ export default function ActivityStatus() {
           ].map(opt => (
             <label key={opt.label} style={{
               display: 'flex', alignItems: 'center', gap: 12,
-              padding: '14px 20px', borderBottom: '1px solid #F1F5F9', cursor: 'pointer',
-            }}>
+              padding: '14px 20px', borderBottom: '1px solid var(--line-2)', cursor: 'pointer',
+              transition: 'background 0.15s',
+            }}
+            onMouseEnter={e => { e.currentTarget.style.background = 'var(--surface-2)'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}>
               <input
                 type="radio"
                 name="visibility"
-                style={{ width: 20, height: 20, accentColor: '#2563EB' }}
+                style={{ width: 20, height: 20, accentColor: 'var(--accent)' }}
               />
               <div>
-                <p style={{ fontSize: 14, fontWeight: 500, color: '#0F172A' }}>{opt.label}</p>
-                <p style={{ fontSize: 12, color: '#64748B' }}>{opt.desc}</p>
+                <p style={{ fontSize: 14, fontWeight: 500, color: 'var(--ink-1)' }}>{opt.label}</p>
+                <p style={{ fontSize: 12, color: 'var(--ink-3)' }}>{opt.desc}</p>
               </div>
             </label>
           ))}
@@ -234,20 +254,20 @@ export default function ActivityStatus() {
 
         {/* Info Card */}
         <div style={{
-          padding: 16, background: '#EFF6FF', borderRadius: 12,
-          border: '1px solid #BFDBFE', marginBottom: 24,
+          padding: 16, background: 'var(--accent-softer)', borderRadius: 12,
+          border: '1px solid var(--accent-line)', marginBottom: 24,
         }}>
           <div style={{ display: 'flex', gap: 10 }}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2" style={{ flexShrink: 0 }}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2" style={{ flexShrink: 0 }}>
               <circle cx="12" cy="12" r="10" />
               <line x1="12" y1="16" x2="12" y2="12" />
               <line x1="12" y1="8" x2="12.01" y2="8" />
             </svg>
             <div>
-              <p style={{ fontSize: 13, fontWeight: 600, color: '#1E40AF', marginBottom: 4 }}>
+              <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--accent)', marginBottom: 4 }}>
                 Status Privacy
               </p>
-              <p style={{ fontSize: 12, color: '#1E40AF' }}>
+              <p style={{ fontSize: 12, color: 'var(--accent)' }}>
                 Even when offline, others may still see your recent profile views or rental history for up to 24 hours after logging back in.
               </p>
             </div>

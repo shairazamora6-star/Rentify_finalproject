@@ -120,19 +120,21 @@ export default function PersonalInfo() {
     <div className="page">
       {/* Header */}
       <div style={{
-        background: 'white', padding: '16px 20px',
+        background: 'var(--surface)', padding: '16px 20px',
         display: 'flex', alignItems: 'center', gap: 12,
-        borderBottom: '1px solid #E2E8F0', position: 'sticky', top: 0, zIndex: 50,
+        borderBottom: '1px solid var(--line-1)', position: 'sticky', top: 0, zIndex: 50,
       }}>
-        <button onClick={() => navigate(-1)} style={{ padding: 4 }}>
-          <ChevronLeft size={24} color="#0F172A" />
+        <button onClick={() => navigate(-1)} style={{ padding: 4, transition: 'all 0.15s' }}
+          onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.05)'; }}
+          onMouseLeave={e => { e.currentTarget.style.transform = ''; }}>
+          <ChevronLeft size={24} color="var(--ink-1)" />
         </button>
         <span style={{ fontWeight: 700, fontSize: 18 }}>Personal Info</span>
       </div>
 
       {/* Tabs */}
       <div style={{
-        display: 'flex', background: 'white', borderBottom: '1px solid #E2E8F0',
+        display: 'flex', background: 'var(--surface)', borderBottom: '1px solid var(--line-1)',
         position: 'sticky', top: 56, zIndex: 40, padding: '0 20px',
       }}>
         {tabs.map(tab => (
@@ -141,9 +143,9 @@ export default function PersonalInfo() {
             onClick={() => setActiveTab(tab.id)}
             style={{
               flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-              padding: '14px 0', borderBottom: `2px solid ${activeTab === tab.id ? '#2563EB' : 'transparent'}`,
+              padding: '14px 0', borderBottom: `2px solid ${activeTab === tab.id ? 'var(--accent)' : 'transparent'}`,
               background: 'none', cursor: 'pointer',
-              color: activeTab === tab.id ? '#2563EB' : '#64748B',
+              color: activeTab === tab.id ? 'var(--accent)' : 'var(--ink-3)',
               fontWeight: activeTab === tab.id ? 600 : 500, fontSize: 14,
             }}
           >
@@ -157,9 +159,9 @@ export default function PersonalInfo() {
         {saved && (
           <div style={{
             position: 'fixed', top: 80, left: '50%', transform: 'translateX(-50%)', zIndex: 200,
-            background: '#087F73', color: 'white', padding: '12px 24px', borderRadius: 10,
+            background: 'var(--success)', color: 'white', padding: '12px 24px', borderRadius: 10,
             display: 'flex', alignItems: 'center', gap: 8, fontWeight: 600, fontSize: 14,
-            boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
+            boxShadow: 'var(--shadow-lg)',
           }}>
             <CheckCircle size={18} /> Changes saved
           </div>
@@ -186,12 +188,15 @@ export default function PersonalInfo() {
                       style={{
                         position: 'absolute', bottom: 0, right: 0,
                         width: 32, height: 32, borderRadius: '50%',
-                        background: '#EF4444',
+                        background: 'var(--danger)',
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        border: '2px solid white', cursor: 'pointer',
+                        border: '2px solid var(--surface)', cursor: 'pointer',
+                        transition: 'all 0.15s',
                       }}
+                      onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.1)'; }}
+                      onMouseLeave={e => { e.currentTarget.style.transform = ''; }}
                     >
-                      <X size={14} color="white" />
+                      <X size={14} color="var(--surface)" />
                     </button>
                   </>
                 ) : (
@@ -212,17 +217,21 @@ export default function PersonalInfo() {
                     <button type="button" onClick={handleAvatarUpload} aria-label="Change profile photo" style={{
                       position: 'absolute', bottom: 0, right: 0,
                       width: 32, height: 32, borderRadius: '50%',
-                      background: '#2563EB',
+                      background: 'var(--accent)',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      border: '2px solid white', cursor: 'pointer',
-                    }}>
-                      <Camera size={16} color="white" />
+                      border: '2px solid var(--surface)', cursor: 'pointer',
+                      transition: 'all 0.15s',
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.1)'; }}
+                    onMouseLeave={e => { e.currentTarget.style.transform = ''; }}
+                    >
+                      <Camera size={16} color="var(--surface)" />
                     </button>
                   </>
                 )}
                 <input ref={fileInputRef} type="file" accept="image/*" onChange={handlePhotoChange} style={{ display: 'none' }} />
               </div>
-              <p style={{ fontSize: 13, color: '#64748B' }}>Tap to change photo</p>
+              <p style={{ fontSize: 13, color: 'var(--ink-3)' }}>Tap to change photo</p>
             </div>
 
             {/* Form Fields */}
@@ -234,7 +243,7 @@ export default function PersonalInfo() {
                 { key: 'phone', label: 'Phone Number', type: 'tel', placeholder: '+1 (555) 000-0000' },
               ].map(field => (
                 <div key={field.key}>
-                  <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#334155', marginBottom: 6 }}>
+                  <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: 'var(--ink-2)', marginBottom: 6 }}>
                     {field.label}
                   </label>
                   {field.type === 'textarea' ? (
@@ -245,13 +254,17 @@ export default function PersonalInfo() {
                       rows={field.rows}
                       style={{
                         width: '100%', padding: '12px', borderRadius: 10,
-                        border: '1px solid #E2E8F0', fontSize: 15, fontFamily: 'inherit',
+                        border: '1px solid var(--line-1)', fontSize: 15, fontFamily: 'inherit',
                         boxSizing: 'border-box', resize: 'vertical',
+                        background: 'var(--surface)', color: 'var(--ink-1)',
+                        transition: 'border-color 0.15s',
                       }}
+                      onFocus={e => { e.currentTarget.style.borderColor = 'var(--accent)'; }}
+                      onBlur={e => { e.currentTarget.style.borderColor = ''; }}
                     />
                   ) : (
                     <div style={{ display: 'flex', alignItems: 'center' }}>
-                      {field.prefix && <span style={{ padding: '0 12px', color: '#94A3B8', fontSize: 15 }}>{field.prefix}</span>}
+                      {field.prefix && <span style={{ padding: '0 12px', color: 'var(--ink-4)', fontSize: 15 }}>{field.prefix}</span>}
                       <input
                         type={field.type}
                         value={profile[field.key]}
@@ -259,9 +272,13 @@ export default function PersonalInfo() {
                         placeholder={field.placeholder}
                         style={{
                           flex: 1, padding: '12px', borderRadius: field.prefix ? '0 10px 10px 0' : 10,
-                          border: '1px solid #E2E8F0', fontSize: 15, boxSizing: 'border-box',
+                          border: '1px solid var(--line-1)', fontSize: 15, boxSizing: 'border-box',
                           borderLeft: field.prefix ? 'none' : undefined,
+                          background: 'var(--surface)', color: 'var(--ink-1)',
+                          transition: 'border-color 0.15s',
                         }}
+                        onFocus={e => { e.currentTarget.style.borderColor = 'var(--accent)'; }}
+                        onBlur={e => { e.currentTarget.style.borderColor = ''; }}
                       />
                     </div>
                   )}
@@ -284,7 +301,7 @@ export default function PersonalInfo() {
         {activeTab === 'email' && (
           <div>
             <div style={{ marginBottom: 24 }}>
-              <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#334155', marginBottom: 6 }}>
+              <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: 'var(--ink-2)', marginBottom: 6 }}>
                 Email Address
               </label>
               <input
@@ -293,10 +310,14 @@ export default function PersonalInfo() {
                 onChange={e => setProfile(prev => ({ ...prev, email: e.target.value }))}
                 style={{
                   width: '100%', padding: '12px', borderRadius: 10,
-                  border: '1px solid #E2E8F0', fontSize: 15, boxSizing: 'border-box',
+                  border: '1px solid var(--line-1)', fontSize: 15, boxSizing: 'border-box',
+                  background: 'var(--surface)', color: 'var(--ink-1)',
+                  transition: 'border-color 0.15s',
                 }}
+                onFocus={e => { e.currentTarget.style.borderColor = 'var(--accent)'; }}
+                onBlur={e => { e.currentTarget.style.borderColor = ''; }}
               />
-              <p style={{ fontSize: 12, color: '#64748B', marginTop: 8 }}>
+              <p style={{ fontSize: 12, color: 'var(--ink-3)', marginTop: 8 }}>
                 We'll send a verification email to the new address.
               </p>
             </div>
@@ -315,7 +336,7 @@ export default function PersonalInfo() {
         {activeTab === 'location' && (
           <div>
             <div style={{ marginBottom: 24 }}>
-              <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#334155', marginBottom: 6 }}>
+              <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: 'var(--ink-2)', marginBottom: 6 }}>
                 Current Location
               </label>
               <input
@@ -325,21 +346,25 @@ export default function PersonalInfo() {
                 placeholder="City, State"
                 style={{
                   width: '100%', padding: '12px', borderRadius: 10,
-                  border: '1px solid #E2E8F0', fontSize: 15, boxSizing: 'border-box',
+                  border: '1px solid var(--line-1)', fontSize: 15, boxSizing: 'border-box',
+                  background: 'var(--surface)', color: 'var(--ink-1)',
+                  transition: 'border-color 0.15s',
                 }}
+                onFocus={e => { e.currentTarget.style.borderColor = 'var(--accent)'; }}
+                onBlur={e => { e.currentTarget.style.borderColor = ''; }}
               />
-              <p style={{ fontSize: 12, color: '#64748B', marginTop: 8 }}>
+              <p style={{ fontSize: 12, color: 'var(--ink-3)', marginTop: 8 }}>
                 Used to show nearby items and calculate distances.
               </p>
             </div>
 
-            <div style={{ padding: 16, background: '#F8FAFC', borderRadius: 10, marginBottom: 16 }}>
-              <p style={{ fontSize: 13, fontWeight: 600, color: '#0F172A', marginBottom: 8 }}>
+            <div style={{ padding: 16, background: 'var(--surface-2)', borderRadius: 10, marginBottom: 16 }}>
+              <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--ink-1)', marginBottom: 8 }}>
                 Location Privacy
               </p>
               <label style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer' }}>
-                <input type="checkbox" defaultChecked style={{ width: 20, height: 20, accentColor: '#2563EB' }} />
-                <span style={{ fontSize: 14, color: '#334155' }}>Show my city on public profile</span>
+                <input type="checkbox" defaultChecked style={{ width: 20, height: 20, accentColor: 'var(--accent)' }} />
+                <span style={{ fontSize: 14, color: 'var(--ink-2)' }}>Show my city on public profile</span>
               </label>
             </div>
 

@@ -47,17 +47,17 @@ function DateRangePicker({ startDate, endDate, onSelect, minDate }) {
   };
 
   return (
-    <div style={{ background: 'white', borderRadius: 16, padding: '18px 16px', border: '1px solid #E2E8F0' }}>
+    <div style={{ background: 'var(--surface)', borderRadius: 16, padding: '18px 16px', border: '1px solid var(--line-1)' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18 }}>
         <button onClick={() => setViewDate(new Date(viewDate.getFullYear(), viewDate.getMonth() - 1, 1))}
-          style={{ width: 34, height: 34, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#F8FAFC', border: '1px solid #E2E8F0', fontSize: 16, color: '#0F172A' }}>‹</button>
-        <span style={{ fontWeight: 700, fontSize: 15, color: '#0F172A' }}>{monthName}</span>
+          style={{ width: 34, height: 34, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--surface-2)', border: '1px solid var(--line-1)', fontSize: 16, color: 'var(--ink-1)' }}>‹</button>
+        <span style={{ fontWeight: 700, fontSize: 15, color: 'var(--ink-1)' }}>{monthName}</span>
         <button onClick={() => setViewDate(new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, 1))}
-          style={{ width: 34, height: 34, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#F8FAFC', border: '1px solid #E2E8F0', fontSize: 16, color: '#0F172A' }}>›</button>
+          style={{ width: 34, height: 34, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--surface-2)', border: '1px solid var(--line-1)', fontSize: 16, color: 'var(--ink-1)' }}>›</button>
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, minmax(0, 1fr))', gap: 4, textAlign: 'center' }}>
         {['Su','Mo','Tu','We','Th','Fr','Sa'].map(d => (
-          <span key={d} style={{ fontSize: 11, color: '#94A3B8', fontWeight: 600, padding: '4px 0', textTransform: 'uppercase', letterSpacing: 0.5 }}>{d}</span>
+          <span key={d} style={{ fontSize: 11, color: 'var(--ink-4)', fontWeight: 600, padding: '4px 0', textTransform: 'uppercase', letterSpacing: 0.5 }}>{d}</span>
         ))}
         {days.map((d, i) => d ? (() => {
           const date = new Date(viewDate.getFullYear(), viewDate.getMonth(), d);
@@ -88,9 +88,9 @@ function DateRangePicker({ startDate, endDate, onSelect, minDate }) {
               style={{
                 width: '100%', maxWidth: 38, height: 38, borderRadius: selected ? 12 : 10,
                 fontSize: 13, fontWeight: 500,
-                background: selected ? '#2563EB' : isToday ? '#EEF2FF' : past ? '#F8FAFC' : 'transparent',
-                color: selected ? 'white' : isToday ? '#2563EB' : past ? '#CBD5E1' : '#0F172A',
-                border: isToday && !selected ? '1.5px solid #BFDBFE' : past ? '1.5px solid #F1F5F9' : '1.5px solid transparent',
+                background: selected ? 'var(--accent)' : isToday ? 'var(--accent-soft)' : past ? 'var(--surface-2)' : 'transparent',
+                color: selected ? 'white' : isToday ? 'var(--accent)' : past ? 'var(--ink-4)' : 'var(--ink-1)',
+                border: isToday && !selected ? '1.5px solid var(--accent-line)' : past ? '1.5px solid var(--line-2)' : '1.5px solid transparent',
                 cursor: past ? 'not-allowed' : 'pointer', margin: '2px auto', position: 'relative',
                 opacity: past ? 0.5 : 1,
               }}>
@@ -104,9 +104,9 @@ function DateRangePicker({ startDate, endDate, onSelect, minDate }) {
         ))}
       </div>
       {startDate && endDate && (
-        <div style={{ marginTop: 16, padding: '12px 14px', background: '#EEF2FF', borderRadius: 12, display: 'flex', alignItems: 'center', gap: 8 }}>
-          <CalendarDays size={16} color="#2563EB" />
-          <span style={{ fontSize: 13, color: '#1E40AF', fontWeight: 600 }}>
+        <div style={{ marginTop: 16, padding: '12px 14px', background: 'var(--accent-soft)', borderRadius: 12, display: 'flex', alignItems: 'center', gap: 8 }}>
+          <CalendarDays size={16} color="var(--accent)" />
+          <span style={{ fontSize: 13, color: 'var(--accent)', fontWeight: 600 }}>
             {new Date(startDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} — {new Date(endDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
           </span>
         </div>
@@ -236,19 +236,21 @@ export default function Reserve() {
     <div className="page">
       {/* Header */}
       <div style={{
-        background: 'white', padding: '14px 20px',
+        background: 'var(--surface)', padding: '14px 20px',
         display: 'flex', alignItems: 'center', gap: 12,
-        borderBottom: '1px solid #F1F5F9',
+        borderBottom: '1px solid var(--line-2)',
         position: 'sticky', top: 0, zIndex: 50,
       }}>
         <button onClick={() => step > 1 ? setStep(step - 1) : navigate(-1)}
-          style={{ width: 36, height: 36, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #E2E8F0', background: '#F8FAFC', fontSize: 18, color: '#0F172A' }}>‹</button>
-        <span style={{ fontWeight: 700, fontSize: 16, color: '#0F172A' }}>Reserve</span>
+          style={{ width: 36, height: 36, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--line-1)', background: 'var(--surface-2)', fontSize: 18, color: 'var(--ink-1)', transition: 'all 0.15s' }}
+          onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--accent-line)'; e.currentTarget.style.background = 'var(--surface)'; }}
+          onMouseLeave={e => { e.currentTarget.style.borderColor = ''; e.currentTarget.style.background = ''; }}>‹</button>
+        <span style={{ fontWeight: 700, fontSize: 16, color: 'var(--ink-1)' }}>Reserve</span>
         <div style={{ flex: 1, display: 'flex', gap: 5, justifyContent: 'flex-end', paddingRight: 8 }}>
           {steps.map((_, i) => (
             <div key={i} style={{
               height: 4, borderRadius: 2, flex: 1,
-              background: i + 1 <= step ? '#2563EB' : '#E2E8F0',
+              background: i + 1 <= step ? 'var(--accent)' : 'var(--line-1)',
               transition: 'background 0.3s',
             }} />
           ))}
@@ -265,18 +267,18 @@ export default function Reserve() {
                   width: 32, height: 32, borderRadius: '50%',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontSize: 13, fontWeight: 700,
-                  background: i + 1 < step ? '#2563EB' : i + 1 === step ? '#EEF2FF' : '#F1F5F9',
-                  color: i + 1 <= step ? '#2563EB' : '#94A3B8',
-                  border: i + 1 === step ? '2px solid #2563EB' : '2px solid transparent',
+                  background: i + 1 < step ? 'var(--accent)' : i + 1 === step ? 'var(--accent-soft)' : 'var(--line-2)',
+                  color: i + 1 <= step ? 'var(--accent)' : 'var(--ink-4)',
+                  border: i + 1 === step ? '2px solid var(--accent)' : '2px solid transparent',
                   transition: 'all 0.3s',
                   zIndex: 1,
                 }}>{i + 1}</div>
-                <span style={{ fontSize: 11, fontWeight: i + 1 === step ? 600 : 400, color: i + 1 <= step ? '#0F172A' : '#94A3B8', whiteSpace: 'nowrap' }}>{label}</span>
+                <span style={{ fontSize: 11, fontWeight: i + 1 === step ? 600 : 400, color: i + 1 <= step ? 'var(--ink-1)' : 'var(--ink-4)', whiteSpace: 'nowrap' }}>{label}</span>
               </div>
               {i < steps.length - 1 && (
                 <div style={{
                   position: 'absolute', top: 15, left: 'calc(50% + 16px)', right: 'calc(50% + 16px)',
-                  height: 2, background: i + 1 < step ? '#2563EB' : '#E2E8F0', zIndex: 0,
+                  height: 2, background: i + 1 < step ? 'var(--accent)' : 'var(--line-1)', zIndex: 0,
                 }} />
               )}
             </div>
@@ -286,17 +288,17 @@ export default function Reserve() {
         {/* Item Summary */}
         <div style={{
           display: 'flex', gap: 14, padding: '14px 16px',
-          background: 'white', borderRadius: 14, border: '1px solid #E2E8F0', marginBottom: 24,
-          boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
+          background: 'var(--surface-1)', borderRadius: 14, border: '1px solid var(--line-1)', marginBottom: 24,
+          boxShadow: 'var(--shadow-sm)',
         }}>
           <img src={item.image} alt={item.title} style={{ width: 72, height: 72, borderRadius: 12, objectFit: 'cover' }} />
           <div>
-            <p style={{ fontWeight: 700, fontSize: 14, color: '#0F172A', marginBottom: 4 }}>{item.title}</p>
-            <p style={{ fontSize: 13, color: '#64748B', display: 'flex', alignItems: 'center', gap: 4 }}>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#64748B" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <p style={{ fontWeight: 700, fontSize: 14, color: 'var(--ink-1)', marginBottom: 4 }}>{item.title}</p>
+            <p style={{ fontSize: 13, color: 'var(--ink-3)', display: 'flex', alignItems: 'center', gap: 4 }}>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--ink-3)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
               {item.location}
             </p>
-            <p style={{ fontSize: 16, fontWeight: 800, color: '#2563EB', marginTop: 6 }}>${item.price}<span style={{ fontSize: 12, fontWeight: 500, color: '#64748B' }}>/day</span></p>
+            <p style={{ fontSize: 16, fontWeight: 800, color: 'var(--accent)', marginTop: 6 }}>${item.price}<span style={{ fontSize: 12, fontWeight: 500, color: 'var(--ink-3)' }}>/day</span></p>
           </div>
         </div>
 
@@ -305,14 +307,14 @@ export default function Reserve() {
           <>
             <DateRangePicker startDate={dates.start} endDate={dates.end} onSelect={setDates} minDate={new Date()} />
             {days > 0 && (
-              <div style={{ marginTop: 16, padding: '14px 16px', background: '#EEF2FF', borderRadius: 14 }}>
+              <div style={{ marginTop: 16, padding: '14px 16px', background: 'var(--accent-soft)', borderRadius: 14 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-                  <span style={{ fontSize: 13, color: '#64748B' }}>Duration</span>
-                  <span style={{ fontSize: 14, fontWeight: 700, color: '#1E40AF' }}>{days} day{days !== 1 ? 's' : ''}</span>
+                  <span style={{ fontSize: 13, color: 'var(--ink-3)' }}>Duration</span>
+                  <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--accent)' }}>{days} day{days !== 1 ? 's' : ''}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ fontSize: 13, color: '#64748B' }}>Dates</span>
-                  <span style={{ fontSize: 13, fontWeight: 600, color: '#1E40AF' }}>
+                  <span style={{ fontSize: 13, color: 'var(--ink-3)' }}>Dates</span>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--accent)' }}>
                     {new Date(dates.start).toLocaleDateString()} → {new Date(dates.end).toLocaleDateString()}
                   </span>
                 </div>
@@ -328,37 +330,37 @@ export default function Reserve() {
         {/* Step 2: Review & Agreement */}
         {step === 2 && (
           <>
-            <div style={{ background: 'white', borderRadius: 16, padding: '18px 16px', border: '1px solid #E2E8F0', marginBottom: 20 }}>
-              <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 14, color: '#0F172A' }}>Price Breakdown</h3>
+            <div style={{ background: 'var(--surface-1)', borderRadius: 16, padding: '18px 16px', border: '1px solid var(--line-1)', marginBottom: 20 }}>
+              <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 14, color: 'var(--ink-1)' }}>Price Breakdown</h3>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
-                <span style={{ fontSize: 14, color: '#64748B' }}>${item.price} × {days} days</span>
+                <span style={{ fontSize: 14, color: 'var(--ink-3)' }}>${item.price} × {days} days</span>
                 <span style={{ fontSize: 14, fontWeight: 600 }}>${paymentDetails.subtotal}</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
-                <span style={{ fontSize: 14, color: '#64748B' }}>
+                <span style={{ fontSize: 14, color: 'var(--ink-3)' }}>
                   {paymentMethod === 'cod' ? 'Damage Insurance (5%)' : 'Service fee (10%)'}
                 </span>
                 <span style={{ fontSize: 14, fontWeight: 600 }}>${paymentDetails.serviceFee.toFixed(2)}</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
-                <span style={{ fontSize: 14, color: '#64748B' }}>
+                <span style={{ fontSize: 14, color: 'var(--ink-3)' }}>
                   {paymentMethod === 'cod' ? 'Tax' : 'Tax (8%)'}
                 </span>
                 <span style={{ fontSize: 14, fontWeight: 600 }}>${paymentDetails.tax.toFixed(2)}</span>
               </div>
-              <div style={{ height: 1, background: '#F1F5F9', margin: '12px 0' }} />
+              <div style={{ height: 1, background: 'var(--line-2)', margin: '12px 0' }} />
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ fontSize: 15, fontWeight: 700, color: '#0F172A' }}>Total</span>
-                <span style={{ fontSize: 18, fontWeight: 800, color: '#2563EB' }}>${paymentDetails.total.toFixed(2)}</span>
+                <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--ink-1)' }}>Total</span>
+                <span style={{ fontSize: 18, fontWeight: 800, color: 'var(--accent)' }}>${paymentDetails.total.toFixed(2)}</span>
               </div>
             </div>
 
             <div style={{
-              background: 'white', borderRadius: 16, padding: '18px 16px',
-              border: '1px solid #E2E8F0', marginBottom: 20, maxHeight: 180, overflowY: 'auto',
+              background: 'var(--surface-1)', borderRadius: 16, padding: '18px 16px',
+              border: '1px solid var(--line-1)', marginBottom: 20, maxHeight: 180, overflowY: 'auto',
             }}>
-              <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 12, color: '#0F172A' }}>Rental Agreement</h3>
-              <p style={{ fontSize: 13, color: '#64748B', lineHeight: 1.8 }}>
+              <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 12, color: 'var(--ink-1)' }}>Rental Agreement</h3>
+              <p style={{ fontSize: 13, color: 'var(--ink-3)', lineHeight: 1.8 }}>
                 By confirming this reservation, you agree to the following terms:<br/><br/>
                 1. You are responsible for the item during the entire rental period.<br/>
                 2. The item must be returned in the same condition as received.<br/>
@@ -372,23 +374,23 @@ export default function Reserve() {
             <label style={{
               display: 'flex', alignItems: 'center', gap: 12,
               padding: '14px 16px',
-              background: agreed ? '#EEF2FF' : 'white',
-              border: `1.5px solid ${agreed ? '#2563EB' : '#E2E8F0'}`,
+              background: agreed ? 'var(--accent-soft)' : 'var(--surface)',
+              border: `1.5px solid ${agreed ? 'var(--accent)' : 'var(--line-1)'}`,
               borderRadius: 14, cursor: 'pointer', marginBottom: 24,
               transition: 'all 0.15s',
             }}>
               <div style={{
                 width: 20, height: 20, borderRadius: 6,
-                border: `2px solid ${agreed ? '#2563EB' : '#CBD5E1'}`,
+                border: `2px solid ${agreed ? 'var(--accent)' : 'var(--line-1)'}`,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                background: agreed ? '#2563EB' : 'white',
+                background: agreed ? 'var(--accent)' : 'var(--surface)',
                 transition: 'all 0.15s',
               }}>
                 {agreed && <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>}
               </div>
               <input type="checkbox" checked={agreed} onChange={e => setAgreed(e.target.checked)}
                 style={{ display: 'none' }} />
-              <span style={{ fontSize: 14, color: '#0F172A', fontWeight: 500 }}>I have read and agree to the Rental Agreement</span>
+              <span style={{ fontSize: 14, color: 'var(--ink-1)', fontWeight: 500 }}>I have read and agree to the Rental Agreement</span>
             </label>
 
             <button onClick={() => setStep(3)} disabled={!agreed}
@@ -401,31 +403,31 @@ export default function Reserve() {
         {/* Step 3: Payment */}
         {step === 3 && (
           <>
-            <div style={{ background: 'white', borderRadius: 16, padding: '18px 16px', border: '1px solid #E2E8F0', marginBottom: 24 }}>
+            <div style={{ background: 'var(--surface-1)', borderRadius: 16, padding: '18px 16px', border: '1px solid var(--line-1)', marginBottom: 24 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
-                <span style={{ fontSize: 14, color: '#64748B' }}>${item.price} × {days} days</span>
+                <span style={{ fontSize: 14, color: 'var(--ink-3)' }}>${item.price} × {days} days</span>
                 <span style={{ fontSize: 14, fontWeight: 600 }}>${paymentDetails.subtotal}</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
-                <span style={{ fontSize: 14, color: '#64748B' }}>
+                <span style={{ fontSize: 14, color: 'var(--ink-3)' }}>
                   {paymentMethod === 'cod' ? 'Damage Insurance (5%)' : 'Service fee (10%)'}
                 </span>
                 <span style={{ fontSize: 14, fontWeight: 600 }}>${paymentDetails.serviceFee.toFixed(2)}</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
-                <span style={{ fontSize: 14, color: '#64748B' }}>
+                <span style={{ fontSize: 14, color: 'var(--ink-3)' }}>
                   {paymentMethod === 'cod' ? 'Tax' : 'Tax (8%)'}
                 </span>
                 <span style={{ fontSize: 14, fontWeight: 600 }}>${paymentDetails.tax.toFixed(2)}</span>
               </div>
-              <div style={{ height: 1, background: '#F1F5F9', margin: '12px 0' }} />
+              <div style={{ height: 1, background: 'var(--line-2)', margin: '12px 0' }} />
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ fontSize: 15, fontWeight: 700, color: '#0F172A' }}>Total</span>
-                <span style={{ fontSize: 20, fontWeight: 800, color: '#2563EB' }}>${paymentDetails.total.toFixed(2)}</span>
+                <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--ink-1)' }}>Total</span>
+                <span style={{ fontSize: 20, fontWeight: 800, color: 'var(--accent)' }}>${paymentDetails.total.toFixed(2)}</span>
               </div>
             </div>
 
-            <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 12, color: '#0F172A' }}>Payment Method</h3>
+            <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 12, color: 'var(--ink-1)' }}>Payment Method</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 28 }}>
               {[
                 { id: 'gcash', label: 'GCash', icon: <Smartphone size={20} />, desc: 'Home delivery • 10% Service fee • 8% Tax' },
@@ -438,37 +440,41 @@ export default function Reserve() {
                   <button key={method.id} onClick={() => setPaymentMethod(method.id)} style={{
                     width: '100%', display: 'flex', alignItems: 'center', gap: 12,
                     padding: '16px', borderRadius: 12,
-                    border: `2px solid ${paymentMethod === method.id ? '#2563EB' : '#E2E8F0'}`,
-                    background: paymentMethod === method.id ? '#EFF6FF' : 'white',
+                    border: `2px solid ${paymentMethod === method.id ? 'var(--accent)' : 'var(--line-1)'}`,
+                    background: paymentMethod === method.id ? 'var(--accent-softer)' : 'var(--surface)',
                     cursor: 'pointer', textAlign: 'left',
-                  }}>
+                    transition: 'all 0.15s',
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.boxShadow = 'var(--shadow-md)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
+                  onMouseLeave={e => { e.currentTarget.style.boxShadow = ''; e.currentTarget.style.transform = ''; }}>
                     <div style={{
                       width: 44, height: 44, borderRadius: 12,
-                      border: `2px solid ${paymentMethod === method.id ? '#2563EB' : '#CBD5E1'}`,
+                      border: `2px solid ${paymentMethod === method.id ? 'var(--accent)' : 'var(--line-1)'}`,
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      background: paymentMethod === method.id ? '#EEF2FF' : '#F8FAFC',
-                      color: paymentMethod === method.id ? '#2563EB' : '#64748B',
+                      background: paymentMethod === method.id ? 'var(--accent-soft)' : 'var(--surface-2)',
+                      color: paymentMethod === method.id ? 'var(--accent)' : 'var(--ink-3)',
                       flexShrink: 0,
+                      transition: 'all 0.15s',
                     }}>
                       {method.icon}
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <p style={{ fontSize: 15, fontWeight: 600, color: '#0F172A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      <p style={{ fontSize: 15, fontWeight: 600, color: 'var(--ink-1)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                         {method.label}
                       </p>
-                      <p style={{ fontSize: 12, color: '#64748B', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      <p style={{ fontSize: 12, color: 'var(--ink-3)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                         {method.desc}
                       </p>
                     </div>
                     {paymentMethod === method.id && (
-                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                     )}
                   </button>
                 );
               })}
             </div>
 
-            {bookingError && <p role="alert" style={{ marginBottom: 14, color: '#B42318', fontSize: 13 }}>{bookingError}</p>}
+            {bookingError && <p role="alert" style={{ marginBottom: 14, color: 'var(--danger)', fontSize: 13 }}>{bookingError}</p>}
             <button onClick={confirmRental} disabled={isSubmitting} className="btn-primary" style={{ opacity: isSubmitting ? 0.7 : 1 }}>
               {isSubmitting ? 'Saving reservation…' : `Confirm reservation · $${paymentDetails.total.toFixed(2)}`}
             </button>

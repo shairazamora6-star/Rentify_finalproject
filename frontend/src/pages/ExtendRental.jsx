@@ -174,10 +174,23 @@ export default function ExtendRental() {
             width: 36, height: 36,
             border: 'none',
             fontSize: 13, fontWeight: isSelected ? 700 : 500,
-            color: isPast ? '#CBD5E1' : isSelected ? 'white' : isInRange ? '#2563EB' : '#0F172A',
-            backgroundColor: isStart ? '#2563EB' : isEnd ? '#2563EB' : isInRange ? '#EFF6FF' : 'transparent',
-            borderRadius: isStart ? '8px 0 0 8px' : isEnd ? '0 8px 8px 0' : isInRange ? 0 : 8,
+            color: isPast ? 'var(--ink-2)' : isSelected ? 'white' : isInRange ? 'var(--accent)' : 'var(--ink-1)',
+            backgroundColor: isStart ? 'var(--accent)' : isEnd ? 'var(--accent)' : isInRange ? 'var(--accent-softer)' : 'transparent',
+            borderRadius: isStart ? 'var(--radius-sm) 0 0 var(--radius-sm)' : isEnd ? '0 var(--radius-sm) var(--radius-sm) 0' : isInRange ? 0 : 'var(--radius-sm)',
             cursor: isPast ? 'not-allowed' : 'pointer',
+            transition: 'all 0.15s',
+          }}
+          onMouseEnter={e => {
+            if (!isPast) {
+              e.currentTarget.style.backgroundColor = isStart ? 'var(--accent)' : isEnd ? 'var(--accent)' : isInRange ? 'var(--accent-soft)' : 'transparent';
+              e.currentTarget.style.transform = 'scale(1.05)';
+            }
+          }}
+          onMouseLeave={e => {
+            if (!isPast) {
+              e.currentTarget.style.backgroundColor = '';
+              e.currentTarget.style.transform = '';
+            }
           }}
         >
           {d}
@@ -218,34 +231,37 @@ export default function ExtendRental() {
     <div className="page">
       {/* Header */}
       <div style={{
-        background: 'white', padding: '16px 20px',
+        background: 'var(--surface)', padding: '16px 20px',
         display: 'flex', alignItems: 'center', gap: 12,
-        borderBottom: '1px solid #E2E8F0', position: 'sticky', top: 0, zIndex: 50,
+        borderBottom: '1px solid var(--line-1)', position: 'sticky', top: 0, zIndex: 50,
       }}>
-        <button onClick={() => navigate(-1)} style={{ padding: 4 }}>
-          <ChevronLeft size={24} color="#0F172A" />
+        <button onClick={() => navigate(-1)} style={{ padding: 4 }} onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.05)'; }} onMouseLeave={e => { e.currentTarget.style.transform = ''; }}>
+          <ChevronLeft size={24} color="var(--ink-1)" />
         </button>
         <span style={{ fontWeight: 700, fontSize: 18 }}>Extend Rental</span>
       </div>
 
       {/* Progress Steps with connector lines */}
-      <div style={{ padding: '16px 20px 8px', background: 'white', borderBottom: '1px solid #F1F5F9' }}>
+      <div style={{ padding: '16px 20px 8px', background: 'var(--surface)', borderBottom: '1px solid var(--line-2)' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           {steps.map((s, i) => (
             <div key={s.num} style={{ flex: 1, textAlign: 'center', position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               {i < steps.length - 1 && (
                 <div style={{
                   position: 'absolute', top: 10, left: 'calc(50% + 11px)', right: 'calc(50% + 11px)',
-                  height: 2, background: step > i + 1 ? '#2563EB' : '#E2E8F0', zIndex: 0,
+                  height: 2, background: step > i + 1 ? 'var(--accent)' : 'var(--line-2)', zIndex: 0,
                 }} />
               )}
               <div style={{
                 width: 22, height: 22, borderRadius: '50%', margin: '0 auto 6px',
-                background: step >= s.num ? '#2563EB' : '#E2E8F0',
+                background: step >= s.num ? 'var(--accent)' : 'var(--line-2)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 color: 'white', fontSize: 11, fontWeight: 700, position: 'relative', zIndex: 1,
-              }}>{s.num}</div>
-              <p style={{ fontSize: 11, fontWeight: 600, color: step >= s.num ? '#2563EB' : '#94A3B8' }}>
+                transition: 'all 0.15s',
+              }}>
+                {s.num}
+              </div>
+              <p style={{ fontSize: 11, fontWeight: 600, color: step >= s.num ? 'var(--accent)' : 'var(--ink-2)' }}>
                 {s.label}
               </p>
             </div>
@@ -257,18 +273,18 @@ export default function ExtendRental() {
         {/* Item Info - Fixed horizontal alignment */}
         <div style={{
           display: 'flex', gap: 12, marginBottom: 20,
-          padding: 12, background: '#F8FAFC', borderRadius: 12,
+          padding: 12, background: 'var(--surface-2)', borderRadius: 'var(--radius-md)',
           alignItems: 'center',
         }}>
           <img src={item.image} alt={item.title}
             style={{ width: 60, height: 60, borderRadius: 10, objectFit: 'cover', flexShrink: 0 }} />
           <div style={{ flex: 1, minWidth: 0 }}>
-            <h3 style={{ fontSize: 14, fontWeight: 700, marginBottom: 4, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.title}</h3>
-            <p style={{ fontSize: 12, color: '#64748B', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Current rental ends: {new Date(rental.endDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
+            <h3 style={{ fontSize: 14, fontWeight: 700, marginBottom: 4, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', color: 'var(--ink-1)' }}>{item.title}</h3>
+            <p style={{ fontSize: 12, color: 'var(--ink-3)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Current rental ends: {new Date(rental.endDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
           </div>
           <span style={{
             padding: '4px 10px', borderRadius: 20, fontSize: 11, fontWeight: 700,
-            background: '#FEF3C7', color: '#92400E',
+            background: 'var(--warning-soft)', color: 'var(--warning)',
             flexShrink: 0, whiteSpace: 'nowrap',
           }}>Active</span>
         </div>
@@ -283,12 +299,15 @@ export default function ExtendRental() {
                 onClick={() => { setSelecting('start'); setShowCalendar(true); }}
                 style={{
                   flex: 1, padding: '14px 16px', borderRadius: 12,
-                  border: `2px solid ${selecting === 'start' ? '#2563EB' : '#E2E8F0'}`,
-                  background: 'white', textAlign: 'left',
+                  border: `2px solid ${selecting === 'start' ? 'var(--accent)' : 'var(--line-1)'}`,
+                  background: 'var(--surface)', textAlign: 'left',
+                  transition: 'all 0.15s',
                 }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--accent-line)'; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = ''; }}
               >
-                <p style={{ fontSize: 11, color: '#94A3B8', textTransform: 'uppercase', marginBottom: 4 }}>Start Date</p>
-                <p style={{ fontSize: 16, fontWeight: 600, color: '#0F172A' }}>
+                <p style={{ fontSize: 11, color: 'var(--ink-4)', textTransform: 'uppercase', marginBottom: 4 }}>Start Date</p>
+                <p style={{ fontSize: 16, fontWeight: 600, color: 'var(--ink-1)' }}>
                   {startDate ? new Date(startDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'Select'}
                 </p>
               </button>
@@ -296,12 +315,15 @@ export default function ExtendRental() {
                 onClick={() => { setSelecting('end'); setShowCalendar(true); }}
                 style={{
                   flex: 1, padding: '14px 16px', borderRadius: 12,
-                  border: `2px solid ${selecting === 'end' ? '#2563EB' : '#E2E8F0'}`,
-                  background: 'white', textAlign: 'left',
+                  border: `2px solid ${selecting === 'end' ? 'var(--accent)' : 'var(--line-1)'}`,
+                  background: 'var(--surface)', textAlign: 'left',
+                  transition: 'all 0.15s',
                 }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--accent-line)'; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = ''; }}
               >
-                <p style={{ fontSize: 11, color: '#94A3B8', textTransform: 'uppercase', marginBottom: 4 }}>End Date</p>
-                <p style={{ fontSize: 16, fontWeight: 600, color: '#0F172A' }}>
+                <p style={{ fontSize: 11, color: 'var(--ink-4)', textTransform: 'uppercase', marginBottom: 4 }}>End Date</p>
+                <p style={{ fontSize: 16, fontWeight: 600, color: 'var(--ink-1)' }}>
                   {endDate ? new Date(endDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'Select'}
                 </p>
               </button>
@@ -310,7 +332,7 @@ export default function ExtendRental() {
             {showCalendar && (
               <div style={{
                 position: 'fixed', bottom: 0, left: 0, right: 0, maxWidth: 480, margin: '0 auto',
-                background: 'white', borderRadius: '20px 20px 0 0', padding: '20px',
+                background: 'var(--surface)', borderRadius: '20px 20px 0 0', padding: '20px',
                 boxShadow: '0 -4px 20px rgba(0,0,0,0.15)', zIndex: 100,
               }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
@@ -318,12 +340,12 @@ export default function ExtendRental() {
                     {calendarMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                   </h4>
                   <button onClick={() => setShowCalendar(false)} style={{ padding: 8 }}>
-                    <XCircle size={24} color="#64748B" />
+                    <XCircle size={24} color="var(--ink-3)" />
                   </button>
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, minmax(0, 1fr))', gap: 4, marginBottom: 8 }}>
                   {['Su','Mo','Tu','We','Th','Fr','Sa'].map(d => (
-                    <div key={d} style={{ textAlign: 'center', fontSize: 11, fontWeight: 600, color: '#94A3B8', padding: '8px 0' }}>{d}</div>
+                    <div key={d} style={{ textAlign: 'center', fontSize: 11, fontWeight: 600, color: 'var(--ink-4)', padding: '8px 0' }}>{d}</div>
                   ))}
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, minmax(0, 1fr))', gap: 4 }}>
@@ -335,12 +357,12 @@ export default function ExtendRental() {
 
             {totalDays > 0 && (
               <div style={{
-                padding: '16px', background: '#EFF6FF', borderRadius: 12, marginBottom: 20,
+                padding: '16px', background: 'var(--accent-softer)', borderRadius: 'var(--radius-md)', marginBottom: 20,
               }}>
-                <p style={{ fontSize: 13, color: '#1E40AF', marginBottom: 4 }}>
+                <p style={{ fontSize: 13, color: 'var(--accent)', marginBottom: 4 }}>
                   Extension: <strong>{totalDays} day{totalDays !== 1 ? 's' : ''}</strong>
                 </p>
-                <p style={{ fontSize: 15, fontWeight: 700, color: '#2563EB' }}>
+                <p style={{ fontSize: 15, fontWeight: 700, color: 'var(--accent)' }}>
                   Additional: ${totalPrice}
                 </p>
               </div>
@@ -362,36 +384,36 @@ export default function ExtendRental() {
           <div>
             <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 16 }}>Review Extension</h3>
 
-            <div style={{ background: 'white', border: '1px solid #E2E8F0', borderRadius: 12, padding: 16, marginBottom: 16 }}>
+            <div style={{ background: 'var(--surface)', border: '1px solid var(--line-1)', borderRadius: 'var(--radius-md)', padding: 16, marginBottom: 16 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12 }}>
-                <span style={{ color: '#64748B' }}>{totalDays} day{totalDays !== 1 ? 's' : ''} extension</span>
+                <span style={{ color: 'var(--ink-3)' }}>{totalDays} day{totalDays !== 1 ? 's' : ''} extension</span>
                 <span style={{ fontWeight: 600 }}>${totalPrice}</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12 }}>
-                <span style={{ color: '#64748B' }}>Service fee (10%)</span>
+                <span style={{ color: 'var(--ink-3)' }}>Service fee (10%)</span>
                 <span style={{ fontWeight: 600 }}>${paymentDetails.serviceFee.toFixed(2)}</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12 }}>
-                <span style={{ color: '#64748B' }}>Tax (8%)</span>
+                <span style={{ color: 'var(--ink-3)' }}>Tax (8%)</span>
                 <span style={{ fontWeight: 600 }}>${paymentDetails.tax.toFixed(2)}</span>
               </div>
-              <hr style={{ borderColor: '#F1F5F9', margin: '12px 0' }} />
+              <hr style={{ borderColor: 'var(--line-2)', margin: '12px 0' }} />
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ fontSize: 16, fontWeight: 700 }}>Total</span>
-                <span style={{ fontSize: 16, fontWeight: 700, color: '#2563EB' }}>
+                <span style={{ fontSize: 16, fontWeight: 700, color: 'var(--accent)' }}>
                   ${paymentDetails.total.toFixed(2)}
                 </span>
               </div>
             </div>
 
-            <div style={{ background: '#FEF3C7', border: '1px solid #FDE68A', borderRadius: 10, padding: 12, marginBottom: 20 }}>
+            <div style={{ background: 'var(--warning-soft)', border: '1px solid var(--warning-line)', borderRadius: 10, padding: 12, marginBottom: 20 }}>
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
-                <AlertCircle size={18} color="#92400E" style={{ flexShrink: 0, marginTop: 1 }} />
+                <AlertCircle size={18} color="var(--warning)" style={{ flexShrink: 0, marginTop: 1 }} />
                 <div>
-                  <p style={{ fontSize: 13, fontWeight: 600, color: '#92400E', marginBottom: 4 }}>
+                  <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--warning)', marginBottom: 4 }}>
                     Owner approval required
                   </p>
-                  <p style={{ fontSize: 12, color: '#92400E' }}>
+                  <p style={{ fontSize: 12, color: 'var(--warning)' }}>
                     This extension request will be sent to the owner for approval. Your rental continues until they respond.
                   </p>
                 </div>
@@ -403,10 +425,10 @@ export default function ExtendRental() {
                 type="checkbox"
                 checked={agreed}
                 onChange={e => setAgreed(e.target.checked)}
-                style={{ width: 20, height: 20, accentColor: '#2563EB', marginTop: 2 }}
+                style={{ width: 20, height: 20, accentColor: 'var(--accent)', marginTop: 2 }}
               />
-              <span style={{ fontSize: 13, color: '#334155', lineHeight: 1.5 }}>
-                I agree to the <a href="#" style={{ color: '#2563EB' }}>Rental Extension Terms</a> and authorize the additional charge.
+              <span style={{ fontSize: 13, color: 'var(--ink-2)', lineHeight: 1.5 }}>
+                I agree to the <a href="#" style={{ color: 'var(--accent)' }}>Rental Extension Terms</a> and authorize the additional charge.
               </span>
             </label>
 
@@ -438,57 +460,60 @@ export default function ExtendRental() {
                   style={{
                     width: '100%', display: 'flex', alignItems: 'center', gap: 12,
                     padding: '16px', borderRadius: 12, marginBottom: 12,
-                    border: `2px solid ${paymentMethod === method.id ? '#2563EB' : '#E2E8F0'}`,
-                    background: paymentMethod === method.id ? '#EFF6FF' : 'white',
+                    border: `2px solid ${paymentMethod === method.id ? 'var(--accent)' : 'var(--line-1)'}`,
+                    background: paymentMethod === method.id ? 'var(--accent-softer)' : 'var(--surface)',
                     cursor: 'pointer', textAlign: 'left',
+                    transition: 'all 0.15s',
                   }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--accent-line)'; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = ''; }}
                 >
                   <div style={{
                     width: 44, height: 44, borderRadius: 12,
-                    border: `2px solid ${paymentMethod === method.id ? '#2563EB' : '#CBD5E1'}`,
+                    border: `2px solid ${paymentMethod === method.id ? 'var(--accent)' : 'var(--ink-2)'}`,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    background: paymentMethod === method.id ? '#EEF2FF' : '#F8FAFC',
-                    color: paymentMethod === method.id ? '#2563EB' : '#64748B',
+                    background: paymentMethod === method.id ? 'var(--accent-soft)' : 'var(--surface-2)',
+                    color: paymentMethod === method.id ? 'var(--accent)' : 'var(--ink-3)',
                     flexShrink: 0,
                   }}>
                     {method.icon}
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <p style={{ fontSize: 15, fontWeight: 600, color: '#0F172A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    <p style={{ fontSize: 15, fontWeight: 600, color: 'var(--ink-1)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                       {method.label}
                     </p>
-                    <p style={{ fontSize: 12, color: '#64748B', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    <p style={{ fontSize: 12, color: 'var(--ink-3)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                       {method.desc}
                     </p>
                   </div>
                   {paymentMethod === method.id && (
-                    <CheckCircle size={22} color="#2563EB" />
+                    <CheckCircle size={22} color="var(--accent)" />
                   )}
                 </button>
               );
             })}
 
-            <div style={{ background: 'white', border: '1px solid #E2E8F0', borderRadius: 12, padding: 16, marginBottom: 20 }}>
+            <div style={{ background: 'var(--surface)', border: '1px solid var(--line-1)', borderRadius: 12, padding: 16, marginBottom: 20 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-                <span style={{ color: '#64748B' }}>Extension ({totalDays} days)</span>
+                <span style={{ color: 'var(--ink-3)' }}>Extension ({totalDays} days)</span>
                 <span style={{ fontWeight: 600 }}>${paymentDetails.subtotal}</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-                <span style={{ color: '#64748B' }}>
+                <span style={{ color: 'var(--ink-3)' }}>
                   {paymentMethod === 'cod' ? 'Damage Insurance (5%)' : 'Service fee (10%)'}
                 </span>
                 <span style={{ fontWeight: 600 }}>${paymentDetails.serviceFee.toFixed(2)}</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-                <span style={{ color: '#64748B' }}>
+                <span style={{ color: 'var(--ink-3)' }}>
                   {paymentMethod === 'cod' ? 'Tax' : 'Tax (8%)'}
                 </span>
                 <span style={{ fontWeight: 600 }}>${paymentDetails.tax.toFixed(2)}</span>
               </div>
-              <hr style={{ borderColor: '#F1F5F9', margin: '12px 0' }} />
+              <hr style={{ borderColor: 'var(--line-2)', margin: '12px 0' }} />
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ fontSize: 16, fontWeight: 700 }}>Total to Pay</span>
-                <span style={{ fontSize: 16, fontWeight: 700, color: '#2563EB' }}>
+                <span style={{ fontSize: 16, fontWeight: 700, color: 'var(--accent)' }}>
                   ${paymentDetails.total.toFixed(2)}
                 </span>
               </div>

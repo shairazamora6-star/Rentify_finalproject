@@ -51,15 +51,18 @@ const ChatView = ({ conversation, onBack, onClearUnread }) => {
     <div className="page">
       {/* Header */}
       <div style={{
-        background: 'white', padding: '14px 20px',
+        background: 'var(--surface)', padding: '14px 20px',
         display: 'flex', alignItems: 'center', gap: 12,
-        borderBottom: '1px solid #F1F5F9', position: 'sticky', top: 0, zIndex: 50,
+        borderBottom: '1px solid var(--line-2)', position: 'sticky', top: 0, zIndex: 50,
       }}>
         <button onClick={onBack} style={{
           width: 36, height: 36, borderRadius: 10,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          border: '1px solid #E2E8F0', background: '#F8FAFC', fontSize: 18, color: '#0F172A',
-        }}>‹</button>
+          border: '1px solid var(--line-1)', background: 'var(--surface-2)', fontSize: 18, color: 'var(--ink-1)',
+          transition: 'all 0.15s',
+        }}
+        onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--accent-line)'; e.currentTarget.style.background = 'var(--accent-softer)'; }}
+        onMouseLeave={e => { e.currentTarget.style.borderColor = ''; e.currentTarget.style.background = ''; }}>‹</button>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, flex: 1 }}>
           <div style={{ position: 'relative' }}>
             <div style={{
@@ -74,13 +77,13 @@ const ChatView = ({ conversation, onBack, onClearUnread }) => {
               <div style={{
                 position: 'absolute', bottom: 0, right: 0,
                 width: 12, height: 12, borderRadius: '50%',
-                background: '#22C55E', border: '2px solid white',
+                background: '#22C55E', border: '2px solid var(--surface)',
               }} />
             )}
           </div>
           <div>
-            <p style={{ fontWeight: 700, fontSize: 15, color: '#0F172A', margin: 0 }}>{conversation.name}</p>
-            <p style={{ fontSize: 12, color: conversation.online ? '#22C55E' : '#94A3B8', margin: 0 }}>
+            <p style={{ fontWeight: 700, fontSize: 15, color: 'var(--ink-1)', margin: 0 }}>{conversation.name}</p>
+            <p style={{ fontSize: 12, color: conversation.online ? '#22C55E' : 'var(--ink-4)', margin: 0 }}>
               {conversation.online ? 'Online' : 'Offline'}
             </p>
           </div>
@@ -91,9 +94,9 @@ const ChatView = ({ conversation, onBack, onClearUnread }) => {
       <div style={{ padding: '20px', paddingBottom: 80 }}>
         {messages.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '60px 20px' }}>
-            <MessageCircle size={48} color="#E2E8F0" style={{ margin: '0 auto 16px' }} />
-            <p style={{ color: '#64748B', fontWeight: 600 }}>No messages yet</p>
-            <p style={{ color: '#94A3B8', fontSize: 13, marginTop: 4 }}>Start the conversation</p>
+            <MessageCircle size={48} color="var(--line-1)" style={{ margin: '0 auto 16px' }} />
+            <p style={{ color: 'var(--ink-3)', fontWeight: 600 }}>No messages yet</p>
+            <p style={{ color: 'var(--ink-4)', fontSize: 13, marginTop: 4 }}>Start the conversation</p>
           </div>
         ) : (
           messages.map(msg => (
@@ -103,8 +106,8 @@ const ChatView = ({ conversation, onBack, onClearUnread }) => {
             }}>
               <div style={{
                 maxWidth: '80%', padding: '12px 16px', borderRadius: msg.sent ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
-                background: msg.sent ? 'linear-gradient(135deg, #3978D5, #73A7E5)' : '#EAF3FF',
-                color: msg.sent ? 'white' : '#0F172A',
+                background: msg.sent ? 'linear-gradient(135deg, #3978D5, #73A7E5)' : 'var(--surface-2)',
+                color: msg.sent ? 'white' : 'var(--ink-1)',
                 fontSize: 14, lineHeight: 1.5,
               }}>
                 {msg.text}
@@ -118,17 +121,20 @@ const ChatView = ({ conversation, onBack, onClearUnread }) => {
       {/* Input Bar */}
       <div style={{
         position: 'fixed', bottom: 64, left: 0, right: 0, maxWidth: 480, margin: '0 auto',
-        background: 'rgba(255,255,255,0.95)', backdropFilter: 'blur(10px)',
-        borderTop: '1px solid #F1F5F9', padding: '12px 16px',
+        background: 'color-mix(in srgb, var(--surface) 95%, transparent)', backdropFilter: 'blur(10px)',
+        borderTop: '1px solid var(--line-2)', padding: '12px 16px',
         display: 'flex', gap: 10, alignItems: 'center', zIndex: 40,
       }}>
         <input ref={fileRef} type="file" style={{ display: 'none' }} onChange={handleFileSelect} />
         <button onClick={handleAttach} style={{
           width: 40, height: 40, borderRadius: '50%',
-          border: 'none', background: '#F8FAFC', cursor: 'pointer',
+          border: 'none', background: 'var(--surface-2)', cursor: 'pointer',
           display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-        }}>
-          <Paperclip size={18} color="#64748B" />
+          transition: 'all 0.15s',
+        }}
+        onMouseEnter={e => { e.currentTarget.style.background = 'var(--accent-softer)'; }}
+        onMouseLeave={e => { e.currentTarget.style.background = ''; }}>
+          <Paperclip size={18} color="var(--ink-3)" />
         </button>
         <input
           value={messageText}
@@ -137,16 +143,20 @@ const ChatView = ({ conversation, onBack, onClearUnread }) => {
           onKeyDown={e => e.key === 'Enter' && handleSend()}
           style={{
             flex: 1, padding: '12px 16px', borderRadius: 24,
-            border: '1px solid #E2E8F0', fontSize: 14, outline: 'none',
-            background: '#F8FAFC',
+            border: '1px solid var(--line-2)', fontSize: 14, outline: 'none',
+            background: 'var(--surface-2)',
+            color: 'var(--ink-1)',
           }}
         />
         <button onClick={handleSend} disabled={!messageText.trim()} style={{
           width: 40, height: 40, borderRadius: '50%',
-          border: 'none', background: messageText.trim() ? 'linear-gradient(135deg, #3978D5, #73A7E5)' : '#DCE8F5',
+          border: 'none', background: messageText.trim() ? 'linear-gradient(135deg, #3978D5, #73A7E5)' : 'var(--surface-2)',
           cursor: messageText.trim() ? 'pointer' : 'not-allowed',
           display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-        }}>
+          transition: 'all 0.15s',
+        }}
+        onMouseEnter={e => { if (!e.currentTarget.disabled) { e.currentTarget.style.boxShadow = 'var(--accent-shadow)'; e.currentTarget.style.transform = 'scale(1.05)'; }}}
+        onMouseLeave={e => { e.currentTarget.style.boxShadow = ''; e.currentTarget.style.transform = ''; }}>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="white" stroke="none"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
         </button>
       </div>
@@ -169,18 +179,18 @@ export default function Messages() {
     <div className="page">
       {/* Header */}
       <div style={{
-        background: 'white', padding: '16px 20px',
-        borderBottom: '1px solid #F1F5F9',
+        background: 'var(--surface)', padding: '16px 20px',
+        borderBottom: '1px solid var(--line-1)',
         position: 'sticky', top: 0, zIndex: 50,
       }}>
-        <h1 style={{ fontSize: 24, fontWeight: 800, color: '#0F172A', margin: 0 }}>Messages</h1>
+        <h1 style={{ fontSize: 24, fontWeight: 800, color: 'var(--ink-1)', margin: 0 }}>Messages</h1>
       </div>
 
       <div style={{ padding: '16px 20px' }}>
         {/* Online Now Section */}
         {onlineUsers.length > 0 && (
           <div style={{ marginBottom: 24 }}>
-            <p style={{ fontSize: 13, fontWeight: 600, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 12 }}>
+            <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--ink-4)', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 12 }}>
               Online Now
             </p>
             <div style={{ display: 'flex', gap: 16, overflowX: 'auto', scrollbarWidth: 'none' }}>
@@ -191,7 +201,10 @@ export default function Messages() {
                 }} style={{
                   display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,
                   background: 'none', border: 'none', cursor: 'pointer', minWidth: 64,
-                }}>
+                  transition: 'transform 0.15s',
+                }}
+                onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.05)'; }}
+                onMouseLeave={e => { e.currentTarget.style.transform = ''; }}>
                   <div style={{ position: 'relative' }}>
                     <div style={{
                       width: 52, height: 52, borderRadius: '50%',
@@ -204,10 +217,10 @@ export default function Messages() {
                     <div style={{
                       position: 'absolute', bottom: 2, right: 2,
                       width: 14, height: 14, borderRadius: '50%',
-                      background: '#22C55E', border: '2px solid white',
+                      background: '#22C55E', border: '2px solid var(--surface)',
                     }} />
                   </div>
-                  <span style={{ fontSize: 11, color: '#64748B', fontWeight: 500 }}>{user.name.split(' ')[0]}</span>
+                  <span style={{ fontSize: 11, color: 'var(--ink-3)', fontWeight: 500 }}>{user.name.split(' ')[0]}</span>
                 </button>
               ))}
             </div>
@@ -215,22 +228,25 @@ export default function Messages() {
         )}
 
         {/* Conversations List */}
-        <p style={{ fontSize: 13, fontWeight: 600, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 12 }}>
+        <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--ink-4)', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 12 }}>
           Recent Chats
         </p>
         {conversations.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '60px 20px' }}>
             <div style={{ fontSize: 48, marginBottom: 12 }}>💬</div>
-            <p style={{ color: '#64748B', fontWeight: 600 }}>No conversations yet</p>
-            <p style={{ color: '#94A3B8', fontSize: 13, marginTop: 4 }}>Start chatting with sellers</p>
+            <p style={{ color: 'var(--ink-3)', fontWeight: 600 }}>No conversations yet</p>
+            <p style={{ color: 'var(--ink-4)', fontSize: 13, marginTop: 4 }}>Start chatting with sellers</p>
           </div>
         ) : (
           conversations.map(conv => (
             <button key={conv.id} onClick={() => { setActiveConversation(conv); setView('chat'); }} style={{
               width: '100%', display: 'flex', alignItems: 'center', gap: 12,
-              padding: '14px 0', borderBottom: '1px solid #F1F5F9',
+              padding: '14px 0', borderBottom: '1px solid var(--line-2)',
               background: 'none', cursor: 'pointer', textAlign: 'left',
-            }}>
+              transition: 'background 0.15s',
+            }}
+            onMouseEnter={e => { e.currentTarget.style.background = 'var(--surface-2)'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = ''; }}>
               <div style={{ position: 'relative', flexShrink: 0 }}>
                 <div style={{
                   width: 48, height: 48, borderRadius: '50%',
@@ -244,23 +260,23 @@ export default function Messages() {
                   <div style={{
                     position: 'absolute', bottom: 0, right: 0,
                     width: 14, height: 14, borderRadius: '50%',
-                    background: '#22C55E', border: '2px solid white',
+                    background: '#22C55E', border: '2px solid var(--surface)',
                   }} />
                 )}
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
-                  <span style={{ fontWeight: 600, fontSize: 15, color: '#0F172A' }}>{conv.name}</span>
-                  <span style={{ fontSize: 12, color: '#94A3B8' }}>{conv.time}</span>
+                  <span style={{ fontWeight: 600, fontSize: 15, color: 'var(--ink-1)' }}>{conv.name}</span>
+                  <span style={{ fontSize: 12, color: 'var(--ink-4)' }}>{conv.time}</span>
                 </div>
-                <p style={{ fontSize: 13, color: '#64748B', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                <p style={{ fontSize: 13, color: 'var(--ink-3)', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                   {conv.lastMessage}
                 </p>
               </div>
               {conv.unread > 0 && (
                 <div style={{
                   minWidth: 20, height: 20, borderRadius: 10,
-                  background: '#2563EB', color: 'white',
+                  background: 'var(--accent)', color: 'white',
                   fontSize: 11, fontWeight: 700,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   padding: '0 6px', flexShrink: 0,

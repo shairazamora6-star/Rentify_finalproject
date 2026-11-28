@@ -24,28 +24,32 @@ export default function LoginActivity() {
   };
 
   return (
-    <div className="page" style={{ minHeight: '100vh', background: '#F8FAFC' }}>
-      <div style={{ background: 'white', padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 12, borderBottom: '1px solid #E2E8F0', position: 'sticky', top: 0, zIndex: 50 }}>
-        <button onClick={() => navigate(-1)} style={{ padding: 4 }}><ChevronLeft size={24} color="#0F172A" /></button>
+    <div className="page" style={{ minHeight: '100vh', background: 'var(--surface-2)' }}>
+      <div style={{ background: 'var(--surface)', padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 12, borderBottom: '1px solid var(--line-1)', position: 'sticky', top: 0, zIndex: 50 }}>
+        <button onClick={() => navigate(-1)} style={{ padding: 4, transition: 'all 0.15s' }}
+          onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.05)'; }}
+          onMouseLeave={e => { e.currentTarget.style.transform = ''; }}>
+          <ChevronLeft size={24} color="var(--ink-1)" />
+        </button>
         <span style={{ fontWeight: 700, fontSize: 18 }}>Login Activity</span>
       </div>
 
       <div style={{ padding: 20 }}>
-        <div style={{ background: '#EFF6FF', borderRadius: 14, padding: 14, display: 'flex', gap: 10, alignItems: 'flex-start', marginBottom: 20 }}>
-          <ShieldCheck size={20} color="#2563EB" style={{ flexShrink: 0, marginTop: 2 }} />
-          <p style={{ fontSize: 13, color: '#1E40AF', lineHeight: 1.5 }}>
+        <div style={{ background: 'var(--accent-softer)', borderRadius: 14, padding: 14, display: 'flex', gap: 10, alignItems: 'flex-start', marginBottom: 20 }}>
+          <ShieldCheck size={20} color="var(--accent)" style={{ flexShrink: 0, marginTop: 2 }} />
+          <p style={{ fontSize: 13, color: 'var(--accent)', lineHeight: 1.5 }}>
             <strong>Everything looks normal.</strong> No new sign-in attempts detected. You'll be notified immediately if we spot anything unusual.
           </p>
         </div>
 
-        <p style={{ fontSize: 13, fontWeight: 600, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 12 }}>Recent Sessions</p>
+        <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--ink-4)', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 12 }}>Recent Sessions</p>
 
         {sessions.map(s => {
           const Icon = s.icon;
           const revoked = signedOut[s.id];
           return (
             <div key={s.id} style={{
-              background: 'white', borderRadius: 14, border: '1px solid #E2E8F0',
+              background: 'var(--surface)', borderRadius: 14, border: '1px solid var(--line-1)',
               padding: 16, marginBottom: 12,
               opacity: revoked ? 0.6 : 1,
               transition: 'opacity 0.2s',
@@ -53,35 +57,35 @@ export default function LoginActivity() {
               <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                 <div style={{
                   width: 44, height: 44, borderRadius: 12, flexShrink: 0,
-                  background: s.current ? '#DBEAFE' : '#F8FAFC',
+                  background: s.current ? 'var(--accent-soft)' : 'var(--surface-2)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                 }}>
-                  <Icon size={20} color={s.current ? '#2563EB' : '#64748B'} />
+                  <Icon size={20} color={s.current ? 'var(--accent)' : 'var(--ink-3)'} />
                 </div>
                 <div style={{ flex: 1 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <p style={{ fontSize: 14, fontWeight: 600, color: '#0F172A' }}>{s.device}</p>
+                    <p style={{ fontSize: 14, fontWeight: 600, color: 'var(--ink-1)' }}>{s.device}</p>
                     {s.current && !revoked && (
                       <span style={{
                         padding: '2px 8px', borderRadius: 8, fontSize: 10, fontWeight: 700,
-                        background: '#DCFCE7', color: '#16A34A',
+                        background: 'var(--success-light)', color: 'var(--success)',
                       }}>Active</span>
                     )}
                     {revoked && (
                       <span style={{
                         padding: '2px 8px', borderRadius: 8, fontSize: 10, fontWeight: 700,
-                        background: '#FEE2E2', color: '#DC2626',
+                        background: 'var(--danger-soft)', color: 'var(--danger)',
                       }}>Revoked</span>
                     )}
                   </div>
-                  <p style={{ fontSize: 12, color: '#64748B', marginTop: 2 }}>{s.os}</p>
+                  <p style={{ fontSize: 12, color: 'var(--ink-3)', marginTop: 2 }}>{s.os}</p>
                 </div>
                 <div style={{ textAlign: 'right' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 4, justifyContent: 'flex-end' }}>
-                    <Globe size={12} color="#94A3B8" />
-                    <span style={{ fontSize: 12, color: '#64748B' }}>{s.location}</span>
+                    <Globe size={12} color="var(--ink-4)" />
+                    <span style={{ fontSize: 12, color: 'var(--ink-3)' }}>{s.location}</span>
                   </div>
-                  <p style={{ fontSize: 12, color: revoked ? '#DC2626' : s.current ? '#2563EB' : '#94A3B8', fontWeight: 600, marginTop: 4 }}>
+                  <p style={{ fontSize: 12, color: revoked ? 'var(--danger)' : s.current ? 'var(--accent)' : 'var(--ink-4)', fontWeight: 600, marginTop: 4 }}>
                     {revoked ? 'Signed out' : s.last}
                   </p>
                 </div>
@@ -90,17 +94,20 @@ export default function LoginActivity() {
               {!s.current && !revoked && (
                 <button onClick={() => handleSignOut(s)} style={{
                   width: '100%', marginTop: 12, padding: 10, borderRadius: 10,
-                  border: '1.5px solid #FECACA', background: '#FEF2F2',
-                  color: '#DC2626', fontSize: 13, fontWeight: 600, cursor: 'pointer',
-                }}>
+                  border: '1.5px solid var(--danger-line)', background: 'var(--danger-soft)',
+                  color: 'var(--danger)', fontSize: 13, fontWeight: 600, cursor: 'pointer',
+                  transition: 'all 0.15s',
+                }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'var(--danger-softer)'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'var(--danger-soft)'; }}>
                   Sign out this device
                 </button>
               )}
               {revoked && (
                 <div style={{
                   width: '100%', marginTop: 12, padding: 10, borderRadius: 10,
-                  border: '1.5px solid #D1D5DB', background: '#F9FAFB',
-                  color: '#6B7280', fontSize: 13, fontWeight: 600,
+                  border: '1.5px solid var(--line-1)', background: 'var(--surface-2)',
+                  color: 'var(--ink-3)', fontSize: 13, fontWeight: 600,
                   display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
                 }}>
                   <CheckCircle size={14} /> Device signed out

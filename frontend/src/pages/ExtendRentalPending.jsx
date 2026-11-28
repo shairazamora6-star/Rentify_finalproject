@@ -17,7 +17,7 @@ export default function ExtendRentalPending() {
       <div className="page" style={{ padding: '60px 20px', textAlign: 'center' }}>
         <div style={{ fontSize: 56, marginBottom: 16 }}>🔍</div>
         <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 8 }}>Rental Not Found</h2>
-        <p style={{ color: '#64748B', marginBottom: 24 }}>This extension request doesn't exist or has been removed.</p>
+        <p style={{ color: 'var(--ink-3)', marginBottom: 24 }}>This extension request doesn't exist or has been removed.</p>
         <button className="btn-primary" onClick={() => navigate('/my-rentals')}>
           Back to My Rentals
         </button>
@@ -30,27 +30,27 @@ export default function ExtendRentalPending() {
   const statusConfig = {
     pending: {
       icon: Clock,
-      color: '#F59E0B',
-      bg: '#FFFBEB',
-      border: '#FDE68A',
+      color: 'var(--warning)',
+      bg: 'var(--warning-soft)',
+      border: 'var(--warning-line)',
       title: 'Extension Request Sent',
       subtitle: 'Waiting for owner approval',
       description: 'The owner has been notified and will respond within 24 hours. Your current rental continues until a decision is made.',
     },
     approved: {
       icon: CheckCircle,
-      color: '#087F73',
-      bg: '#E7F7F4',
-      border: '#99F6E4',
+      color: 'var(--success)',
+      bg: 'var(--success-soft)',
+      border: 'var(--success-line)',
       title: 'Extension Approved!',
       subtitle: 'Your rental has been extended',
       description: 'The owner approved your extension request. The new end date is confirmed.',
     },
     rejected: {
       icon: XCircle,
-      color: '#DC2626',
-      bg: '#FEF2F2',
-      border: '#FECACA',
+      color: 'var(--danger)',
+      bg: 'var(--danger-soft)',
+      border: 'var(--danger-line)',
       title: 'Extension Declined',
       subtitle: 'Owner declined the extension',
       description: 'The owner has declined your extension request. Your rental will end on the original date.',
@@ -62,16 +62,16 @@ export default function ExtendRentalPending() {
   return (
     <div className="page" style={{ paddingBottom: 100 }}>
       {/* Header */}
-      <div style={{
-        background: 'white', padding: '16px 20px',
-        display: 'flex', alignItems: 'center', gap: 12,
-        borderBottom: '1px solid #E2E8F0', position: 'sticky', top: 0, zIndex: 50,
-      }}>
-        <button onClick={() => navigate(-1)} style={{ padding: 4 }}>
-          <ChevronLeft size={24} color="#0F172A" />
-        </button>
-        <span style={{ fontWeight: 700, fontSize: 18 }}>Extend Rental</span>
-      </div>
+        <div style={{
+          background: 'var(--surface)', padding: '16px 20px',
+          display: 'flex', alignItems: 'center', gap: 12,
+          borderBottom: '1px solid var(--line-1)', position: 'sticky', top: 0, zIndex: 50,
+        }}>
+          <button onClick={() => navigate(-1)} style={{ padding: 4 }} onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.05)'; }} onMouseLeave={e => { e.currentTarget.style.transform = ''; }}>
+            <ChevronLeft size={24} color="var(--ink-1)" />
+          </button>
+          <span style={{ fontWeight: 700, fontSize: 18 }}>Extend Rental</span>
+        </div>
 
       <div style={{ padding: '40px 20px', textAlign: 'center' }}>
         {/* Status Icon */}
@@ -90,7 +90,7 @@ export default function ExtendRentalPending() {
         {/* Item Card */}
         {item && (
           <div style={{
-            background: 'white', borderRadius: 16, padding: 16,
+            background: 'var(--surface)', borderRadius: 'var(--radius-lg)', padding: 16,
             border: `1px solid ${config.border}`, marginBottom: 24, textAlign: 'left',
             maxWidth: 320, marginLeft: 'auto', marginRight: 'auto',
           }}>
@@ -98,16 +98,16 @@ export default function ExtendRentalPending() {
               <img src={item.image} alt={item.title}
                 style={{ width: 64, height: 64, borderRadius: 10, objectFit: 'cover' }} />
               <div>
-                <h3 style={{ fontSize: 14, fontWeight: 700, marginBottom: 4 }}>{item.title}</h3>
-                <p style={{ fontSize: 12, color: '#64748B' }}>Owner: {item.owner}</p>
+                <h3 style={{ fontSize: 14, fontWeight: 700, marginBottom: 4, color: 'var(--ink-1)' }}>{item.title}</h3>
+                <p style={{ fontSize: 12, color: 'var(--ink-3)' }}>Owner: {item.owner}</p>
               </div>
             </div>
             <div style={{
               padding: '12px', background: config.bg, borderRadius: 10,
               border: `1px solid ${config.border}`,
             }}>
-              <p style={{ fontSize: 12, color: '#64748B', marginBottom: 4 }}>Extension Dates</p>
-              <p style={{ fontSize: 14, fontWeight: 600, color: '#0F172A' }}>
+              <p style={{ fontSize: 12, color: 'var(--ink-3)', marginBottom: 4 }}>Extension Dates</p>
+              <p style={{ fontSize: 14, fontWeight: 600, color: 'var(--ink-1)' }}>
                 {rental?.endDate ? new Date(rental.endDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—'}
                 {' '}→{' '}
                 {rental?.extendedEndDate ? new Date(rental.extendedEndDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—'}
@@ -116,7 +116,7 @@ export default function ExtendRentalPending() {
           </div>
         )}
 
-        <p style={{ color: '#64748B', fontSize: 14, lineHeight: 1.6, maxWidth: 300, margin: '0 auto 32px' }}>
+        <p style={{ color: 'var(--ink-3)', fontSize: 14, lineHeight: 1.6, maxWidth: 300, margin: '0 auto 32px' }}>
           {config.description}
         </p>
 

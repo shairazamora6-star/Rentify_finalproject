@@ -6,26 +6,32 @@
 /* ── Root container ── */
 .ov-root {
   padding: 28px 32px 48px;
-  background: #EBF2FF;
   min-height: 100%;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  color: #0F172A;
+  color: var(--ink-1);
+  /* Transparent — inherits the decorative background from .admin-main */
+  background: transparent;
+  position: relative;
 }
 
-/* ── Header ── */
+/* ── Page header row ── */
 .ov-header {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
-  gap: 20px;
+  gap: 16px;
   margin-bottom: 24px;
   flex-wrap: wrap;
+}
+
+.ov-header-left {
+  flex-shrink: 0;
 }
 
 .ov-title {
   font-size: 22px;
   font-weight: 700;
-  color: #0F172A;
+  color: var(--ink-1);
   letter-spacing: -0.02em;
   line-height: 1.2;
 }
@@ -33,54 +39,65 @@
 .ov-subtitle {
   margin-top: 4px;
   font-size: 13.5px;
-  color: #64748B;
+  color: var(--ink-3);
 }
 
+/* Right cluster: search stretches, then pinned controls */
 .ov-header-right {
   display: flex;
   align-items: center;
   gap: 10px;
-  flex-wrap: wrap;
+  flex: 1;
+  min-width: 0;
+  justify-content: flex-end;
 }
 
 .ov-date {
   font-size: 12px;
-  color: #94A3B8;
+  color: var(--ink-4);
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
-/* Search */
+/* Search — stretches to fill available middle space */
 .ov-search-wrap {
   position: relative;
   display: flex;
   align-items: center;
+  flex: 1;
+  min-width: 160px;
+  max-width: 480px;
 }
 
 .ov-search-icon {
   position: absolute;
   left: 11px;
-  color: #94A3B8;
+  color: var(--ink-4);
   pointer-events: none;
+  z-index: 1;
 }
 
 .ov-search {
-  padding: 9px 12px 9px 34px;
-  border: 1.5px solid #DCE8F5;
+  width: 100%;
+  padding: 9px 14px 9px 36px;
+  border: 1.5px solid var(--accent-line);
   border-radius: 10px;
-  background: #fff;
+  background: var(--surface);
   font-size: 13px;
-  color: #0F172A;
-  width: 230px;
+  color: var(--ink-1);
   outline: none;
-  transition: border-color 0.15s;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  backdrop-filter: blur(4px);
 }
 
 .ov-search:focus {
-  border-color: #2563EB;
+  border-color: var(--accent);
+  box-shadow: var(--accent-shadow);
+  background: var(--surface);
 }
 
 .ov-search::placeholder {
-  color: #94A3B8;
+  color: var(--ink-4);
 }
 
 /* Notifications */
@@ -1178,6 +1195,8 @@
 @media (max-width: 860px) {
   .ov-root {
     padding: 20px 16px 48px;
+    /* Simplified background on smaller screens — saves paint */
+    background-image: linear-gradient(145deg, #EEF2FF 0%, #E8EFFE 50%, #EBF5FF 100%);
   }
 
   .ov-mid-grid {
@@ -1188,8 +1207,8 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .ov-search {
-    width: 180px;
+  .ov-search-wrap {
+    max-width: none;
   }
 
   .ov-date {
@@ -1204,24 +1223,19 @@
 
   .ov-header {
     flex-direction: column;
-    gap: 14px;
+    align-items: flex-start;
+    gap: 12px;
   }
 
   .ov-header-right {
     width: 100%;
-  }
-
-  .ov-search {
-    flex: 1;
-    width: auto;
+    flex-wrap: wrap;
   }
 
   .ov-search-wrap {
     flex: 1;
-  }
-
-  .ov-add-btn span {
-    display: none;
+    max-width: none;
+    min-width: 0;
   }
 }
 

@@ -38,20 +38,30 @@ export default function Notifications() {
     <div className="page">
       {/* Header */}
       <div style={{
-        background: 'white',
+        background: 'var(--surface)',
         padding: '16px 20px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        borderBottom: '1px solid #E2E8F0',
+        borderBottom: '1px solid var(--line-1)',
         position: 'sticky', top: 0, zIndex: 50,
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <button onClick={() => navigate(-1)} style={{ padding: 4 }}>←</button>
-          <h1 style={{ fontSize: 20, fontWeight: 700 }}>Notifications</h1>
+          <button onClick={() => navigate(-1)} style={{
+            padding: 4, color: 'var(--ink-1)',
+            transition: 'opacity 0.15s',
+          }}
+          onMouseEnter={e => { e.currentTarget.style.opacity = 0.75; }}
+          onMouseLeave={e => { e.currentTarget.style.opacity = ''; }}>←</button>
+          <h1 style={{ fontSize: 20, fontWeight: 700, color: 'var(--ink-1)' }}>Notifications</h1>
         </div>
         {notifList.some(n => !n.read) && (
-          <button onClick={markAllRead} style={{ fontSize: 13, color: '#2563EB', fontWeight: 600 }}>
+          <button onClick={markAllRead} style={{
+            fontSize: 13, color: 'var(--accent)', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer',
+            transition: 'opacity 0.15s',
+          }}
+          onMouseEnter={e => { e.currentTarget.style.opacity = 0.75; }}
+          onMouseLeave={e => { e.currentTarget.style.opacity = ''; }}>
             Mark all read
           </button>
         )}
@@ -63,8 +73,11 @@ export default function Notifications() {
           <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 12 }}>
             <button onClick={() => setShowClearConfirm(true)} style={{
               display: 'flex', alignItems: 'center', gap: 4,
-              fontSize: 13, color: '#EF4444', fontWeight: 500,
-            }}>
+              fontSize: 13, color: 'var(--danger)', fontWeight: 500, background: 'none', border: 'none', cursor: 'pointer',
+              transition: 'opacity 0.15s',
+            }}
+            onMouseEnter={e => { e.currentTarget.style.opacity = 0.75; }}
+            onMouseLeave={e => { e.currentTarget.style.opacity = ''; }}>
               <Trash2 size={14} /> Clear all
             </button>
           </div>
@@ -72,25 +85,31 @@ export default function Notifications() {
 
         {showClearConfirm && (
           <div style={{
-            padding: 16, background: '#FEF2F2', borderRadius: 12,
-            border: '1px solid #FECACA', marginBottom: 16,
+            padding: 16, background: 'var(--danger-soft)', borderRadius: 12,
+            border: '1px solid var(--danger-line)', marginBottom: 16,
             display: 'flex', flexDirection: 'column', gap: 12,
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <XCircle size={20} color="#EF4444" />
-              <span style={{ fontSize: 14, fontWeight: 600, color: '#0F172A' }}>Clear all notifications?</span>
+              <XCircle size={20} color="var(--danger)" />
+              <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--ink-1)' }}>Clear all notifications?</span>
             </div>
             <div style={{ display: 'flex', gap: 8 }}>
               <button onClick={() => setShowClearConfirm(false)} style={{
                 flex: 1, padding: '10px', borderRadius: 8,
-                border: '1px solid #E2E8F0', background: 'white',
-                fontSize: 14, fontWeight: 500, color: '#64748B',
-              }}>Cancel</button>
+                border: '1px solid var(--line-1)', background: 'var(--surface)',
+                fontSize: 14, fontWeight: 500, color: 'var(--ink-3)',
+                transition: 'all 0.15s',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--accent-line)'; e.currentTarget.style.background = 'var(--surface-2)'; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = ''; e.currentTarget.style.background = ''; }}>Cancel</button>
               <button onClick={clearAll} style={{
                 flex: 1, padding: '10px', borderRadius: 8,
-                background: '#EF4444', color: 'white',
+                background: 'var(--danger)', color: 'white',
                 fontSize: 14, fontWeight: 600, border: 'none',
-              }}>Clear All</button>
+                transition: 'all 0.15s',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.boxShadow = 'var(--danger-shadow)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
+              onMouseLeave={e => { e.currentTarget.style.boxShadow = ''; e.currentTarget.style.transform = ''; }}>Clear All</button>
             </div>
           </div>
         )}
@@ -98,9 +117,9 @@ export default function Notifications() {
         {/* Notification List */}
         {notifList.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '60px 20px' }}>
-            <Bell size={48} color="#E2E8F0" style={{ margin: '0 auto 16px' }} />
-            <p style={{ color: '#64748B', fontWeight: 600 }}>No notifications</p>
-            <p style={{ color: '#94A3B8', fontSize: 13, marginTop: 4 }}>You're all caught up!</p>
+            <Bell size={48} color="var(--line-1)" style={{ margin: '0 auto 16px' }} />
+            <p style={{ color: 'var(--ink-3)', fontWeight: 600 }}>No notifications</p>
+            <p style={{ color: 'var(--ink-4)', fontSize: 13, marginTop: 4 }}>You're all caught up!</p>
           </div>
         ) : (
           notifList.map(notif => (
@@ -111,27 +130,30 @@ export default function Notifications() {
                 display: 'flex',
                 gap: 12,
                 padding: '14px 0',
-                borderBottom: '1px solid #F1F5F9',
-                background: notif.read ? 'transparent' : '#EEF2FF',
+                borderBottom: '1px solid var(--line-2)',
+                background: notif.read ? 'transparent' : 'var(--accent-softer)',
                 borderRadius: notif.read ? 0 : 10,
                 cursor: 'pointer',
+                transition: 'background 0.15s',
               }}
+              onMouseEnter={e => { if (e.currentTarget.style.background === 'transparent' || e.currentTarget.style.background === '') { e.currentTarget.style.background = 'var(--surface-2)'; } }}
+              onMouseLeave={e => { if (!notif.read) { e.currentTarget.style.background = 'var(--accent-softer)'; } else { e.currentTarget.style.background = ''; } }}
             >
               <div style={{
                 width: 44, height: 44, borderRadius: 12,
-                background: notif.read ? '#F1F5F9' : '#EEF2FF',
+                background: notif.read ? 'var(--surface-2)' : 'var(--accent-soft)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 fontSize: 22, flexShrink: 0,
               }}>{getTypeIcon(notif.type)}</div>
               <div style={{ flex: 1 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                  <p style={{ fontWeight: notif.read ? 500 : 700, fontSize: 14, color: '#0F172A' }}>{notif.title}</p>
-                  <span style={{ fontSize: 11, color: '#94A3B8', flexShrink: 0 }}>{notif.time}</span>
+                  <p style={{ fontWeight: notif.read ? 500 : 700, fontSize: 14, color: 'var(--ink-1)' }}>{notif.title}</p>
+                  <span style={{ fontSize: 11, color: 'var(--ink-4)', flexShrink: 0 }}>{notif.time}</span>
                 </div>
-                <p style={{ fontSize: 13, color: '#64748B', marginTop: 2, lineHeight: 1.4 }}>{notif.message}</p>
+                <p style={{ fontSize: 13, color: 'var(--ink-3)', marginTop: 2, lineHeight: 1.4 }}>{notif.message}</p>
               </div>
               {!notif.read && (
-                <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#2563EB', flexShrink: 0, marginTop: 6 }} />
+                <div style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--accent)', flexShrink: 0, marginTop: 6 }} />
               )}
             </div>
           ))

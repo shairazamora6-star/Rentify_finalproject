@@ -43,21 +43,21 @@ export default function MyRentals() {
     <div className="page">
       {/* Header */}
       <div style={{
-        background: 'white',
+        background: 'var(--surface)',
         padding: '14px 20px',
         display: 'flex',
         alignItems: 'center',
         gap: 12,
-        borderBottom: '1px solid #F1F5F9',
+        borderBottom: '1px solid var(--line-2)',
         position: 'sticky', top: 0, zIndex: 50,
       }}>
         <button onClick={() => navigate(-1)}
-          style={{ width: 36, height: 36, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #E2E8F0', background: '#F8FAFC', fontSize: 18, color: '#0F172A' }}>‹</button>
-        <span style={{ fontWeight: 800, fontSize: 17, color: '#0F172A' }}>My Rentals</span>
+          style={{ width: 36, height: 36, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--line-1)', background: 'var(--surface-2)', fontSize: 18, color: 'var(--ink-1)' }}>‹</button>
+        <span style={{ fontWeight: 800, fontSize: 17, color: 'var(--ink-1)' }}>My Rentals</span>
       </div>
 
       {/* Tabs */}
-      <div style={{ background: 'white', borderBottom: '1px solid #E2E8F0', overflowX: 'auto', scrollbarWidth: 'none' }}>
+      <div style={{ background: 'var(--surface)', borderBottom: '1px solid var(--line-1)', overflowX: 'auto', scrollbarWidth: 'none' }}>
         <div style={{ display: 'flex', paddingLeft: '20px' }}>
           {tabs.map(tab => {
             const Icon = tab.icon;
@@ -67,8 +67,8 @@ export default function MyRentals() {
                 flex: 'none',
                 padding: '13px 16px',
                 display: 'flex', alignItems: 'center', gap: 6,
-                borderBottom: `2px solid ${activeTab === tab.id ? '#2563EB' : 'transparent'}`,
-                color: activeTab === tab.id ? '#2563EB' : '#94A3B8',
+                borderBottom: `2px solid ${activeTab === tab.id ? 'var(--accent)' : 'transparent'}`,
+                color: activeTab === tab.id ? 'var(--accent)' : 'var(--ink-4)',
                 fontSize: 13, fontWeight: activeTab === tab.id ? 600 : 500,
                 whiteSpace: 'nowrap', transition: 'all 0.15s', marginRight: 4,
               }}>
@@ -76,8 +76,8 @@ export default function MyRentals() {
                 <span>{tab.label}</span>
                 {count > 0 && (
                   <span style={{
-                    background: activeTab === tab.id ? '#EEF2FF' : '#F1F5F9',
-                    color: activeTab === tab.id ? '#2563EB' : '#94A3B8',
+                    background: activeTab === tab.id ? 'var(--accent-soft)' : 'var(--line-2)',
+                    color: activeTab === tab.id ? 'var(--accent)' : 'var(--ink-4)',
                     fontSize: 10, fontWeight: 700, padding: '1px 6px', borderRadius: 10,
                   }}>{count}</span>
                 )}
@@ -94,8 +94,8 @@ export default function MyRentals() {
             <div style={{ fontSize: 56, marginBottom: 12 }}>
               {activeTab === 'cancelled' ? '🚫' : activeTab === 'completed' ? '✅' : '📦'}
             </div>
-            <p style={{ color: '#0F172A', fontWeight: 700, fontSize: 16, marginBottom: 6 }}>No {activeTab} rentals</p>
-            <p style={{ color: '#94A3B8', fontSize: 13, lineHeight: 1.6, maxWidth: 260, margin: '0 auto 20px' }}>
+            <p style={{ color: 'var(--ink-1)', fontWeight: 700, fontSize: 16, marginBottom: 6 }}>No {activeTab} rentals</p>
+            <p style={{ color: 'var(--ink-4)', fontSize: 13, lineHeight: 1.6, maxWidth: 260, margin: '0 auto 20px' }}>
               {activeTab === 'active' || activeTab === 'upcoming'
                 ? 'Browse items to make your first rental'
                 : 'Your rentals will appear here'}
@@ -113,32 +113,40 @@ export default function MyRentals() {
                 <img src={rental.image} alt={rental.item}
                   style={{ width: 76, height: 76, borderRadius: 12, objectFit: 'cover', flexShrink: 0 }} />
                 <div style={{ flex: 1 }}>
-                  <h4 style={{ fontSize: 14, fontWeight: 700, marginBottom: 4, color: '#0F172A' }}>{rental.item}</h4>
+                  <h4 style={{ fontSize: 14, fontWeight: 700, marginBottom: 4, color: 'var(--ink-1)' }}>{rental.item}</h4>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginBottom: 4 }}>
-                    <CalendarDays size={13} color="#94A3B8" />
-                    <span style={{ fontSize: 12, color: '#64748B' }}>{rental.startDate} → {rental.endDate}</span>
+                    <CalendarDays size={13} color="var(--ink-4)" />
+                    <span style={{ fontSize: 12, color: 'var(--ink-3)' }}>{rental.startDate} → {rental.endDate}</span>
                   </div>
-                  <p style={{ fontSize: 17, fontWeight: 800, color: '#2563EB' }}>${rental.total}</p>
+                  <p style={{ fontSize: 17, fontWeight: 800, color: 'var(--accent)' }}>${rental.total}</p>
                 </div>
               </div>
-              <div style={{ padding: '10px 18px 14px', borderTop: '1px solid #F1F5F9', display: 'flex', gap: 8 }}>
+              <div style={{ padding: '10px 18px 14px', borderTop: '1px solid var(--line-2)', display: 'flex', gap: 8 }}>
                 {rental.status === 'active' && rental.canExtend && (
                   <button onClick={() => navigate(`/extend-rental/${rental.id}`)} style={{
                     flex: 1, padding: '9px', borderRadius: 10,
-                    border: '1.5px solid #2563EB', background: 'transparent',
-                    color: '#2563EB', fontSize: 13, fontWeight: 600,
+                    border: '1.5px solid var(--accent)', background: 'transparent',
+                    color: 'var(--accent)', fontSize: 13, fontWeight: 600,
                     display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4,
-                  }}>
+                    transition: 'all 0.15s',
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.background = 'var(--accent-softer)'; e.currentTarget.style.boxShadow = 'var(--accent-shadow)'; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = ''; e.currentTarget.style.boxShadow = ''; }}
+                  >
                     <RefreshCw size={14} /> Extend
                   </button>
                 )}
                 {(rental.status === 'active' || rental.status === 'upcoming') && (
                   <button onClick={() => navigate(`/item/${getItemId(rental)}`)} style={{
                     flex: 1, padding: '9px', borderRadius: 10,
-                    border: '1.5px solid #E2E8F0', background: 'white',
-                    color: '#0F172A', fontSize: 13, fontWeight: 600,
+                    border: '1.5px solid var(--line-1)', background: 'var(--surface)',
+                    color: 'var(--ink-1)', fontSize: 13, fontWeight: 600,
                     display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4,
-                  }}>
+                    transition: 'all 0.15s',
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--accent-line)'; e.currentTarget.style.background = 'var(--surface-2)'; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = ''; e.currentTarget.style.background = ''; }}
+                  >
                     <FileText size={14} /> Details
                   </button>
                 )}
@@ -147,10 +155,13 @@ export default function MyRentals() {
                     onClick={() => navigate(`/return-review/${rental.id}`)}
                     style={{
                       flex: 1, padding: '9px', borderRadius: 10,
-                      border: '1.5px solid #E2E8F0', background: 'white',
-                      color: '#0F172A', fontSize: 13, fontWeight: 600, cursor: 'pointer',
+                      border: '1.5px solid var(--line-1)', background: 'var(--surface)',
+                      color: 'var(--ink-1)', fontSize: 13, fontWeight: 600, cursor: 'pointer',
                       display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4,
+                      transition: 'all 0.15s',
                     }}
+                    onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--accent-line)'; e.currentTarget.style.background = 'var(--surface-2)'; }}
+                    onMouseLeave={e => { e.currentTarget.style.borderColor = ''; e.currentTarget.style.background = ''; }}
                   >
                     Leave Review
                   </button>
@@ -160,10 +171,13 @@ export default function MyRentals() {
                     onClick={() => setReceiptRental(rental)}
                     style={{
                       flex: 1, padding: '9px', borderRadius: 10,
-                      border: '1.5px solid #2563EB', background: 'transparent',
-                      color: '#2563EB', fontSize: 13, fontWeight: 600,
+                      border: '1.5px solid var(--accent)', background: 'transparent',
+                      color: 'var(--accent)', fontSize: 13, fontWeight: 600,
                       display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4,
+                      transition: 'all 0.15s',
                     }}
+                    onMouseEnter={e => { e.currentTarget.style.background = 'var(--accent-softer)'; e.currentTarget.style.boxShadow = 'var(--accent-shadow)'; }}
+                    onMouseLeave={e => { e.currentTarget.style.background = ''; e.currentTarget.style.boxShadow = ''; }}
                   >
                     <FileText size={14} /> Receipt
                   </button>
@@ -173,10 +187,13 @@ export default function MyRentals() {
                     onClick={() => setConfirmCancel(rental)}
                     style={{
                       flex: 1, padding: '9px', borderRadius: 10,
-                      border: '1.5px solid #FECACA', background: rental.status === 'active' ? '#FFF5F5' : 'white',
-                      color: '#DC2626', fontSize: 13, fontWeight: 600,
+                      border: '1.5px solid var(--danger-line)', background: rental.status === 'active' ? 'var(--danger-softer)' : 'var(--surface)',
+                      color: 'var(--danger)', fontSize: 13, fontWeight: 600,
                       display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4,
+                      transition: 'all 0.15s',
                     }}
+                    onMouseEnter={e => { e.currentTarget.style.background = 'var(--danger-soft)'; e.currentTarget.style.boxShadow = '0 0 0 3px var(--danger-soft)'; }}
+                    onMouseLeave={e => { e.currentTarget.style.background = ''; e.currentTarget.style.boxShadow = ''; }}
                   >
                     <XCircle size={14} /> Cancel
                   </button>
@@ -195,26 +212,34 @@ export default function MyRentals() {
           display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20,
         }} onClick={() => setConfirmCancel(null)}>
           <div onClick={e => e.stopPropagation()} style={{
-            background: 'white', borderRadius: 18, maxWidth: 360, width: '100%', padding: 22,
-            boxShadow: '0 20px 50px rgba(15,23,42,0.3)',
+            background: 'var(--surface)', borderRadius: 18, maxWidth: 360, width: '100%', padding: 22,
+            boxShadow: 'var(--shadow-lg)', border: '1px solid var(--line-1)',
           }}>
             <div style={{ fontSize: 30, marginBottom: 8 }}>{confirmCancel.status === 'active' ? '⚠️' : '❓'}</div>
-            <h3 style={{ fontSize: 16, fontWeight: 800, marginBottom: 6, color: '#0F172A' }}>
+            <h3 style={{ fontSize: 16, fontWeight: 800, marginBottom: 6, color: 'var(--ink-1)' }}>
               Cancel this {confirmCancel.status} rental?
             </h3>
-            <p style={{ fontSize: 13, color: '#64748B', lineHeight: 1.6, marginBottom: 16 }}>
-              “{confirmCancel.item}” ({confirmCancel.startDate} → {confirmCancel.endDate}) will be cancelled
+            <p style={{ fontSize: 13, color: 'var(--ink-3)', lineHeight: 1.6, marginBottom: 16 }}>
+              "{confirmCancel.item}" ({confirmCancel.startDate} → {confirmCancel.endDate}) will be cancelled
               {confirmCancel.status === 'active' ? ' immediately and the item must be returned as scheduled.' : ' and your reservation will be released to other renters.'}
             </p>
             <div style={{ display: 'flex', gap: 8 }}>
               <button onClick={() => setConfirmCancel(null)} style={{
                 flex: 1, padding: '10px', borderRadius: 10, fontSize: 13, fontWeight: 600,
-                border: '1.5px solid #E2E8F0', background: 'white', color: '#0F172A',
-              }}>Keep rental</button>
+                border: '1.5px solid var(--line-1)', background: 'var(--surface)', color: 'var(--ink-1)',
+                transition: 'all 0.15s',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--accent-line)'; e.currentTarget.style.background = 'var(--surface-2)'; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = ''; e.currentTarget.style.background = ''; }}
+              >Keep rental</button>
               <button onClick={() => cancelRental(confirmCancel)} style={{
                 flex: 1, padding: '10px', borderRadius: 10, fontSize: 13, fontWeight: 700,
-                border: 'none', background: '#DC2626', color: 'white',
-              }}>Cancel rental</button>
+                border: 'none', background: 'var(--danger)', color: 'white',
+                transition: 'all 0.15s',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.boxShadow = 'var(--danger-shadow)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
+              onMouseLeave={e => { e.currentTarget.style.boxShadow = ''; e.currentTarget.style.transform = ''; }}
+              >Cancel rental</button>
             </div>
           </div>
         </div>
@@ -228,20 +253,22 @@ export default function MyRentals() {
           display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20,
         }} onClick={() => setReceiptRental(null)}>
           <div onClick={e => e.stopPropagation()} style={{
-            background: 'white', borderRadius: 18, maxWidth: 380, width: '100%',
-            boxShadow: '0 20px 50px rgba(15,23,42,0.3)', overflow: 'hidden',
+            background: 'var(--surface)', borderRadius: 18, maxWidth: 380, width: '100%',
+            boxShadow: 'var(--shadow-lg)', border: '1px solid var(--line-1)', overflow: 'hidden',
           }}>
             <div style={{
               padding: '14px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-              background: '#F8FAFC', borderBottom: '1px solid #F1F5F9',
+              background: 'var(--surface-2)', borderBottom: '1px solid var(--line-1)',
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <FileText size={16} color="#2563EB" />
-                <span style={{ fontWeight: 800, fontSize: 14, color: '#0F172A' }}>Rental receipt</span>
+                <FileText size={16} color="var(--accent)" />
+                <span style={{ fontWeight: 800, fontSize: 14, color: 'var(--ink-1)' }}>Rental receipt</span>
               </div>
               <button onClick={() => setReceiptRental(null)} aria-label="Close receipt"
-                style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 28, height: 28, borderRadius: 8, background: '#fff', border: '1px solid #E2E8F0' }}>
-                <X size={14} color="#64748B" />
+                style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 28, height: 28, borderRadius: 8, background: 'var(--surface)', border: '1px solid var(--line-1)', transition: 'all 0.15s' }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--accent-line)'; e.currentTarget.style.background = 'var(--surface-2)'; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = ''; e.currentTarget.style.background = ''; }}>
+                <X size={14} color="var(--ink-4)" />
               </button>
             </div>
             <div style={{ padding: 20 }}>
@@ -249,36 +276,40 @@ export default function MyRentals() {
                 <img src={receiptRental.image} alt={receiptRental.item}
                   style={{ width: 64, height: 64, borderRadius: 10, objectFit: 'cover', flexShrink: 0 }} />
                 <div>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: '#0F172A', marginBottom: 2 }}>{receiptRental.item}</div>
-                  <div style={{ fontSize: 12, color: '#64748B' }}>Rental #{receiptRental.id} · Proof of rental</div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--ink-1)', marginBottom: 2 }}>{receiptRental.item}</div>
+                  <div style={{ fontSize: 12, color: 'var(--ink-3)' }}>Rental #{receiptRental.id} · Proof of rental</div>
                 </div>
               </div>
-              <div style={{ border: '1px dashed #CBD5E1', borderRadius: 12, padding: '12px 14px', marginBottom: 16, display: 'grid', gap: 8 }}>
+              <div style={{ border: '1px dashed var(--line-2)', borderRadius: 12, padding: '12px 14px', marginBottom: 16, display: 'grid', gap: 8 }}>
                 {[
                   ['Period', `${receiptRental.startDate} → ${receiptRental.endDate}`],
                   ['Status', 'Completed ✓'],
                   ['Payment', 'Paid in full'],
                 ].map(([label, value]) => (
                   <div key={label} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12 }}>
-                    <span style={{ color: '#64748B' }}>{label}</span>
-                    <span style={{ fontWeight: 600, color: '#0F172A' }}>{value}</span>
+                    <span style={{ color: 'var(--ink-3)' }}>{label}</span>
+                    <span style={{ fontWeight: 600, color: 'var(--ink-1)' }}>{value}</span>
                   </div>
                 ))}
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontSize: 13, color: '#64748B', fontWeight: 600 }}>Total charged</span>
-                <span style={{ fontSize: 22, fontWeight: 800, color: '#0F172A' }}>${receiptRental.total}</span>
+                <span style={{ fontSize: 13, color: 'var(--ink-3)', fontWeight: 600 }}>Total charged</span>
+                <span style={{ fontSize: 22, fontWeight: 800, color: 'var(--ink-1)' }}>${receiptRental.total}</span>
               </div>
               {receiptUnitPrice != null && (
-                <p style={{ fontSize: 11, color: '#94A3B8', marginTop: 6 }}>
+                <p style={{ fontSize: 11, color: 'var(--ink-4)', marginTop: 6 }}>
                   {receiptDayCount} day{receiptDayCount === 1 ? '' : 's'} × ${receiptUnitPrice.toFixed(2)}/day
                 </p>
               )}
               <button onClick={() => setReceiptRental(null)} style={{
                 width: '100%', marginTop: 18, padding: '10px', borderRadius: 10,
-                border: '1.5px solid #E2E8F0', background: 'white',
-                color: '#0F172A', fontSize: 13, fontWeight: 600,
-              }}>Close</button>
+                border: '1.5px solid var(--line-1)', background: 'var(--surface)',
+                color: 'var(--ink-1)', fontSize: 13, fontWeight: 600,
+                transition: 'all 0.15s',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--accent-line)'; e.currentTarget.style.background = 'var(--surface-2)'; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = ''; e.currentTarget.style.background = ''; }}
+              >Close</button>
             </div>
           </div>
         </div>
