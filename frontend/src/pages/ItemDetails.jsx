@@ -3,6 +3,7 @@ import { ChevronLeft, Heart, Share2, MapPin, Star, ArrowRight, ShoppingCart, Che
 import { useNavigate, useParams } from 'react-router-dom';
 import { mockItems } from '../data/mockData';
 import { useApp } from '../contexts/AppContext';
+import ShareSheet from '../components/ShareSheet';
 
 export default function ItemDetails() {
   const { id } = useParams();
@@ -13,6 +14,7 @@ export default function ItemDetails() {
   const item = items.find(i => i.id === parseInt(id)) || mockItems.find(i => i.id === parseInt(id));
   const [selectedImage, setSelectedImage] = useState(0);
   const [showAllReviews, setShowAllReviews] = useState(false);
+  const [showShareSheet, setShowShareSheet] = useState(false);
 
   if (!item) return <div className="page">Item not found</div>;
 
@@ -21,14 +23,7 @@ export default function ItemDetails() {
   const reviewList = Array.isArray(item.reviews) ? item.reviews : (item.reviewList || []);
   const reviewCount = Array.isArray(item.reviews) ? item.reviews.length : (item.reviews || reviewList.length || 0);
 
-  const handleShare = async () => {
-    try {
-      await navigator.clipboard.writeText(window.location.href);
-      addNotification({ type: 'system', title: 'Link copied', message: 'Share link copied to clipboard' });
-    } catch {
-      addNotification({ type: 'system', title: 'Link ready to share', message: window.location.href });
-    }
-  };
+  const handleShare = () => setShowShareSheet(true);
 
   return (
     <div className="page" style={{ paddingBottom: 80 }}>
@@ -237,6 +232,11 @@ export default function ItemDetails() {
           Reserve Now
         </button>
       </div>
+
+      {/* Share Sheet */}
+      {showShareSheet && (
+        <ShareSheet item={item} onClose={() => setShowShareSheet(false)} />
+      )}
     </div>
   );
 }
