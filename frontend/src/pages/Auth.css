@@ -306,7 +306,7 @@
   transition: background .16s, transform .16s, box-shadow .16s;
 }
 
-.auth-submit:hover:not(:disabled) { background: var(--ink-2); transform: translateY(-1px); }
+.auth-submit:hover:not(:disabled) { background: #2e69bd; transform: translateY(-1px); }
 .auth-submit:disabled { cursor: wait; opacity: .7; }
 .auth-footer { margin-top: 22px; color: var(--ink-3); font-size: 13px; text-align: center; }
 .auth-footer a { color: var(--accent); font-weight: 700; }
@@ -640,6 +640,7 @@
   background: var(--accent);
   box-shadow: var(--shadow-md);
 }
+[data-theme="dark"] .auth-submit:hover:not(:disabled) { background: #1E3A5F; }
 [data-theme="dark"] .auth-product-card {
   background: var(--surface);
   color: var(--ink-2);

@@ -64,7 +64,7 @@ export default function ReturnReview() {
       <div className="page" style={{ padding: '60px 20px', textAlign: 'center' }}>
         <div style={{ fontSize: 56, marginBottom: 16 }}>🔍</div>
         <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 8 }}>Rental Not Found</h2>
-        <p style={{ color: '#64748B', marginBottom: 24 }}>This rental doesn't exist or has been removed.</p>
+        <p style={{ color: 'var(--ink-3)', marginBottom: 24 }}>This rental doesn't exist or has been removed.</p>
         <button className="btn-primary" onClick={() => navigate('/my-rentals')}>
           Back to My Rentals
         </button>
@@ -76,12 +76,14 @@ export default function ReturnReview() {
     <div className="page">
       {/* Header */}
       <div style={{
-        background: 'white', padding: '16px 20px',
+        background: 'var(--surface)', padding: '16px 20px',
         display: 'flex', alignItems: 'center', gap: 12,
-        borderBottom: '1px solid #E2E8F0', position: 'sticky', top: 0, zIndex: 50,
+        borderBottom: '1px solid var(--line-1)', position: 'sticky', top: 0, zIndex: 50,
       }}>
-        <button onClick={() => navigate(-1)} style={{ padding: 4 }}>
-          <ChevronLeft size={24} color="#0F172A" />
+        <button onClick={() => navigate(-1)} style={{ padding: 4, transition: 'all 0.15s' }}
+          onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.05)'; }}
+          onMouseLeave={e => { e.currentTarget.style.transform = ''; }}>
+          <ChevronLeft size={24} color="var(--ink-1)" />
         </button>
         <span style={{ fontWeight: 700, fontSize: 18 }}>Return & Review</span>
       </div>
@@ -90,17 +92,17 @@ export default function ReturnReview() {
         {/* Item Info */}
         <div style={{
           display: 'flex', gap: 12, marginBottom: 24,
-          padding: 12, background: '#F8FAFC', borderRadius: 12,
+          padding: 12, background: 'var(--surface-2)', borderRadius: 12,
         }}>
           <img src={item.image} alt={item.title}
             style={{ width: 60, height: 60, borderRadius: 10, objectFit: 'cover' }} />
           <div style={{ flex: 1 }}>
             <h3 style={{ fontSize: 14, fontWeight: 700, marginBottom: 4 }}>{item.title}</h3>
-            <p style={{ fontSize: 12, color: '#64748B' }}>Rental ended: {new Date(rental.endDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
+            <p style={{ fontSize: 12, color: 'var(--ink-3)' }}>Rental ended: {new Date(rental.endDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
           </div>
           <span style={{
             padding: '4px 10px', borderRadius: 20, fontSize: 11, fontWeight: 700,
-            background: '#FEF2F2', color: '#DC2626',
+            background: 'var(--danger-soft)', color: '#DC2626',
           }}>Completed</span>
         </div>
 
@@ -117,16 +119,16 @@ export default function ReturnReview() {
             </div>
 
             <h2 style={{ fontSize: 22, fontWeight: 700, marginBottom: 8 }}>Confirm Return</h2>
-            <p style={{ color: '#64748B', fontSize: 15, lineHeight: 1.6, marginBottom: 32 }}>
+            <p style={{ color: 'var(--ink-3)', fontSize: 15, lineHeight: 1.6, marginBottom: 32 }}>
               Please confirm that you have returned <strong>{item.title}</strong> to the owner in good condition.
               Once confirmed, you'll be able to leave a review for your rental experience.
             </p>
 
             <div style={{
-              background: 'white', border: '1px solid #E2E8F0', borderRadius: 12,
+              background: 'var(--surface)', border: '1px solid var(--line-1)', borderRadius: 12,
               padding: 16, marginBottom: 24, textAlign: 'left',
             }}>
-              <p style={{ fontSize: 13, fontWeight: 600, color: '#0F172A', marginBottom: 12 }}>Return Checklist</p>
+              <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--ink-1)', marginBottom: 12 }}>Return Checklist</p>
               {[
                 'Item is clean and undamaged',
                 'All accessories returned',
@@ -138,9 +140,9 @@ export default function ReturnReview() {
                     type="checkbox"
                     checked={checklist[i]}
                     onChange={() => toggleChecklist(i)}
-                    style={{ width: 20, height: 20, accentColor: '#2563EB' }}
+                    style={{ width: 20, height: 20, accentColor: 'var(--accent)' }}
                   />
-                  <span style={{ fontSize: 14, color: '#334155' }}>{check}</span>
+                  <span style={{ fontSize: 14, color: 'var(--ink-2)' }}>{check}</span>
                 </label>
               ))}
             </div>
@@ -158,7 +160,7 @@ export default function ReturnReview() {
 
             {/* Overall Rating */}
             <div style={{ marginBottom: 24 }}>
-              <p style={{ fontSize: 14, fontWeight: 600, color: '#0F172A', marginBottom: 12 }}>Overall Rating</p>
+              <p style={{ fontSize: 14, fontWeight: 600, color: 'var(--ink-1)', marginBottom: 12 }}>Overall Rating</p>
               <div style={{ display: 'flex', justifyContent: 'center', gap: 8 }}>
                 {[1, 2, 3, 4, 5].map(star => (
                   <button
@@ -171,24 +173,24 @@ export default function ReturnReview() {
                     <Star
                       size={36}
                       fill={star <= rating ? '#F59E0B' : 'none'}
-                      stroke={star <= rating ? '#F59E0B' : '#E2E8F0'}
+                      stroke={star <= rating ? '#F59E0B' : 'var(--line-1)'}
                       strokeWidth={star <= rating ? 0 : 2}
                     />
                   </button>
                 ))}
               </div>
-              <p style={{ textAlign: 'center', fontSize: 13, color: '#64748B', marginTop: 8 }}>
+              <p style={{ textAlign: 'center', fontSize: 13, color: 'var(--ink-3)', marginTop: 8 }}>
                 {rating === 0 ? 'Tap to rate' : ['Terrible', 'Poor', 'Okay', 'Good', 'Excellent'][rating - 1]}
               </p>
             </div>
 
             {/* Detailed Ratings */}
             <div style={{ marginBottom: 24 }}>
-              <p style={{ fontSize: 14, fontWeight: 600, color: '#0F172A', marginBottom: 12 }}>Detailed Ratings</p>
+              <p style={{ fontSize: 14, fontWeight: 600, color: 'var(--ink-1)', marginBottom: 12 }}>Detailed Ratings</p>
               {['Condition Accuracy', 'Owner Communication', 'Pickup/Return Process', 'Value for Money'].map((cat, i) => (
                 <div key={cat} style={{ marginBottom: 12 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-                    <span style={{ fontSize: 13, color: '#334155' }}>{cat}</span>
+                    <span style={{ fontSize: 13, color: 'var(--ink-2)' }}>{cat}</span>
                     <div style={{ display: 'flex', gap: 4 }}>
                       {[1, 2, 3, 4, 5].map(star => (
                         <button
@@ -199,7 +201,7 @@ export default function ReturnReview() {
                           <Star
                             size={20}
                             fill={star <= detailedRatings[cat] ? '#F59E0B' : 'none'}
-                            stroke={star <= detailedRatings[cat] ? '#F59E0B' : '#E2E8F0'}
+                            stroke={star <= detailedRatings[cat] ? '#F59E0B' : 'var(--line-1)'}
                             strokeWidth={star <= detailedRatings[cat] ? 0 : 1.5}
                           />
                         </button>
@@ -212,26 +214,26 @@ export default function ReturnReview() {
 
             {/* Review Text */}
             <div style={{ marginBottom: 24 }}>
-              <p style={{ fontSize: 14, fontWeight: 600, color: '#0F172A', marginBottom: 12 }}>Your Review</p>
+              <p style={{ fontSize: 14, fontWeight: 600, color: 'var(--ink-1)', marginBottom: 12 }}>Your Review</p>
               <textarea
                 value={reviewText}
                 onChange={e => setReviewText(e.target.value)}
                 placeholder="Share your experience... (optional)"
                 style={{
-                  width: '100%', minHeight: 100, padding: 12, borderRadius: 10,
-                  border: '1px solid #E2E8F0', fontSize: 14, fontFamily: 'inherit',
+                  width: '100%', minHeight: 100, padding: 12, borderRadius: 'var(--radius-sm)',
+                  border: '1px solid var(--line-1)', fontSize: 14, fontFamily: 'inherit',
                   resize: 'vertical', outline: 'none',
                   boxSizing: 'border-box',
                 }}
               />
-              <p style={{ fontSize: 11, color: '#94A3B8', marginTop: 6, textAlign: 'right' }}>
+              <p style={{ fontSize: 11, color: 'var(--ink-4)', marginTop: 6, textAlign: 'right' }}>
                 {reviewText.length}/500 characters
               </p>
             </div>
 
             {/* Photos */}
             <div style={{ marginBottom: 24 }}>
-              <p style={{ fontSize: 14, fontWeight: 600, color: '#0F172A', marginBottom: 12 }}>Add Photos (optional)</p>
+              <p style={{ fontSize: 14, fontWeight: 600, color: 'var(--ink-1)', marginBottom: 12 }}>Add Photos (optional)</p>
               <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                 {photos.map((photo, i) => (
                   <div key={i} style={{ position: 'relative', width: 80, height: 80, borderRadius: 10, overflow: 'hidden' }}>
@@ -248,11 +250,11 @@ export default function ReturnReview() {
                 {photos.length < 4 && (
                   <label style={{
                     width: 80, height: 80, borderRadius: 10,
-                    border: '2px dashed #E2E8F0', background: '#F8FAFC',
+                    border: '2px dashed var(--line-1)', background: 'var(--surface-2)',
                     display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
                     gap: 4, cursor: 'pointer',
                   }}>
-                    <Image size={24} color="#94A3B8" />
+                    <Image size={24} color="var(--ink-4)" />
                     <input type="file" accept="image/*" multiple onChange={e => {
                       Array.from(e.target.files).slice(0, 4 - photos.length).forEach(file => {
                         const reader = new FileReader();
@@ -260,7 +262,7 @@ export default function ReturnReview() {
                         reader.readAsDataURL(file);
                       });
                     }} style={{ display: 'none' }} />
-                    <span style={{ fontSize: 11, color: '#94A3B8' }}>Add</span>
+                    <span style={{ fontSize: 11, color: 'var(--ink-4)' }}>Add</span>
                   </label>
                 )}
               </div>
