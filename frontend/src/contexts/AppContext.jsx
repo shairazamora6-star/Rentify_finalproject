@@ -46,6 +46,12 @@ export function AppProvider({ children }) {
   const [notifications, setNotifications] = useState(isDemoMode ? mockNotifications : []);
   const [items, setItems] = useState(mockItems);
   const [cart, setCart] = useState(readStoredCart);
+  const [theme, setTheme] = useState(() => {
+    const stored = localStorage.getItem('rentify_theme');
+    if (stored === 'dark' || stored === 'light') return stored;
+    // Match the pre-paint script in index.html: respect OS preference until the user picks one.
+    return (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+  });
 
   useEffect(() => {
     apiFetch('/api/items')
@@ -53,6 +59,13 @@ export function AppProvider({ children }) {
       .then(setItems)
       .catch(() => setItems(mockItems));
   }, []);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('rentify_theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => setTheme(t => (t === 'dark' ? 'light' : 'dark'));
 
   const login = async ({ email, password, remember = true }) => {
     const response = await apiFetch('/api/auth/login', {
@@ -183,6 +196,7 @@ export function AppProvider({ children }) {
       rentals, addRental, updateRental, notifications, addNotification,
       markNotificationRead, markAllNotificationsRead, clearNotifications,
       cart, addToCart, removeFromCart, isInCart,
+      theme, setTheme, toggleTheme,
     }}>
       {children}
     </AppContext.Provider>
