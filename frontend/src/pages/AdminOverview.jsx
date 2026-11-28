@@ -269,7 +269,21 @@ export default function AdminOverview() {
 const acceptedRequests = requests.filter((r) => r.status === 'accepted')
 const declinedRequests = requests.filter((r) => r.status === 'declined')
 
-const displayedRequests = requests.filter((r) => r.status === requestTab)
+
+const displayedRequests = requests.filter((r) => {
+  const query = searchQuery.toLowerCase().trim()
+
+  const matchesStatus = r.status === requestTab
+
+  const matchesSearch =
+    !query ||
+    r.customer.toLowerCase().includes(query) ||
+    r.item.toLowerCase().includes(query) ||
+    r.category.toLowerCase().includes(query)
+
+  return matchesStatus && matchesSearch
+})
+
 const updateRequestStatus = (id, status) => {
   setRequests((prev) =>
     prev.map((req) =>
@@ -281,15 +295,30 @@ const updateRequestStatus = (id, status) => {
 const activeListings = LISTINGS.filter((l) => l.status === 'active').length
 const pendingListings = LISTINGS.filter((l) => l.status === 'pending').length
 
-  const filteredListings = useMemo(() => {
-    return LISTINGS.filter((l) => {
-      const matchTab =
-        listingTab === 'all' ||
-        l.status === listingTab
-      const matchSearch = l.name.toLowerCase().includes(listingSearch.toLowerCase())
-      return matchTab && matchSearch
-    })
-  }, [listingTab, listingSearch])
+  
+const filteredListings = useMemo(() => {
+  return LISTINGS.filter((l) => {
+    const matchTab =
+      listingTab === 'all' ||
+      l.status === listingTab
+
+    const globalQuery = searchQuery.toLowerCase().trim()
+    const localQuery = listingSearch.toLowerCase().trim()
+
+    const matchesGlobal =
+      !globalQuery ||
+      l.name.toLowerCase().includes(globalQuery) ||
+      l.category.toLowerCase().includes(globalQuery)
+
+    const matchesLocal =
+      !localQuery ||
+      l.name.toLowerCase().includes(localQuery) ||
+      l.category.toLowerCase().includes(localQuery)
+
+    return matchTab && matchesGlobal && matchesLocal
+  })
+}, [listingTab, listingSearch, searchQuery])
+
 
   const earningsData = EARNINGS_DATA[earningsRange]
 
@@ -442,19 +471,33 @@ const pendingListings = LISTINGS.filter((l) => l.status === 'pending').length
           <div className="ov-card-header">
             <h2 className="ov-card-title">Rental Requests</h2>
           </div>
-          <div className="ov-tabs">
-            <button
-              className={`ov-tab ${requestTab === 'pending' ? 'active' : ''}`}
-              onClick={() => setRequestTab('pending')}
-            >
-              Pending
-              <span className="ov-tab-badge">{pendingRequests.length}</span>
-            </button>
-            Accepted
- <span className="ov-tab-badge">{acceptedRequests.length}</span>
-            Declined
-<span className="ov-tab-badge">{declinedRequests.length}</span>
-          </div>
+          
+<div className="ov-tabs">
+  <button
+    className={`ov-tab ${requestTab === 'pending' ? 'active' : ''}`}
+    onClick={() => setRequestTab('pending')}
+  >
+    Pending
+    <span className="ov-tab-badge">{pendingRequests.length}</span>
+  </button>
+
+  <button
+    className={`ov-tab ${requestTab === 'accepted' ? 'active' : ''}`}
+    onClick={() => setRequestTab('accepted')}
+  >
+    Accepted
+    <span className="ov-tab-badge">{acceptedRequests.length}</span>
+  </button>
+
+  <button
+    className={`ov-tab ${requestTab === 'declined' ? 'active' : ''}`}
+    onClick={() => setRequestTab('declined')}
+  >
+    Declined
+    <span className="ov-tab-badge">{declinedRequests.length}</span>
+  </button>
+</div>
+
 
           <div className="ov-requests-list">
             {displayedRequests.length > 0 ? (
@@ -493,20 +536,30 @@ const pendingListings = LISTINGS.filter((l) => l.status === 'pending').length
                     </span>
                   </div>
                   <p className="ov-request-message">"{req.message}"</p>
-                  <div className="ov-request-actions">
-                    <button
-                      className="ov-btn-decline"
-                      onClick={() => updateRequestStatus(req.id, 'declined')}
-                    >
-                      Decline
-                    </button>
-                    <button
-                      className="ov-btn-review"
-                      onClick={() => navigate('/admin/rental-requests')}
-                    >
-                      Review
-                    </button>
-                  </div>
+                  
+<div className="ov-request-actions">
+  <button
+    className="ov-btn-accept"
+    onClick={() => updateRequestStatus(req.id, 'accepted')}
+  >
+    Accept
+  </button>
+
+  <button
+    className="ov-btn-decline"
+    onClick={() => updateRequestStatus(req.id, 'declined')}
+  >
+    Decline
+  </button>
+
+  <button
+    className="ov-btn-review"
+    onClick={() => navigate('/admin/rental-requests')}
+  >
+    Review
+  </button>
+</div>
+
                 </div>
               ))
             ) : (
