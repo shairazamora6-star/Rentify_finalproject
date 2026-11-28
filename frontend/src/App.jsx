@@ -51,6 +51,7 @@ import Reports from './pages/Reports'
 import Complaints from './pages/Complaints'
 import Settings from './pages/Settings'
 import AdminStub from './pages/AdminStub'
+import ActiveTracking from './pages/ActiveTracking'
 
 const PUBLIC_ROUTES = ['/login', '/register', '/landing']
 
@@ -514,7 +515,7 @@ export default function App() {
         <Route index element={<AdminOverview />} />
         {/* Workspace */}
         <Route path="rental-requests" element={<AdminRentalRequests />} />
-        <Route path="active-tracking" element={<AdminStub title="Active Tracking" />} />
+        <Route path="active-tracking" element={<ActiveTracking />} />
         {/* Marketplace */}
         <Route path="listings" element={<Rentals />} />
         <Route path="listings/new" element={<AdminStub title="Add New Item" />} />

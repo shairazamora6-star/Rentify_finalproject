@@ -1,0 +1,257 @@
+
+/* =========================================
+   ACTIVE TRACKING PAGE
+========================================= */
+
+.at-page {
+  width: 100%;
+  font-family: 'Inter', system-ui, sans-serif;
+  color: #0F172A;
+}
+
+.at-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 26px;
+}
+
+.at-header h1 {
+  font-size: 24px;
+  font-weight: 750;
+  margin: 0 0 7px;
+}
+
+.at-header p,
+.at-content-header p {
+  color: #64748B;
+  font-size: 13px;
+  margin: 0;
+}
+
+/* SUMMARY CARDS */
+
+.at-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin-bottom: 26px;
+}
+
+.at-summary-card {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 21px;
+  background: #FFFFFF;
+  border: 1px solid #DCE8F5;
+  border-radius: 13px;
+}
+
+.at-summary-icon {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 11px;
+}
+
+.at-summary-icon.ongoing {
+  background: #EFF6FF;
+  color: #2563EB;
+}
+
+.at-summary-icon.due {
+  background: #FFF7ED;
+  color: #F97316;
+}
+
+.at-summary-icon.completed {
+  background: #ECFDF5;
+  color: #10B981;
+}
+
+.at-summary-card p {
+  color: #64748B;
+  font-size: 12px;
+  margin: 0 0 5px;
+}
+
+.at-summary-card h2 {
+  font-size: 23px;
+  margin: 0;
+  font-weight: 750;
+}
+
+/* RENTAL ACTIVITIES */
+
+.at-content {
+  background: #FFFFFF;
+  border: 1px solid #DCE8F5;
+  border-radius: 13px;
+  overflow: hidden;
+}
+
+.at-content-header {
+  padding: 21px 23px;
+  border-bottom: 1px solid #EDF2F7;
+}
+
+.at-content-header h2 {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0 0 6px;
+}
+
+.at-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  padding: 17px 23px;
+}
+
+.at-search {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 310px;
+  max-width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #DCE8F5;
+  border-radius: 8px;
+  color: #64748B;
+}
+
+.at-search input {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 13px;
+  color: #0F172A;
+  background: transparent;
+}
+
+.at-toolbar select {
+  padding: 10px 13px;
+  border: 1px solid #DCE8F5;
+  border-radius: 8px;
+  background: #FFFFFF;
+  color: #334155;
+  font-size: 13px;
+  cursor: pointer;
+  outline: none;
+}
+
+/* TABLE */
+
+.at-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.at-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.at-table th {
+  padding: 13px 20px;
+  background: #F8FAFC;
+  color: #64748B;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  white-space: nowrap;
+}
+
+.at-table td {
+  padding: 17px 20px;
+  border-bottom: 1px solid #EDF2F7;
+  color: #334155;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.at-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.at-table td:nth-child(2) {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: #0F172A;
+}
+
+.at-status {
+  display: inline-flex;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.at-status.ongoing {
+  background: #EFF6FF;
+  color: #2563EB;
+}
+
+.at-status.due-soon {
+  background: #FFF7ED;
+  color: #EA580C;
+}
+
+.at-status.completed {
+  background: #ECFDF5;
+  color: #059669;
+}
+
+.at-empty {
+  text-align: center;
+  padding: 35px !important;
+  color: #94A3B8 !important;
+}
+
+/* RESPONSIVE DESIGN */
+
+@media (max-width: 768px) {
+  .at-summary {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .at-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .at-search {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .at-toolbar select {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .at-header h1 {
+    font-size: 21px;
+  }
+
+  .at-summary-card {
+    padding: 16px;
+  }
+
+  .at-content-header,
+  .at-toolbar {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+}
