@@ -258,13 +258,28 @@ export default function AdminOverview() {
   const { admin } = useAdmin()
 
   const [requestTab, setRequestTab] = useState('pending')
+  const [requests, setRequests] = useState(RENTAL_REQUESTS)
   const [listingTab, setListingTab] = useState('all')
   const [earningsRange, setEarningsRange] = useState('7days')
   const [searchQuery, setSearchQuery] = useState('')
   const [listingSearch, setListingSearch] = useState('')
   const [notifOpen, setNotifOpen] = useState(false)
 
-  const pendingRequests = RENTAL_REQUESTS.filter((r) => r.status === 'pending')
+  const pendingRequests = requests.filter((r) => r.status === 'pending')
+const acceptedRequests = requests.filter((r) => r.status === 'accepted')
+const declinedRequests = requests.filter((r) => r.status === 'declined')
+
+const displayedRequests = requests.filter((r) => r.status === requestTab)
+const updateRequestStatus = (id, status) => {
+  setRequests((prev) =>
+    prev.map((req) =>
+      req.id === id ? { ...req, status } : req
+    )
+  )
+}
+  const totalListings = LISTINGS.length
+const activeListings = LISTINGS.filter((l) => l.status === 'active').length
+const pendingListings = LISTINGS.filter((l) => l.status === 'pending').length
 
   const filteredListings = useMemo(() => {
     return LISTINGS.filter((l) => {
@@ -388,9 +403,9 @@ export default function AdminOverview() {
                 <BarChart2 size={18} />
               </span>
             </div>
-            <div className="ov-stat-value">8 Listings</div>
+            <div className="ov-stat-value">{totalListings} Listings</div>
             <div className="ov-stat-change violet">
-              6 active · 1 pending
+              {activeListings} active · {pendingListings} pending
             </div>
           </div>
           <div className="ov-stat-chart-col">
@@ -407,7 +422,7 @@ export default function AdminOverview() {
                 <Clock size={18} />
               </span>
             </div>
-            <div className="ov-stat-value">5 Requests</div>
+            <div className="ov-stat-value">{pendingRequests.length} Requests</div>
             <div className="ov-stat-change warning">
               <Clock size={13} />
               Oldest waiting 2h
@@ -433,25 +448,17 @@ export default function AdminOverview() {
               onClick={() => setRequestTab('pending')}
             >
               Pending
-              <span className="ov-tab-badge">5</span>
+              <span className="ov-tab-badge">{pendingRequests.length}</span>
             </button>
-            <button
-              className={`ov-tab ${requestTab === 'accepted' ? 'active' : ''}`}
-              onClick={() => setRequestTab('accepted')}
-            >
-              Accepted
-            </button>
-            <button
-              className={`ov-tab ${requestTab === 'declined' ? 'active' : ''}`}
-              onClick={() => setRequestTab('declined')}
-            >
-              Declined
-            </button>
+            Accepted
+ <span className="ov-tab-badge">{acceptedRequests.length}</span>
+            Declined
+<span className="ov-tab-badge">{declinedRequests.length}</span>
           </div>
 
           <div className="ov-requests-list">
-            {requestTab === 'pending' ? (
-              pendingRequests.map((req) => (
+            {displayedRequests.length > 0 ? (
+              displayedRequests.map((req) => (
                 <div key={req.id} className="ov-request-item">
                   <div className="ov-request-top">
                     <div className="ov-request-customer">
@@ -489,7 +496,7 @@ export default function AdminOverview() {
                   <div className="ov-request-actions">
                     <button
                       className="ov-btn-decline"
-                      onClick={() => navigate('/admin/rental-requests')}
+                      onClick={() => updateRequestStatus(req.id, 'declined')}
                     >
                       Decline
                     </button>
