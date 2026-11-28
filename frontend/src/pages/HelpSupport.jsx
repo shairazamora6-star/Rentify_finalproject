@@ -42,12 +42,14 @@ export default function HelpSupport() {
     <div className="page">
       {/* Header */}
       <div style={{
-        background: 'white', padding: '16px 20px',
+        background: 'var(--surface)', padding: '16px 20px',
         display: 'flex', alignItems: 'center', gap: 12,
-        borderBottom: '1px solid #E2E8F0', position: 'sticky', top: 0, zIndex: 50,
+        borderBottom: '1px solid var(--line-1)', position: 'sticky', top: 0, zIndex: 50,
       }}>
-        <button onClick={() => navigate(-1)} style={{ padding: 4 }}>
-          <ChevronLeft size={24} color="#0F172A" />
+        <button onClick={() => navigate(-1)} style={{ padding: 4, transition: 'all 0.15s' }}
+          onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.05)'; }}
+          onMouseLeave={e => { e.currentTarget.style.transform = ''; }}>
+          <ChevronLeft size={24} color="var(--ink-1)" />
         </button>
         <span style={{ fontWeight: 700, fontSize: 18 }}>Help & Support</span>
       </div>
@@ -61,9 +63,12 @@ export default function HelpSupport() {
         <h1 style={{ fontSize: 24, fontWeight: 700, marginBottom: 8 }}>Need Help?</h1>
         <p style={{ fontSize: 16, opacity: 0.9, marginBottom: 24 }}>We're here to assist you with any questions or issues.</p>
         <button className="btn-primary" onClick={() => navigate('/submit-request')} style={{
-          background: 'white', color: '#2563EB', padding: '12px 24px',
-          borderRadius: 8, fontWeight: 600,
-        }}>
+          background: 'var(--surface)', color: 'var(--accent)', padding: '12px 24px',
+          borderRadius: 'var(--radius-sm)', fontWeight: 600,
+          transition: 'all 0.15s',
+        }}
+        onMouseEnter={e => { e.currentTarget.style.background = 'var(--surface-1)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
+        onMouseLeave={e => { e.currentTarget.style.background = ''; e.currentTarget.style.transform = ''; }}>
           Contact Support
         </button>
       </div>
@@ -71,26 +76,29 @@ export default function HelpSupport() {
       {/* FAQ Section */}
       <div style={{ padding: '24px 20px' }}>
         <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 16 }}>Frequently Asked Questions</h2>
-        <div style={{ borderRadius: 12, overflow: 'hidden', border: '1px solid #E2E8F0' }}>
+        <div style={{ borderRadius: 'var(--radius-lg)', overflow: 'hidden', border: '1px solid var(--line-1)' }}>
           {faqs.map((faq, index) => (
             <div key={index}>
               <button
                 onClick={() => toggleFAQ(index)}
                 style={{
-                  width: '100%', padding: '16px 20px', background: 'white', border: 'none',
-                  borderBottom: index < faqs.length - 1 ? '1px solid #F1F5F9' : 'none',
+                  width: '100%', padding: '16px 20px', background: 'var(--surface)', border: 'none',
+                  borderBottom: index < faqs.length - 1 ? '1px solid var(--line-2)' : 'none',
                   display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                   textAlign: 'left', cursor: 'pointer',
+                  transition: 'all 0.15s',
                 }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'var(--surface-1)'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = ''; }}
               >
-                <span style={{ fontSize: 16, fontWeight: 500, color: '#0F172A' }}>{faq.question}</span>
-                {faq.open ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                <span style={{ fontSize: 16, fontWeight: 500, color: 'var(--ink-1)' }}>{faq.question}</span>
+                {faq.open ? <ChevronUp size={20} color="var(--ink-3)" /> : <ChevronDown size={20} color="var(--ink-3)" />}
               </button>
               {faq.open && (
                 <div style={{
-                  padding: '12px 20px', background: '#F8FAFC', borderTop: '1px solid #F1F5F9',
+                  padding: '12px 20px', background: 'var(--surface-2)', borderTop: '1px solid var(--line-2)',
                 }}>
-                  <p style={{ fontSize: 14, color: '#334155', lineHeight: 1.6 }}>{faq.answer}</p>
+                  <p style={{ fontSize: 14, color: 'var(--ink-2)', lineHeight: 1.6 }}>{faq.answer}</p>
                 </div>
               )}
             </div>
@@ -113,14 +121,17 @@ export default function HelpSupport() {
               onClick={option.action}
               style={{
                 display: 'flex', alignItems: 'center', gap: 12,
-                padding: '16px', background: 'white', borderRadius: 12,
-                border: '1px solid #E2E8F0', width: '100%', cursor: 'pointer',
+                padding: '16px', background: 'var(--surface)', borderRadius: 'var(--radius-md)',
+                border: '1px solid var(--line-1)', width: '100%', cursor: 'pointer',
+                transition: 'all 0.15s',
               }}
+              onMouseEnter={e => { e.currentTarget.style.background = 'var(--surface-1)'; e.currentTarget.style.borderColor = 'var(--accent-line)'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = ''; e.currentTarget.style.borderColor = ''; }}
             >
-              <option.icon size={24} color="#2563EB" />
+              <option.icon size={24} color="var(--accent)" />
               <div>
-                <p style={{ fontSize: 16, fontWeight: 600, color: '#0F172A' }}>{option.label}</p>
-                <p style={{ fontSize: 14, color: '#64748B' }}>{option.desc}</p>
+                <p style={{ fontSize: 16, fontWeight: 600, color: 'var(--ink-1)' }}>{option.label}</p>
+                <p style={{ fontSize: 14, color: 'var(--ink-3)' }}>{option.desc}</p>
               </div>
             </button>
           ))}

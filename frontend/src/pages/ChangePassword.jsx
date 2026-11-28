@@ -31,8 +31,8 @@ export default function ChangePassword() {
           <span style={{ fontWeight: 700, fontSize: 18 }}>Change Password</span>
         </div>
         <div style={{ textAlign: 'center', padding: '70px 24px' }}>
-          <div style={{ width: 80, height: 80, borderRadius: '50%', background: '#ECFDF5', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
-            <CheckCircle size={40} color="#16A34A" />
+          <div style={{ width: 80, height: 80, borderRadius: '50%', background: 'var(--success-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
+            <CheckCircle size={40} color="var(--success)" />
           </div>
           <h2 style={{ fontSize: 20, fontWeight: 800, marginBottom: 8 }}>Password Updated</h2>
           <p style={{ color: 'var(--ink-3)', fontSize: 14, lineHeight: 1.6, maxWidth: 260, margin: '0 auto 28px' }}>

@@ -55,16 +55,16 @@ export default function SubmitRequest() {
 
   if (sent) {
     return (
-      <div className="page" style={{ minHeight: '100vh', background: '#F8FAFC' }}>
-        <div style={{ background: 'white', padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 12, borderBottom: '1px solid #E2E8F0', position: 'sticky', top: 0, zIndex: 50 }}>
+      <div className="page" style={{ minHeight: '100vh', background: 'var(--surface-2)' }}>
+        <div style={{ background: 'var(--surface)', padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 12, borderBottom: '1px solid var(--line-1)', position: 'sticky', top: 0, zIndex: 50 }}>
           <span style={{ fontWeight: 700, fontSize: 18 }}>Request Sent</span>
         </div>
         <div style={{ textAlign: 'center', padding: '70px 24px' }}>
           <div style={{ width: 84, height: 84, borderRadius: '50%', background: '#ECFDF5', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
             <CheckCircle size={42} color="#16A34A" />
           </div>
-          <h2 style={{ fontSize: 20, fontWeight: 800, color: '#0F172A', marginBottom: 8 }}>We're on it!</h2>
-          <p style={{ color: '#64748B', fontSize: 14, lineHeight: 1.6, maxWidth: 280, margin: '0 auto 28px' }}>
+          <h2 style={{ fontSize: 20, fontWeight: 800, color: 'var(--ink-1)', marginBottom: 8 }}>We're on it!</h2>
+          <p style={{ color: 'var(--ink-3)', fontSize: 14, lineHeight: 1.6, maxWidth: 280, margin: '0 auto 28px' }}>
             Your request has been submitted. Our support team usually replies within <strong>24 hours</strong>.
           </p>
           <button onClick={() => navigate('/help-support')} className="btn-primary" style={{ width: '100%' }}>Back to Help</button>
@@ -74,54 +74,61 @@ export default function SubmitRequest() {
   }
 
   return (
-    <div className="page" style={{ minHeight: '100vh', background: '#F8FAFC' }}>
-      <div style={{ background: 'white', padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 12, borderBottom: '1px solid #E2E8F0', position: 'sticky', top: 0, zIndex: 50 }}>
-        <button onClick={() => navigate(-1)} style={{ padding: 4 }}><ChevronLeft size={24} color="#0F172A" /></button>
+    <div className="page" style={{ minHeight: '100vh', background: 'var(--surface-2)' }}>
+      <div style={{ background: 'var(--surface)', padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 12, borderBottom: '1px solid var(--line-1)', position: 'sticky', top: 0, zIndex: 50 }}>
+        <button onClick={() => navigate(-1)} style={{ padding: 4, transition: 'all 0.15s' }}
+          onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.05)'; }}
+          onMouseLeave={e => { e.currentTarget.style.transform = ''; }}>
+          <ChevronLeft size={24} color="var(--ink-1)" />
+        </button>
         <span style={{ fontWeight: 700, fontSize: 18 }}>Submit a Request</span>
       </div>
 
       <div style={{ padding: 20 }}>
-        <p style={{ fontSize: 14, color: '#64748B', lineHeight: 1.5, marginBottom: 20 }}>
+        <p style={{ fontSize: 14, color: 'var(--ink-3)', lineHeight: 1.5, marginBottom: 20 }}>
           Describe your issue and we'll get back to you by email within 24 hours.
         </p>
 
-        <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#0F172A', marginBottom: 8 }}>Topic</label>
+        <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: 'var(--ink-1)', marginBottom: 8 }}>Topic</label>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 20 }}>
           {categories.map(c => (
             <button
               key={c.id}
               onClick={() => { setCategory(c.id); setError(''); }}
               style={{
-                padding: '8px 14px', borderRadius: 20, fontSize: 13, fontWeight: 600,
-                border: category === c.id ? '2px solid #2563EB' : '1.5px solid #E2E8F0',
-                background: category === c.id ? '#EFF6FF' : 'white',
-                color: category === c.id ? '#2563EB' : '#334155',
+                padding: '8px 14px', borderRadius: 'var(--radius-xl)', fontSize: 13, fontWeight: 600,
+                border: category === c.id ? '2px solid var(--accent)' : '1.5px solid var(--line-1)',
+                background: category === c.id ? 'var(--accent-softer)' : 'var(--surface)',
+                color: category === c.id ? 'var(--accent)' : 'var(--ink-2)',
                 cursor: 'pointer',
+                transition: 'all 0.15s',
               }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--accent-line)'; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = ''; }}
             >{c.label}</button>
           ))}
         </div>
 
-        <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#0F172A', marginBottom: 8 }}>Subject</label>
+        <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: 'var(--ink-1)', marginBottom: 8 }}>Subject</label>
         <input
           value={subject}
           onChange={e => { setSubject(e.target.value); setError(''); }}
           placeholder="Brief summary of your issue"
           style={{
-            width: '100%', fontSize: 15, borderRadius: 12, padding: 13,
-            border: '1.5px solid #E2E8F0', background: '#F8FAFC',
+            width: '100%', fontSize: 15, borderRadius: 'var(--radius-md)', padding: 13,
+            border: '1.5px solid var(--line-1)', background: 'var(--surface-2)',
             outline: 'none', boxSizing: 'border-box', marginBottom: 16,
           }}
         />
 
-        <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#0F172A', marginBottom: 8 }}>Message</label>
+        <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: 'var(--ink-1)', marginBottom: 8 }}>Message</label>
         <textarea
           value={message}
           onChange={e => { setMessage(e.target.value); setError(''); }}
           placeholder="Tell us what happened, including dates and item links if relevant…"
           style={{
-            width: '100%', minHeight: 110, fontSize: 15, borderRadius: 12, padding: 13,
-            border: '1.5px solid #E2E8F0', background: '#F8FAFC',
+            width: '100%', minHeight: 110, fontSize: 15, borderRadius: 'var(--radius-md)', padding: 13,
+            border: '1.5px solid var(--line-1)', background: 'var(--surface-2)',
             outline: 'none', boxSizing: 'border-box', resize: 'vertical',
             fontFamily: 'inherit', marginBottom: 16,
           }}
@@ -132,10 +139,13 @@ export default function SubmitRequest() {
             onClick={handleAttachFiles}
             style={{
               display: 'inline-flex', alignItems: 'center', gap: 6, padding: '9px 14px',
-              borderRadius: 10, border: '1.5px dashed #CBD5E1', background: '#F8FAFC',
-              fontSize: 12, fontWeight: 600, color: '#64748B', cursor: 'pointer',
+              borderRadius: 'var(--radius-sm)', border: '1.5px dashed var(--ink-2)', background: 'var(--surface-2)',
+              fontSize: 12, fontWeight: 600, color: 'var(--ink-3)', cursor: 'pointer',
               alignSelf: 'flex-start',
+              transition: 'all 0.15s',
             }}
+            onMouseEnter={e => { e.currentTarget.style.background = 'var(--surface-1)'; e.currentTarget.style.borderColor = 'var(--accent-line)'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = ''; e.currentTarget.style.borderColor = ''; }}
           >
             <Paperclip size={14} /> Attach files
           </button>
@@ -145,16 +155,16 @@ export default function SubmitRequest() {
               {attachments.map((file, index) => (
                 <div key={`${file.name}-${index}`} style={{
                   display: 'flex', alignItems: 'center', gap: 8,
-                  background: 'white', border: '1px solid #E2E8F0', borderRadius: 10,
+                  background: 'var(--surface)', border: '1px solid var(--line-1)', borderRadius: 'var(--radius-sm)',
                   padding: '8px 12px',
                 }}>
-                  <FileText size={14} color="#64748B" style={{ flexShrink: 0 }} />
+                  <FileText size={14} color="var(--ink-3)" style={{ flexShrink: 0 }} />
                   <div style={{ flex: 1, overflow: 'hidden' }}>
-                    <p style={{ fontSize: 13, color: '#0F172A', fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{file.name}</p>
-                    <p style={{ fontSize: 11, color: '#94A3B8' }}>{formatSize(file.size)}</p>
+                    <p style={{ fontSize: 13, color: 'var(--ink-1)', fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{file.name}</p>
+                    <p style={{ fontSize: 11, color: 'var(--ink-4)' }}>{formatSize(file.size)}</p>
                   </div>
                   <button onClick={() => handleRemoveAttachment(index)} style={{ padding: 4, cursor: 'pointer', background: 'none', border: 'none' }}>
-                    <X size={14} color="#94A3B8" />
+                    <X size={14} color="var(--ink-4)" />
                   </button>
                 </div>
               ))}
@@ -163,7 +173,7 @@ export default function SubmitRequest() {
         </div>
 
         {error && (
-          <div style={{ background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 10, padding: '10px 14px', marginBottom: 16 }}>
+          <div style={{ background: 'var(--danger-soft)', border: '1px solid var(--danger-line)', borderRadius: 'var(--radius-sm)', padding: '10px 14px', marginBottom: 16 }}>
             <p style={{ fontSize: 13, color: '#DC2626', fontWeight: 500 }}>{error}</p>
           </div>
         )}

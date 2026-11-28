@@ -24,11 +24,11 @@ export default function TwoFactorAuth() {
             <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
               <div style={{
                 width: 48, height: 48, borderRadius: 14, flexShrink: 0,
-                background: enabled ? '#ECFDF5' : 'var(--surface-2)',
+                background: enabled ? 'var(--success-light)' : 'var(--surface-2)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 transition: 'background 0.2s',
               }}>
-                <ShieldCheck size={24} color={enabled ? '#16A34A' : 'var(--ink-4)'} />
+                <ShieldCheck size={24} color={enabled ? 'var(--success)' : 'var(--ink-4)'} />
               </div>
               <div style={{ flex: 1 }}>
                 <p style={{ fontSize: 15, fontWeight: 700, color: 'var(--ink-1)', marginBottom: 2 }}>

@@ -12,7 +12,11 @@
   --border-light: #EDF4FC;
   --success: #3475C7;
   --success-light: #E9F3FF;
+  --success-soft: #E7F7F4;
+  --success-line: #99F6E4;
   --warning: #F59E0B;
+  --warning-soft: #FFFBEB;
+  --warning-line: #FDE68A;
   --info: #0EA5E9;
   --danger: #EF4444;
   --danger-soft: #FEF2F2;
@@ -373,6 +377,10 @@ h3 { font-size: 17px; font-weight: 600; }
   --border-light: #1A2740;
   --success: #57A0DC;
   --success-light: #16324A;
+  --success-soft: #14322B;
+  --success-line: #2F7F5E;
+  --warning-soft: #3A2E14;
+  --warning-line: #7F5C14;
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
   --shadow-md: 0 4px 16px -4px rgba(0, 0, 0, 0.5);
   --shadow-lg: 0 12px 30px -8px rgba(0, 0, 0, 0.55);
@@ -416,3 +424,4 @@ h3 { font-size: 17px; font-weight: 600; }
 [data-theme="dark"] .badge-green { background: #14322B; }
 [data-theme="dark"] .badge-yellow { background: #3A2E14; color: var(--warning); }
 [data-theme="dark"] .badge-red { background: var(--danger-soft); }
+[data-theme="dark"] .badge-green { background: var(--success-soft); color: var(--success); }

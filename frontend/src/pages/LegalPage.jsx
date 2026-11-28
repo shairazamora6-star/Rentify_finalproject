@@ -48,35 +48,39 @@ export default function LegalPage({ type }) {
   const doc = DOCS[type] || DOCS['privacy-policy'];
 
   return (
-    <div className="page" style={{ minHeight: '100vh', background: '#F8FAFC' }}>
+    <div className="page" style={{ minHeight: '100vh', background: 'var(--surface-2)' }}>
       <div style={{
-        background: 'white', padding: '16px 20px',
+        background: 'var(--surface)', padding: '16px 20px',
         display: 'flex', alignItems: 'center', gap: 12,
-        borderBottom: '1px solid #E2E8F0', position: 'sticky', top: 0, zIndex: 50,
+        borderBottom: '1px solid var(--line-1)', position: 'sticky', top: 0, zIndex: 50,
       }}>
-        <button onClick={() => navigate(-1)} style={{ padding: 4 }}><ChevronLeft size={24} color="#0F172A" /></button>
+        <button onClick={() => navigate(-1)} style={{ padding: 4, transition: 'all 0.15s' }}
+          onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.05)'; }}
+          onMouseLeave={e => { e.currentTarget.style.transform = ''; }}>
+          <ChevronLeft size={24} color="var(--ink-1)" />
+        </button>
         <span style={{ fontWeight: 700, fontSize: 18 }}>{doc.title}</span>
       </div>
 
       <div style={{ padding: 20 }}>
-        <div style={{ background: 'white', borderRadius: 16, border: '1px solid #E2E8F0', padding: 20, marginBottom: 16 }}>
+        <div style={{ background: 'var(--surface)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--line-1)', padding: 20, marginBottom: 16 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
-            <div style={{ width: 44, height: 44, borderRadius: 12, background: '#EFF6FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <FileText size={22} color="#2563EB" />
+            <div style={{ width: 44, height: 44, borderRadius: 'var(--radius-md)', background: 'var(--accent-softer)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <FileText size={22} color="var(--accent)" />
             </div>
             <div>
-              <h2 style={{ fontSize: 17, fontWeight: 800, color: '#0F172A', margin: 0 }}>{doc.title}</h2>
-              <p style={{ fontSize: 12, color: '#94A3B8', margin: '2px 0 0' }}>Last updated: October 2026</p>
+              <h2 style={{ fontSize: 17, fontWeight: 800, color: 'var(--ink-1)', margin: 0 }}>{doc.title}</h2>
+              <p style={{ fontSize: 12, color: 'var(--ink-4)', margin: '2px 0 0' }}>Last updated: October 2026</p>
             </div>
           </div>
-          <p style={{ fontSize: 14, color: '#334155', lineHeight: 1.6, margin: 0 }}>{doc.intro}</p>
+          <p style={{ fontSize: 14, color: 'var(--ink-2)', lineHeight: 1.6, margin: 0 }}>{doc.intro}</p>
         </div>
 
-        <div style={{ background: 'white', borderRadius: 16, border: '1px solid #E2E8F0', padding: 20 }}>
+        <div style={{ background: 'var(--surface)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--line-1)', padding: 20 }}>
           {doc.sections.map(s => (
             <div key={s.h} style={{ marginBottom: 18 }}>
-              <h3 style={{ fontSize: 14, fontWeight: 700, color: '#0F172A', margin: '0 0 6px' }}>{s.h}</h3>
-              <p style={{ fontSize: 13, color: '#64748B', lineHeight: 1.6, margin: 0 }}>{s.p}</p>
+              <h3 style={{ fontSize: 14, fontWeight: 700, color: 'var(--ink-1)', margin: '0 0 6px' }}>{s.h}</h3>
+              <p style={{ fontSize: 13, color: 'var(--ink-3)', lineHeight: 1.6, margin: 0 }}>{s.p}</p>
             </div>
           ))}
         </div>
