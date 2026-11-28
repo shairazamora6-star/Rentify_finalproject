@@ -258,23 +258,67 @@ export default function AdminOverview() {
   const { admin } = useAdmin()
 
   const [requestTab, setRequestTab] = useState('pending')
+  const [requests, setRequests] = useState(RENTAL_REQUESTS)
   const [listingTab, setListingTab] = useState('all')
   const [earningsRange, setEarningsRange] = useState('7days')
   const [searchQuery, setSearchQuery] = useState('')
   const [listingSearch, setListingSearch] = useState('')
   const [notifOpen, setNotifOpen] = useState(false)
 
-  const pendingRequests = RENTAL_REQUESTS.filter((r) => r.status === 'pending')
+  const pendingRequests = requests.filter((r) => r.status === 'pending')
+const acceptedRequests = requests.filter((r) => r.status === 'accepted')
+const declinedRequests = requests.filter((r) => r.status === 'declined')
 
-  const filteredListings = useMemo(() => {
-    return LISTINGS.filter((l) => {
-      const matchTab =
-        listingTab === 'all' ||
-        l.status === listingTab
-      const matchSearch = l.name.toLowerCase().includes(listingSearch.toLowerCase())
-      return matchTab && matchSearch
-    })
-  }, [listingTab, listingSearch])
+
+const displayedRequests = requests.filter((r) => {
+  const query = searchQuery.toLowerCase().trim()
+
+  const matchesStatus = r.status === requestTab
+
+  const matchesSearch =
+    !query ||
+    r.customer.toLowerCase().includes(query) ||
+    r.item.toLowerCase().includes(query) ||
+    r.category.toLowerCase().includes(query)
+
+  return matchesStatus && matchesSearch
+})
+
+const updateRequestStatus = (id, status) => {
+  setRequests((prev) =>
+    prev.map((req) =>
+      req.id === id ? { ...req, status } : req
+    )
+  )
+}
+  const totalListings = LISTINGS.length
+const activeListings = LISTINGS.filter((l) => l.status === 'active').length
+const pendingListings = LISTINGS.filter((l) => l.status === 'pending').length
+
+  
+const filteredListings = useMemo(() => {
+  return LISTINGS.filter((l) => {
+    const matchTab =
+      listingTab === 'all' ||
+      l.status === listingTab
+
+    const globalQuery = searchQuery.toLowerCase().trim()
+    const localQuery = listingSearch.toLowerCase().trim()
+
+    const matchesGlobal =
+      !globalQuery ||
+      l.name.toLowerCase().includes(globalQuery) ||
+      l.category.toLowerCase().includes(globalQuery)
+
+    const matchesLocal =
+      !localQuery ||
+      l.name.toLowerCase().includes(localQuery) ||
+      l.category.toLowerCase().includes(localQuery)
+
+    return matchTab && matchesGlobal && matchesLocal
+  })
+}, [listingTab, listingSearch, searchQuery])
+
 
   const earningsData = EARNINGS_DATA[earningsRange]
 
@@ -388,9 +432,9 @@ export default function AdminOverview() {
                 <BarChart2 size={18} />
               </span>
             </div>
-            <div className="ov-stat-value">8 Listings</div>
+            <div className="ov-stat-value">{totalListings} Listings</div>
             <div className="ov-stat-change violet">
-              6 active · 1 pending
+              {activeListings} active · {pendingListings} pending
             </div>
           </div>
           <div className="ov-stat-chart-col">
@@ -407,7 +451,7 @@ export default function AdminOverview() {
                 <Clock size={18} />
               </span>
             </div>
-            <div className="ov-stat-value">5 Requests</div>
+            <div className="ov-stat-value">{pendingRequests.length} Requests</div>
             <div className="ov-stat-change warning">
               <Clock size={13} />
               Oldest waiting 2h
@@ -427,31 +471,37 @@ export default function AdminOverview() {
           <div className="ov-card-header">
             <h2 className="ov-card-title">Rental Requests</h2>
           </div>
-          <div className="ov-tabs">
-            <button
-              className={`ov-tab ${requestTab === 'pending' ? 'active' : ''}`}
-              onClick={() => setRequestTab('pending')}
-            >
-              Pending
-              <span className="ov-tab-badge">5</span>
-            </button>
-            <button
-              className={`ov-tab ${requestTab === 'accepted' ? 'active' : ''}`}
-              onClick={() => setRequestTab('accepted')}
-            >
-              Accepted
-            </button>
-            <button
-              className={`ov-tab ${requestTab === 'declined' ? 'active' : ''}`}
-              onClick={() => setRequestTab('declined')}
-            >
-              Declined
-            </button>
-          </div>
+          
+<div className="ov-tabs">
+  <button
+    className={`ov-tab ${requestTab === 'pending' ? 'active' : ''}`}
+    onClick={() => setRequestTab('pending')}
+  >
+    Pending
+    <span className="ov-tab-badge">{pendingRequests.length}</span>
+  </button>
+
+  <button
+    className={`ov-tab ${requestTab === 'accepted' ? 'active' : ''}`}
+    onClick={() => setRequestTab('accepted')}
+  >
+    Accepted
+    <span className="ov-tab-badge">{acceptedRequests.length}</span>
+  </button>
+
+  <button
+    className={`ov-tab ${requestTab === 'declined' ? 'active' : ''}`}
+    onClick={() => setRequestTab('declined')}
+  >
+    Declined
+    <span className="ov-tab-badge">{declinedRequests.length}</span>
+  </button>
+</div>
+
 
           <div className="ov-requests-list">
-            {requestTab === 'pending' ? (
-              pendingRequests.map((req) => (
+            {displayedRequests.length > 0 ? (
+              displayedRequests.map((req) => (
                 <div key={req.id} className="ov-request-item">
                   <div className="ov-request-top">
                     <div className="ov-request-customer">
@@ -486,20 +536,30 @@ export default function AdminOverview() {
                     </span>
                   </div>
                   <p className="ov-request-message">"{req.message}"</p>
-                  <div className="ov-request-actions">
-                    <button
-                      className="ov-btn-decline"
-                      onClick={() => navigate('/admin/rental-requests')}
-                    >
-                      Decline
-                    </button>
-                    <button
-                      className="ov-btn-review"
-                      onClick={() => navigate('/admin/rental-requests')}
-                    >
-                      Review
-                    </button>
-                  </div>
+                  
+<div className="ov-request-actions">
+  <button
+    className="ov-btn-accept"
+    onClick={() => updateRequestStatus(req.id, 'accepted')}
+  >
+    Accept
+  </button>
+
+  <button
+    className="ov-btn-decline"
+    onClick={() => updateRequestStatus(req.id, 'declined')}
+  >
+    Decline
+  </button>
+
+  <button
+    className="ov-btn-review"
+    onClick={() => navigate('/admin/rental-requests')}
+  >
+    Review
+  </button>
+</div>
+
                 </div>
               ))
             ) : (

@@ -592,6 +592,24 @@
   color: #EF4444;
 }
 
+.ov-btn-accept {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1.5px solid #D1FAE5;
+  background: #ECFDF5;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #059669;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.ov-btn-accept:hover {
+  background: #D1FAE5;
+  border-color: #10B981;
+}
+
+
 .ov-btn-review {
   padding: 8px 18px;
   border-radius: 8px;
