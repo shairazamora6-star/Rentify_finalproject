@@ -37,17 +37,19 @@ export default function DataPermissions() {
   };
 
   return (
-    <div className="page">
+    <div className="page" style={{ minHeight: '100vh', background: 'var(--surface-2)' }}>
       {/* Header */}
       <div style={{
-        background: 'white', padding: '16px 20px',
+        background: 'var(--surface)', padding: '16px 20px',
         display: 'flex', alignItems: 'center', gap: 12,
-        borderBottom: '1px solid #E2E8F0', position: 'sticky', top: 0, zIndex: 50,
+        borderBottom: '1px solid var(--line-1)', position: 'sticky', top: 0, zIndex: 50,
       }}>
-        <button onClick={() => navigate(-1)} style={{ padding: 4 }}>
-          <ChevronLeft size={24} color="#0F172A" />
+        <button onClick={() => navigate(-1)} style={{ padding: 4, transition: 'all 0.15s' }}
+          onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.05)'; }}
+          onMouseLeave={e => { e.currentTarget.style.transform = ''; }}>
+          <ChevronLeft size={24} color="var(--ink-1)" />
         </button>
-        <span style={{ fontWeight: 700, fontSize: 18 }}>Data Permissions</span>
+        <span style={{ fontWeight: 700, fontSize: 18, color: 'var(--ink-1)' }}>Data Permissions</span>
       </div>
 
       <div style={{ padding: '20px' }}>
@@ -63,19 +65,19 @@ export default function DataPermissions() {
         )}
 
         {/* Data Collection */}
-        <div style={{ background: 'white', borderRadius: 12, border: '1px solid #E2E8F0', overflow: 'hidden', marginBottom: 20 }}>
-          <div style={{ padding: '16px 20px', borderBottom: '1px solid #F1F5F9' }}>
+        <div style={{ background: 'var(--surface)', borderRadius: 12, border: '1px solid var(--line-1)', overflow: 'hidden', marginBottom: 20 }}>
+          <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--line-2)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <div style={{
                 width: 44, height: 44, borderRadius: 10,
-                background: '#F8FAFC',
+                background: 'var(--surface-2)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
               }}>
-                <Database size={20} color="#64748B" />
+                <Database size={20} color="var(--ink-3)" />
               </div>
               <div>
-                <p style={{ fontSize: 15, fontWeight: 600, color: '#0F172A' }}>Data Collection</p>
-                <p style={{ fontSize: 13, color: '#64748B' }}>Control what data we collect</p>
+                <p style={{ fontSize: 15, fontWeight: 600, color: 'var(--ink-1)' }}>Data Collection</p>
+                <p style={{ fontSize: 13, color: 'var(--ink-3)' }}>Control what data we collect</p>
               </div>
             </div>
           </div>
@@ -113,25 +115,28 @@ export default function DataPermissions() {
             ].map(item => (
               <label key={item.key} style={{
                 display: 'flex', alignItems: 'center', gap: 12,
-                padding: '16px 0', borderBottom: '1px solid #F1F5F9', cursor: item.required ? 'default' : 'pointer',
-              }}>
+                padding: '16px 0', borderBottom: '1px solid var(--line-2)', cursor: item.required ? 'default' : 'pointer',
+                transition: 'background 0.15s',
+              }}
+              onMouseEnter={e => { if (!item.required) e.currentTarget.style.background = 'var(--surface-2)'; }}
+              onMouseLeave={e => { if (!item.required) e.currentTarget.style.background = 'transparent'; }}>
                 <div style={{ flex: 1 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 2 }}>
-                    <p style={{ fontSize: 14, fontWeight: 500, color: '#0F172A' }}>{item.label}</p>
+                    <p style={{ fontSize: 14, fontWeight: 500, color: 'var(--ink-1)' }}>{item.label}</p>
                     {item.required && (
-                      <span style={{ fontSize: 10, fontWeight: 600, color: '#F59E0B', background: '#FFFBEB', padding: '2px 6px', borderRadius: 4 }}>Required</span>
+                      <span style={{ fontSize: 10, fontWeight: 600, color: 'var(--warning)', background: '#FFFBEB', padding: '2px 6px', borderRadius: 4 }}>Required</span>
                     )}
                   </div>
-                  <p style={{ fontSize: 12, color: '#64748B' }}>{item.desc}</p>
+                  <p style={{ fontSize: 12, color: 'var(--ink-3)' }}>{item.desc}</p>
                 </div>
                 {item.required ? (
-                  <input type="checkbox" checked disabled style={{ width: 22, height: 22, accentColor: '#2563EB', opacity: 0.5 }} />
+                  <input type="checkbox" checked disabled style={{ width: 22, height: 22, accentColor: 'var(--accent)', opacity: 0.5 }} />
                 ) : (
                   <input
                     type="checkbox"
                     checked={permissions[item.key]}
                     onChange={e => setPermissions(prev => ({ ...prev, [item.key]: e.target.checked }))}
-                    style={{ width: 22, height: 22, accentColor: '#2563EB' }}
+                    style={{ width: 22, height: 22, accentColor: 'var(--accent)', cursor: 'pointer' }}
                   />
                 )}
               </label>
@@ -140,15 +145,15 @@ export default function DataPermissions() {
         </div>
 
         {/* Data Sharing */}
-        <div style={{ background: 'white', borderRadius: 12, border: '1px solid #E2E8F0', overflow: 'hidden', marginBottom: 20 }}>
-          <div style={{ padding: '16px 20px', borderBottom: '1px solid #F1F5F9' }}>
+        <div style={{ background: 'var(--surface)', borderRadius: 12, border: '1px solid var(--line-1)', overflow: 'hidden', marginBottom: 20 }}>
+          <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--line-2)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <div style={{
                 width: 44, height: 44, borderRadius: 10,
-                background: '#F8FAFC',
+                background: 'var(--surface-2)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
               }}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#64748B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--ink-3)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="18" cy="6" r="3" />
                   <circle cx="6" cy="18" r="3" />
                   <path d="M13 6h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-8" />
@@ -156,8 +161,8 @@ export default function DataPermissions() {
                 </svg>
               </div>
               <div>
-                <p style={{ fontSize: 15, fontWeight: 600, color: '#0F172A' }}>Data Sharing</p>
-                <p style={{ fontSize: 13, color: '#64748B' }}>Control how your data is shared</p>
+                <p style={{ fontSize: 15, fontWeight: 600, color: 'var(--ink-1)' }}>Data Sharing</p>
+                <p style={{ fontSize: 13, color: 'var(--ink-3)' }}>Control how your data is shared</p>
               </div>
             </div>
           </div>
@@ -182,19 +187,22 @@ export default function DataPermissions() {
             ].map(item => (
               <label key={item.key} style={{
                 display: 'flex', alignItems: 'center', gap: 12,
-                padding: '16px 0', borderBottom: '1px solid #F1F5F9', cursor: 'pointer',
-              }}>
+                padding: '16px 0', borderBottom: '1px solid var(--line-2)', cursor: 'pointer',
+                transition: 'background 0.15s',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.background = 'var(--surface-2)'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}>
                 <div style={{ flex: 1 }}>
-                  <p style={{ fontSize: 14, fontWeight: 500, color: '#0F172A', marginBottom: 2 }}>
+                  <p style={{ fontSize: 14, fontWeight: 500, color: 'var(--ink-1)', marginBottom: 2 }}>
                     {item.label}
                   </p>
-                  <p style={{ fontSize: 12, color: '#64748B' }}>{item.desc}</p>
+                  <p style={{ fontSize: 12, color: 'var(--ink-3)' }}>{item.desc}</p>
                 </div>
                 <input
                   type="checkbox"
                   checked={permissions[item.key]}
                   onChange={e => setPermissions(prev => ({ ...prev, [item.key]: e.target.checked }))}
-                  style={{ width: 22, height: 22, accentColor: '#2563EB' }}
+                  style={{ width: 22, height: 22, accentColor: 'var(--accent)', cursor: 'pointer' }}
                 />
               </label>
             ))}
@@ -202,61 +210,67 @@ export default function DataPermissions() {
         </div>
 
         {/* Data Management Actions */}
-        <div style={{ background: 'white', borderRadius: 12, border: '1px solid #E2E8F0', overflow: 'hidden', marginBottom: 20 }}>
-          <div style={{ padding: '16px 20px', borderBottom: '1px solid #F1F5F9' }}>
-            <p style={{ fontSize: 15, fontWeight: 600, color: '#0F172A' }}>Your Data</p>
+        <div style={{ background: 'var(--surface)', borderRadius: 12, border: '1px solid var(--line-1)', overflow: 'hidden', marginBottom: 20 }}>
+          <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--line-2)' }}>
+            <p style={{ fontSize: 15, fontWeight: 600, color: 'var(--ink-1)' }}>Your Data</p>
           </div>
 
           <button onClick={() => navigate('/download-data')} style={{
             width: '100%', display: 'flex', alignItems: 'center', gap: 12,
             padding: '16px 20px', background: 'none', cursor: 'pointer', textAlign: 'left',
-            borderBottom: '1px solid #F1F5F9',
-          }}>
+            borderBottom: '1px solid var(--line-2)',
+            transition: 'background 0.15s',
+          }}
+          onMouseEnter={e => { e.currentTarget.style.background = 'var(--surface-2)'; }}
+          onMouseLeave={e => { e.currentTarget.style.background = 'none'; }}>
             <div style={{
               width: 40, height: 40, borderRadius: 10,
-              background: '#EFF6FF',
+              background: 'var(--accent-softer)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}>
-              <Download size={18} color="#2563EB" />
+              <Download size={18} color="var(--accent)" />
             </div>
             <div style={{ flex: 1 }}>
-              <p style={{ fontSize: 15, fontWeight: 500, color: '#0F172A', marginBottom: 2 }}>
+              <p style={{ fontSize: 15, fontWeight: 500, color: 'var(--ink-1)', marginBottom: 2 }}>
                 Download My Data
               </p>
-              <p style={{ fontSize: 12, color: '#64748B' }}>
+              <p style={{ fontSize: 12, color: 'var(--ink-3)' }}>
                 Get a copy of all your Rentify data (profile, rentals, messages, reviews)
               </p>
             </div>
-            <ChevronRight size={20} color="#CBD5E1" />
+            <ChevronRight size={20} color="var(--line-1)" />
           </button>
 
           <button onClick={() => navigate('/delete-account-request')} style={{
             width: '100%', display: 'flex', alignItems: 'center', gap: 12,
             padding: '16px 20px', background: 'none', cursor: 'pointer', textAlign: 'left',
-          }}>
+            transition: 'background 0.15s',
+          }}
+          onMouseEnter={e => { e.currentTarget.style.background = 'var(--danger-soft)'; }}
+          onMouseLeave={e => { e.currentTarget.style.background = 'none'; }}>
             <div style={{
               width: 40, height: 40, borderRadius: 10,
-              background: '#FEF2F2',
+              background: 'var(--danger-soft)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}>
-              <Trash2 size={18} color="#EF4444" />
+              <Trash2 size={18} color="var(--danger)" />
             </div>
             <div style={{ flex: 1 }}>
-              <p style={{ fontSize: 15, fontWeight: 500, color: '#EF4444', marginBottom: 2 }}>
+              <p style={{ fontSize: 15, fontWeight: 500, color: 'var(--danger)', marginBottom: 2 }}>
                 Request Data Deletion
               </p>
-              <p style={{ fontSize: 12, color: '#64748B' }}>
+              <p style={{ fontSize: 12, color: 'var(--ink-3)' }}>
                 Permanently delete your account and all associated data
               </p>
             </div>
-            <ChevronRight size={20} color="#CBD5E1" />
+            <ChevronRight size={20} color="var(--line-1)" />
           </button>
         </div>
 
         {/* Legal Links */}
-        <div style={{ background: 'white', borderRadius: 12, border: '1px solid #E2E8F0', overflow: 'hidden', marginBottom: 20 }}>
-          <div style={{ padding: '16px 20px', borderBottom: '1px solid #F1F5F9' }}>
-            <p style={{ fontSize: 15, fontWeight: 600, color: '#0F172A' }}>Legal</p>
+        <div style={{ background: 'var(--surface)', borderRadius: 12, border: '1px solid var(--line-1)', overflow: 'hidden', marginBottom: 20 }}>
+          <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--line-2)' }}>
+            <p style={{ fontSize: 15, fontWeight: 600, color: 'var(--ink-1)' }}>Legal</p>
           </div>
           {[
             { label: 'Privacy Policy', path: '/privacy-policy' },
@@ -266,11 +280,14 @@ export default function DataPermissions() {
           ].map(item => (
             <button key={item.label} onClick={() => navigate(item.path)} style={{
               width: '100%', display: 'flex', alignItems: 'center', gap: 12,
-              padding: '16px 20px', borderBottom: '1px solid #F1F5F9',
+              padding: '16px 20px', borderBottom: '1px solid var(--line-2)',
               background: 'none', cursor: 'pointer', textAlign: 'left',
-            }}>
-              <span style={{ flex: 1, fontSize: 15, fontWeight: 500, color: '#0F172A' }}>{item.label}</span>
-              <ChevronRight size={20} color="#CBD5E1" />
+              transition: 'background 0.15s',
+            }}
+            onMouseEnter={e => { e.currentTarget.style.background = 'var(--surface-2)'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'none'; }}>
+              <span style={{ flex: 1, fontSize: 15, fontWeight: 500, color: 'var(--ink-1)' }}>{item.label}</span>
+              <ChevronRight size={20} color="var(--line-1)" />
             </button>
           ))}
         </div>

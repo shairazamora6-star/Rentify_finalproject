@@ -174,10 +174,23 @@ export default function ExtendRental() {
             width: 36, height: 36,
             border: 'none',
             fontSize: 13, fontWeight: isSelected ? 700 : 500,
-            color: isPast ? '#CBD5E1' : isSelected ? 'white' : isInRange ? '#2563EB' : '#0F172A',
-            backgroundColor: isStart ? '#2563EB' : isEnd ? '#2563EB' : isInRange ? '#EFF6FF' : 'transparent',
-            borderRadius: isStart ? '8px 0 0 8px' : isEnd ? '0 8px 8px 0' : isInRange ? 0 : 8,
+            color: isPast ? 'var(--ink-2)' : isSelected ? 'white' : isInRange ? 'var(--accent)' : 'var(--ink-1)',
+            backgroundColor: isStart ? 'var(--accent)' : isEnd ? 'var(--accent)' : isInRange ? 'var(--accent-softer)' : 'transparent',
+            borderRadius: isStart ? 'var(--radius-sm) 0 0 var(--radius-sm)' : isEnd ? '0 var(--radius-sm) var(--radius-sm) 0' : isInRange ? 0 : 'var(--radius-sm)',
             cursor: isPast ? 'not-allowed' : 'pointer',
+            transition: 'all 0.15s',
+          }}
+          onMouseEnter={e => {
+            if (!isPast) {
+              e.currentTarget.style.backgroundColor = isStart ? 'var(--accent)' : isEnd ? 'var(--accent)' : isInRange ? 'var(--accent-soft)' : 'transparent';
+              e.currentTarget.style.transform = 'scale(1.05)';
+            }
+          }}
+          onMouseLeave={e => {
+            if (!isPast) {
+              e.currentTarget.style.backgroundColor = '';
+              e.currentTarget.style.transform = '';
+            }
           }}
         >
           {d}
@@ -218,34 +231,45 @@ export default function ExtendRental() {
     <div className="page">
       {/* Header */}
       <div style={{
-        background: 'white', padding: '16px 20px',
+        background: 'var(--surface)', padding: '16px 20px',
         display: 'flex', alignItems: 'center', gap: 12,
-        borderBottom: '1px solid #E2E8F0', position: 'sticky', top: 0, zIndex: 50,
+        borderBottom: '1px solid var(--line-1)', position: 'sticky', top: 0, zIndex: 50,
       }}>
-        <button onClick={() => navigate(-1)} style={{ padding: 4 }}>
-          <ChevronLeft size={24} color="#0F172A" />
+        <button onClick={() => navigate(-1)} style={{ padding: 4 }} onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.05)'; }} onMouseLeave={e => { e.currentTarget.style.transform = ''; }}>
+          <ChevronLeft size={24} color="var(--ink-1)" />
         </button>
         <span style={{ fontWeight: 700, fontSize: 18 }}>Extend Rental</span>
       </div>
 
       {/* Progress Steps with connector lines */}
-      <div style={{ padding: '16px 20px 8px', background: 'white', borderBottom: '1px solid #F1F5F9' }}>
+      <div style={{ padding: '16px 20px 8px', background: 'var(--surface)', borderBottom: '1px solid var(--line-2)' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           {steps.map((s, i) => (
             <div key={s.num} style={{ flex: 1, textAlign: 'center', position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               {i < steps.length - 1 && (
                 <div style={{
                   position: 'absolute', top: 10, left: 'calc(50% + 11px)', right: 'calc(50% + 11px)',
-                  height: 2, background: step > i + 1 ? '#2563EB' : '#E2E8F0', zIndex: 0,
+                  height: 2, background: step > i + 1 ? 'var(--accent)' : 'var(--line-2)', zIndex: 0,
                 }} />
               )}
               <div style={{
                 width: 22, height: 22, borderRadius: '50%', margin: '0 auto 6px',
-                background: step >= s.num ? '#2563EB' : '#E2E8F0',
+                background: step >= s.num ? 'var(--accent)' : 'var(--line-2)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 color: 'white', fontSize: 11, fontWeight: 700, position: 'relative', zIndex: 1,
-              }}>{s.num}</div>
-              <p style={{ fontSize: 11, fontWeight: 600, color: step >= s.num ? '#2563EB' : '#94A3B8' }}>
+                transition: 'all 0.15s',
+              }} onMouseEnter={e => {
+                if (step >= s.num) {
+                  e.currentTarget.style.backgroundColor = 'var(--accent)';
+                } else {
+                  e.currentTarget.style.backgroundColor = 'var(--line-2)';
+                }
+              }} onMouseLeave={e => {
+                e.currentTarget.style.backgroundColor = step >= s.num ? 'var(--accent)' : 'var(--line-2)';
+              }}>
+                {s.num}
+              </div>
+              <p style={{ fontSize: 11, fontWeight: 600, color: step >= s.num ? 'var(--accent)' : 'var(--ink-2)' }}>
                 {s.label}
               </p>
             </div>
@@ -257,18 +281,18 @@ export default function ExtendRental() {
         {/* Item Info - Fixed horizontal alignment */}
         <div style={{
           display: 'flex', gap: 12, marginBottom: 20,
-          padding: 12, background: '#F8FAFC', borderRadius: 12,
-          alignItems: 'center',
+          padding: 12, background: 'var(--surface-2)', borderRadius: 'var(--radius-md)',
+          alignItems: 'center', border: '1px solid var(--line-2)',
         }}>
           <img src={item.image} alt={item.title}
             style={{ width: 60, height: 60, borderRadius: 10, objectFit: 'cover', flexShrink: 0 }} />
           <div style={{ flex: 1, minWidth: 0 }}>
-            <h3 style={{ fontSize: 14, fontWeight: 700, marginBottom: 4, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.title}</h3>
-            <p style={{ fontSize: 12, color: '#64748B', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Current rental ends: {new Date(rental.endDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
+            <h3 style={{ fontSize: 14, fontWeight: 700, marginBottom: 4, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', color: 'var(--ink-1)' }}>{item.title}</h3>
+            <p style={{ fontSize: 12, color: 'var(--ink-3)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Current rental ends: {new Date(rental.endDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
           </div>
           <span style={{
             padding: '4px 10px', borderRadius: 20, fontSize: 11, fontWeight: 700,
-            background: '#FEF3C7', color: '#92400E',
+            background: 'var(--warning-soft, #FEF3C7)', color: 'var(--warning)',
             flexShrink: 0, whiteSpace: 'nowrap',
           }}>Active</span>
         </div>

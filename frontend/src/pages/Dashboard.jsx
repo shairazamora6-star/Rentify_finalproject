@@ -155,7 +155,16 @@ export default function Dashboard() {
           </thead>
           <tbody>
             {activity.map((r, i) => (
-              <tr key={i}>
+              <tr
+                key={i}
+                style={{ transition: "all 0.15s" }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.background = "var(--surface-1)";
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.background = "";
+                }}
+              >
                 <td>{r[0]}</td>
                 <td>{r[1]}</td>
                 <td>
