@@ -42,12 +42,14 @@ import RentalAssistant from './components/RentalAssistant'
 import { isDemoMode } from './lib/api'
 import AdminLogin from './pages/AdminLogin'
 import AdminLayout from './components/AdminLayout'
+import AdminOverview from './pages/AdminOverview'
 import Dashboard from './pages/Dashboard'
 import Rentals from './pages/Rentals'
 import Bookings from './pages/Bookings'
 import Reports from './pages/Reports'
 import Complaints from './pages/Complaints'
 import Settings from './pages/Settings'
+import AdminStub from './pages/AdminStub'
 
 const PUBLIC_ROUTES = ['/login', '/register', '/landing']
 
@@ -440,8 +442,23 @@ export default function App() {
       />
             <Route path="/admin/login" element={<AdminLogin />} />
       <Route path="/admin" element={<AdminLayout />}>
-        <Route index element={<Dashboard />} />
+        {/* Overview — Marketplace Overview (new Figma page) */}
+        <Route index element={<AdminOverview />} />
+        {/* Workspace */}
+        <Route path="rental-requests" element={<AdminStub title="Rental Requests" />} />
+        <Route path="active-tracking" element={<AdminStub title="Active Tracking" />} />
+        {/* Marketplace */}
         <Route path="listings" element={<Rentals />} />
+        <Route path="listings/new" element={<AdminStub title="Add New Item" />} />
+        <Route path="categories" element={<AdminStub title="Categories & Search" />} />
+        <Route path="customers" element={<AdminStub title="Customers" />} />
+        <Route path="owners" element={<AdminStub title="Owners" />} />
+        {/* Business */}
+        <Route path="earnings" element={<AdminStub title="Earnings & Payments" />} />
+        <Route path="analytics" element={<Reports />} />
+        <Route path="reviews" element={<AdminStub title="Reviews" />} />
+        <Route path="notifications" element={<AdminStub title="Notifications" />} />
+        {/* Legacy routes kept for backward compatibility */}
         <Route path="bookings" element={<Bookings />} />
         <Route path="reports" element={<Reports />} />
         <Route path="complaints" element={<Complaints />} />

@@ -31,6 +31,7 @@ export default function Register() {
 
   return (
     <AuthLayout
+      variant="register"
       title="Create your account"
       description="Join Rentify to rent the things you need, when you need them."
       footer={<>Already have an account? <Link to="/login">Sign in</Link></>}

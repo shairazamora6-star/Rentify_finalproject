@@ -1,9 +1,9 @@
 import { ArrowUpRight, Camera, CircleCheck, ShieldCheck } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
-export default function AuthLayout({ title, description, children, footer }) {
+export default function AuthLayout({ title, description, children, footer, variant }) {
   return (
-    <div className="auth-shell">
+    <div className={`auth-shell${variant ? ` auth-shell-${variant}` : ''}`}>
       <aside className="auth-aside">
         <Link className="auth-brand" to="/">
           <span className="auth-brand-mark">R</span>
