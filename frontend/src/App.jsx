@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Routes, Route, Navigate, Link, NavLink, useNavigate, useLocation } from 'react-router-dom'
-import { Bell, User, ShoppingCart, X, Trash2, ArrowRight } from 'lucide-react'
+import { Bell, User, ShoppingCart, X, Trash2, ArrowRight, Moon, Sun } from 'lucide-react'
 import { useApp } from './contexts/AppContext'
 import BottomNav from './components/BottomNav'
 import Home from './pages/Home'
@@ -40,7 +40,6 @@ import Nearby from './pages/Nearby'
 import ForgotPassword from './pages/ForgotPassword'
 import ResetPassword from './pages/ResetPassword'
 import RentalAssistant from './components/RentalAssistant'
-import { isDemoMode } from './lib/api'
 import AdminLogin from './pages/AdminLogin'
 import AdminLayout from './components/AdminLayout'
 import AdminOverview from './pages/AdminOverview'
@@ -55,7 +54,7 @@ import RentifyLogo from './components/RentifyLogo'
 const PUBLIC_ROUTES = ['/login', '/register', '/landing']
 
 function GetLayout({ children }) {
-  const { isLoggedIn, user, logout, cart, removeFromCart } = useApp()
+  const { isLoggedIn, user, logout, cart, removeFromCart, theme, toggleTheme } = useApp()
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const [cartOpen, setCartOpen] = useState(false)
@@ -83,12 +82,6 @@ function GetLayout({ children }) {
         <div className="app-topbar-user">
           {isLoggedIn ? (
             <>
-              <button className="app-topbar-icon app-topbar-cart" onClick={() => setCartOpen(true)} aria-label={`Cart, ${cartCount} item${cartCount === 1 ? '' : 's'}`}>
-                <ShoppingCart size={18} />
-                {cartCount > 0 && (
-                  <span className="app-topbar-cart-badge">{cartCount}</span>
-                )}
-              </button>
               <Link className="app-topbar-user-profile" to="/profile" aria-label="Profile">
                 {user?.profileImage ? (
                   <img className="app-topbar-avatar" src={user.profileImage} alt="" />
@@ -97,12 +90,24 @@ function GetLayout({ children }) {
                 )}
                 <span className="app-topbar-username">{user?.name}</span>
               </Link>
+              <button className="app-topbar-icon app-topbar-cart" onClick={() => setCartOpen(true)} aria-label={`Cart, ${cartCount} item${cartCount === 1 ? '' : 's'}`}>
+                <ShoppingCart size={18} />
+                {cartCount > 0 && (
+                  <span className="app-topbar-cart-badge">{cartCount}</span>
+                )}
+              </button>
               <Link className="app-topbar-icon" to="/notifications" aria-label="Notifications">
                 <Bell size={18} />
               </Link>
+              <button className="app-topbar-icon" onClick={toggleTheme} aria-label={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}>
+                {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+              </button>
             </>
           ) : (
             <>
+              <button className="app-topbar-icon" onClick={toggleTheme} aria-label={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}>
+                {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+              </button>
               <button onClick={() => navigate('/login')}>Log in</button>
               <button onClick={() => navigate('/register')}>Join</button>
             </>
@@ -168,11 +173,6 @@ export default function App() {
 
   return (
     <>
-      {isDemoMode && (
-        <div className="demo-mode-banner" role="status">
-          Frontend demo mode — sample data only; changes stay in this browser and are not saved to the database.
-        </div>
-      )}
       <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
