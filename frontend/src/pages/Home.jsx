@@ -7,8 +7,13 @@ import { useApp } from '../contexts/AppContext';
 
 export default function Home() {
   const navigate = useNavigate();
-  const { items } = useApp();
+  const { items, user } = useApp();
   const [activeCat, setActiveCat] = useState('all');
+  const [location, setLocation] = useState('San Francisco, CA');
+  const [editingLocation, setEditingLocation] = useState(false);
+  const [locationDraft, setLocationDraft] = useState('San Francisco, CA');
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
   const filtered = activeCat === 'all' ? items : items.filter(i => i.category === activeCat);
   const featured = items.filter(i => i.featured);
   const nearbyItems = activeCat === 'all' ? filtered.filter(item => !item.featured) : filtered;
@@ -17,11 +22,31 @@ export default function Home() {
     <div className="page">
       {/* Location & Greeting */}
       <div style={{ padding: '14px 20px 0' }}>
-        <p style={{ fontSize: 13, color: '#94A3B8', marginBottom: 2, fontWeight: 500 }}>Good morning 👋</p>
+        <p style={{ fontSize: 13, color: '#94A3B8', marginBottom: 2, fontWeight: 500 }}>{greeting}{user?.name ? `, ${user.name.split(' ')[0]}` : ' 👋'}</p>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 14 }}>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-          <span style={{ fontSize: 15, fontWeight: 600, color: '#0F172A' }}>San Francisco, CA</span>
-          <span style={{ fontSize: 12, color: '#2563EB', fontWeight: 600, marginLeft: 2 }}>Change</span>
+          {editingLocation ? (
+            <input
+              value={locationDraft}
+              onChange={e => setLocationDraft(e.target.value)}
+              onKeyDown={e => {
+                if (e.key === 'Enter' && locationDraft.trim()) {
+                  setLocation(locationDraft.trim());
+                  setEditingLocation(false);
+                }
+                if (e.key === 'Escape') setEditingLocation(false);
+              }}
+              autoFocus
+              style={{ fontSize: 15, fontWeight: 600, color: '#0F172A', border: 'none', outline: 'none', background: '#F8FAFC', borderRadius: 8, padding: '4px 8px', width: 180 }}
+            />
+          ) : (
+            <span style={{ fontSize: 15, fontWeight: 600, color: '#0F172A' }}>{location}</span>
+          )}
+          {editingLocation ? (
+            <button onClick={() => { if (locationDraft.trim()) setLocation(locationDraft.trim()); setEditingLocation(false); }} style={{ fontSize: 12, color: '#2563EB', fontWeight: 600, marginLeft: 2, background: 'none', border: 'none', cursor: 'pointer' }}>Save</button>
+          ) : (
+            <button onClick={() => { setLocationDraft(location); setEditingLocation(true); }} style={{ fontSize: 12, color: '#2563EB', fontWeight: 600, marginLeft: 2, background: 'none', border: 'none', cursor: 'pointer' }}>Change</button>
+          )}
         </div>
       </div>
 
@@ -101,14 +126,14 @@ export default function Home() {
         <h2 style={{ fontSize: 17, fontWeight: 700, color: '#0F172A', marginBottom: 14 }}>Browse Categories</h2>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
           {[
-            { name: 'Electronics', emoji: '💻', bg: '#EEF2FF' },
-            { name: 'Cameras', emoji: '📷', bg: '#F0FDFA' },
-            { name: 'Gaming', emoji: '🎮', bg: '#FFFBEB' },
-            { name: 'Tools', emoji: '🔧', bg: '#FFF1F2' },
-            { name: 'Sports', emoji: '⚽', bg: '#F5F3FF' },
-            { name: 'Fashion', emoji: '👗', bg: '#FEF3C7' },
+            { name: 'Electronics', id: 'electronics', emoji: '💻', bg: '#EEF2FF' },
+            { name: 'Cameras', id: 'cameras', emoji: '📷', bg: '#F0FDFA' },
+            { name: 'Gaming', id: 'gaming', emoji: '🎮', bg: '#FFFBEB' },
+            { name: 'Tools', id: 'tools', emoji: '🔧', bg: '#FFF1F2' },
+            { name: 'Sports', id: 'sports', emoji: '⚽', bg: '#F5F3FF' },
+            { name: 'Fashion', id: 'fashion', emoji: '👗', bg: '#FEF3C7' },
           ].map(cat => (
-            <button key={cat.name} onClick={() => navigate('/search')} style={{
+            <button key={cat.name} onClick={() => navigate(`/search?category=${cat.id}`)} style={{
               padding: '16px 8px', borderRadius: 14, background: cat.bg,
               border: 'none', cursor: 'pointer',
               display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,

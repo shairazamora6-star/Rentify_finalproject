@@ -1,31 +1,89 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ChevronLeft, User, Mail, MapPin, Camera, Save, CheckCircle } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { ChevronLeft, User, Mail, MapPin, Camera, CheckCircle, X } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
 
 export default function PersonalInfo() {
   const navigate = useNavigate();
-  const { user, updateUser } = useApp();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { user, setUser, addNotification } = useApp();
 
-  const [activeTab, setActiveTab] = useState('profile');
-  const [profile, setProfile] = useState({
-    fullName: 'John Mitchell',
-    username: 'johnmitchell',
-    bio: 'Frequent renter, love outdoor gear and cameras!',
-    email: 'john.mitchell@email.com',
-    phone: '+1 (555) 123-4567',
-    location: 'San Francisco, CA',
-  });
+  // Read initial tab from URL ?tab= param
+  const initialTab = searchParams.get('tab') || 'profile';
+
+  const [activeTab, setActiveTab] = useState(initialTab);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+
+  // Initialize profile from user context
+  const [profile, setProfile] = useState(() => {
+    if (!user) return { fullName: '', username: '', bio: '', email: '', phone: '', location: '' };
+    const nameParts = (user.name || '').split(' ');
+    return {
+      fullName: user.name || '',
+      username: user.username || (nameParts.length > 1 ? nameParts[0].toLowerCase() + nameParts[1].toLowerCase() : nameParts[0].toLowerCase()),
+      bio: user.bio || '',
+      email: user.email || '',
+      phone: user.phone || '',
+      location: user.location || '',
+      avatar: user.avatar || null,
+    };
+  });
+
+  // Sync activeTab to URL
+  useEffect(() => {
+    setSearchParams({ tab: activeTab }, { replace: true });
+  }, [activeTab, setSearchParams]);
+
+  // Derive initials from fullName for avatar
+  const initials = (profile.fullName || '').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || '?';
 
   const handleSave = async () => {
     setSaving(true);
     await new Promise(r => setTimeout(r, 1000));
-    // In real app: updateUser(profile)
+
+    // Update user in context (demo mode persistence via localStorage in AppContext)
+    const updatedUser = {
+      ...user,
+      name: profile.fullName,
+      username: profile.username,
+      bio: profile.bio,
+      email: profile.email,
+      phone: profile.phone,
+      location: profile.location,
+      avatar: profile.avatar,
+    };
+    setUser(updatedUser);
+
     setSaving(false);
     setSaved(true);
+    addNotification({
+      type: 'profile_updated',
+      title: 'Profile Updated',
+      message: 'Your personal information has been saved.',
+    });
     setTimeout(() => setSaved(false), 2000);
+  };
+
+  const handleAvatarUpload = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          setProfile(prev => ({ ...prev, avatar: ev.target.result }));
+        };
+        reader.readAsDataURL(file);
+      }
+    };
+    input.click();
+  };
+
+  const handleRemoveAvatar = () => {
+    setProfile(prev => ({ ...prev, avatar: null }));
   };
 
   const tabs = [
@@ -89,23 +147,53 @@ export default function PersonalInfo() {
             {/* Avatar */}
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 24 }}>
               <div style={{ position: 'relative', marginBottom: 16 }}>
-                <div style={{
-                  width: 100, height: 100, borderRadius: '50%',
-                  background: 'linear-gradient(135deg, #3978D5, #73A7E5)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  color: 'white', fontWeight: 700, fontSize: 36,
-                }}>
-                  JM
-                </div>
-                <button style={{
-                  position: 'absolute', bottom: 0, right: 0,
-                  width: 32, height: 32, borderRadius: '50%',
-                  background: '#2563EB',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  border: '2px solid white', cursor: 'pointer',
-                }}>
-                  <Camera size={16} color="white" />
-                </button>
+                {profile.avatar ? (
+                  <>
+                    <img
+                      src={profile.avatar}
+                      alt="Profile"
+                      style={{
+                        width: 100, height: 100, borderRadius: '50%',
+                        objectFit: 'cover',
+                      }}
+                    />
+                    <button
+                      onClick={handleRemoveAvatar}
+                      style={{
+                        position: 'absolute', bottom: 0, right: 0,
+                        width: 32, height: 32, borderRadius: '50%',
+                        background: '#EF4444',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        border: '2px solid white', cursor: 'pointer',
+                      }}
+                    >
+                      <X size={14} color="white" />
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <div style={{
+                      width: 100, height: 100, borderRadius: '50%',
+                      background: 'linear-gradient(135deg, #3978D5, #73A7E5)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      color: 'white', fontWeight: 700, fontSize: 36,
+                    }}>
+                      {initials}
+                    </div>
+                    <button
+                      onClick={handleAvatarUpload}
+                      style={{
+                        position: 'absolute', bottom: 0, right: 0,
+                        width: 32, height: 32, borderRadius: '50%',
+                        background: '#2563EB',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        border: '2px solid white', cursor: 'pointer',
+                      }}
+                    >
+                      <Camera size={16} color="white" />
+                    </button>
+                  </>
+                )}
               </div>
               <p style={{ fontSize: 13, color: '#64748B' }}>Tap to change photo</p>
             </div>

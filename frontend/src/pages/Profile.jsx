@@ -1,23 +1,38 @@
-import { useState } from 'react';
-import { Camera, User, Mail, MapPin, Calendar, Edit2, Shield, Bell, LogOut, Trash2 } from 'lucide-react';
+import { useState, useRef } from 'react';
+import { Camera, User, Mail, MapPin, Calendar, Edit2, Shield, Bell, LogOut, Trash2, LayoutDashboard } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '../contexts/AppContext';
 
 export default function Profile() {
   const navigate = useNavigate();
-  const { setIsLoggedIn } = useApp();
+  const { logout, user } = useApp();
+  const fileRef = useRef(null);
+  const [avatar, setAvatar] = useState(null);
   const [editMode, setEditMode] = useState(false);
   const [profile, setProfile] = useState({
-    name: 'John Mitchell',
-    email: 'john.mitchell@email.com',
+    name: user?.name || 'John Mitchell',
+    email: user?.email || 'john.mitchell@email.com',
     phone: '+1 (555) 123-4567',
-    location: 'San Francisco, CA',
+    location: user?.location || 'San Francisco, CA',
     joined: 'January 2024',
   });
 
+  const initials = (profile.name || 'R')
+    .split(' ')
+    .filter(Boolean)
+    .map(part => part[0])
+    .slice(0, 2)
+    .join('')
+    .toUpperCase();
+
   const handleLogout = () => {
-    setIsLoggedIn(false);
+    logout();
     navigate('/login');
+  };
+
+  const handleAvatarChange = (event) => {
+    const file = event.target.files?.[0];
+    if (file) setAvatar(URL.createObjectURL(file));
   };
 
   return (
@@ -52,21 +67,30 @@ export default function Profile() {
       }}>
         <div style={{
           width: 88, height: 88, borderRadius: '50%',
-          background: 'linear-gradient(135deg, #3978D5, #73A7E5)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          color: 'white', fontWeight: 700, fontSize: 32,
           position: 'relative',
         }}>
-          JM
-          <button style={{
+          {avatar ? (
+            <img src={avatar} alt={profile.name} style={{
+              width: 88, height: 88, borderRadius: '50%', objectFit: 'cover',
+            }} />
+          ) : (
+            <div style={{
+              width: 88, height: 88, borderRadius: '50%',
+              background: 'linear-gradient(135deg, #3978D5, #73A7E5)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              color: 'white', fontWeight: 700, fontSize: 32,
+            }}>{initials}</div>
+          )}
+          <button onClick={() => fileRef.current?.click()} aria-label="Change photo" style={{
             position: 'absolute', bottom: 0, right: 0,
             width: 28, height: 28, borderRadius: '50%',
             background: '#2563EB',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            border: '2px solid white',
+            border: '2px solid white', cursor: 'pointer',
           }}>
             <Camera size={14} color="white" />
           </button>
+          <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleAvatarChange} />
         </div>
         <h2 style={{ fontSize: 22, fontWeight: 700, marginTop: 12 }}>{profile.name}</h2>
         <p style={{ fontSize: 14, color: '#64748B' }}>{profile.email}</p>
@@ -136,8 +160,9 @@ export default function Profile() {
       <div style={{ padding: '0 20px' }}>
         <p style={{ fontSize: 13, fontWeight: 600, color: '#94A3B8', marginBottom: 8, textTransform: 'uppercase', letterSpacing: 0.5 }}>Settings</p>
         {[
-          { icon: Shield, label: 'Account Settings', path: '/settings' },
+          { icon: Shield, label: 'Account Settings', path: '/account-settings' },
           { icon: Bell, label: 'Notifications', path: '/notifications-settings' },
+          { icon: LayoutDashboard, label: 'Admin Console', path: '/admin' },
         ].map(({ icon: Icon, label, path }) => (
           <button key={label} onClick={() => navigate(path)} style={{
             width: '100%',

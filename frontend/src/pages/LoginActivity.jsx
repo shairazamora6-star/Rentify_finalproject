@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronLeft, Monitor, Smartphone, ShieldCheck, Laptop, Globe } from 'lucide-react';
+import { ChevronLeft, Monitor, Smartphone, ShieldCheck, Laptop, Globe, CheckCircle } from 'lucide-react';
+import { useApp } from '../contexts/AppContext';
 
 const sessions = [
   { id: 1, device: 'Current session', icon: Monitor, os: 'Windows 11 · Chrome 126', location: 'Berlin, Germany', ip: '88.214.6.12', last: 'Now', current: true },
@@ -9,6 +11,17 @@ const sessions = [
 
 export default function LoginActivity() {
   const navigate = useNavigate();
+  const { addNotification } = useApp();
+  const [signedOut, setSignedOut] = useState({});
+
+  const handleSignOut = (session) => {
+    setSignedOut(prev => ({ ...prev, [session.id]: true }));
+    addNotification({
+      type: 'session_revoked',
+      title: 'Session Signed Out',
+      message: `${session.device} has been signed out.`,
+    });
+  };
 
   return (
     <div className="page" style={{ minHeight: '100vh', background: '#F8FAFC' }}>
@@ -29,10 +42,13 @@ export default function LoginActivity() {
 
         {sessions.map(s => {
           const Icon = s.icon;
+          const revoked = signedOut[s.id];
           return (
             <div key={s.id} style={{
               background: 'white', borderRadius: 14, border: '1px solid #E2E8F0',
               padding: 16, marginBottom: 12,
+              opacity: revoked ? 0.6 : 1,
+              transition: 'opacity 0.2s',
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                 <div style={{
@@ -45,11 +61,17 @@ export default function LoginActivity() {
                 <div style={{ flex: 1 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                     <p style={{ fontSize: 14, fontWeight: 600, color: '#0F172A' }}>{s.device}</p>
-                    {s.current && (
+                    {s.current && !revoked && (
                       <span style={{
                         padding: '2px 8px', borderRadius: 8, fontSize: 10, fontWeight: 700,
                         background: '#DCFCE7', color: '#16A34A',
                       }}>Active</span>
+                    )}
+                    {revoked && (
+                      <span style={{
+                        padding: '2px 8px', borderRadius: 8, fontSize: 10, fontWeight: 700,
+                        background: '#FEE2E2', color: '#DC2626',
+                      }}>Revoked</span>
                     )}
                   </div>
                   <p style={{ fontSize: 12, color: '#64748B', marginTop: 2 }}>{s.os}</p>
@@ -59,18 +81,30 @@ export default function LoginActivity() {
                     <Globe size={12} color="#94A3B8" />
                     <span style={{ fontSize: 12, color: '#64748B' }}>{s.location}</span>
                   </div>
-                  <p style={{ fontSize: 12, color: s.current ? '#2563EB' : '#94A3B8', fontWeight: 600, marginTop: 4 }}>{s.last}</p>
+                  <p style={{ fontSize: 12, color: revoked ? '#DC2626' : s.current ? '#2563EB' : '#94A3B8', fontWeight: 600, marginTop: 4 }}>
+                    {revoked ? 'Signed out' : s.last}
+                  </p>
                 </div>
               </div>
 
-              {!s.current && (
-                <button style={{
+              {!s.current && !revoked && (
+                <button onClick={() => handleSignOut(s)} style={{
                   width: '100%', marginTop: 12, padding: 10, borderRadius: 10,
                   border: '1.5px solid #FECACA', background: '#FEF2F2',
                   color: '#DC2626', fontSize: 13, fontWeight: 600, cursor: 'pointer',
                 }}>
                   Sign out this device
                 </button>
+              )}
+              {revoked && (
+                <div style={{
+                  width: '100%', marginTop: 12, padding: 10, borderRadius: 10,
+                  border: '1.5px solid #D1D5DB', background: '#F9FAFB',
+                  color: '#6B7280', fontSize: 13, fontWeight: 600,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+                }}>
+                  <CheckCircle size={14} /> Device signed out
+                </div>
               )}
             </div>
           );

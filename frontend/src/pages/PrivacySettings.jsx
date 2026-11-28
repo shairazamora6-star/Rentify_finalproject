@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronLeft, User, Eye, EyeOff, Globe, Lock, Save, CheckCircle, ChevronRight } from 'lucide-react';
+import { ChevronLeft, User, Eye, Globe, Lock, CheckCircle, ChevronRight } from 'lucide-react';
 
 export default function PrivacySettings() {
   const navigate = useNavigate();

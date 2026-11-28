@@ -1,10 +1,21 @@
-import { MessageCircle } from 'lucide-react';
+import { MessageCircle, Paperclip } from 'lucide-react';
 import { mockMessages, mockUsers } from '../data/mockData';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 
-const ChatView = ({ conversation, onBack }) => {
+const ChatView = ({ conversation, onBack, onClearUnread }) => {
   const [messageText, setMessageText] = useState('');
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState(() => {
+    if (conversation.messages && conversation.messages.length > 0) {
+      return conversation.messages;
+    }
+    return conversation.lastMessage ? [{
+      id: Date.now() - 1,
+      text: conversation.lastMessage,
+      sent: false,
+      time: conversation.time,
+    }] : [];
+  });
+  const fileRef = useRef(null);
 
   const handleSend = () => {
     const text = messageText.trim();
@@ -16,6 +27,24 @@ const ChatView = ({ conversation, onBack }) => {
       time: new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }),
     }]);
     setMessageText('');
+  };
+
+  const handleAttach = () => {
+    fileRef.current?.click();
+  };
+
+  const handleFileSelect = (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    const fileName = file.name;
+    setMessages((current) => [...current, {
+      id: Date.now(),
+      text: `📎 ${fileName} (${(file.size / 1024).toFixed(1)} KB)`,
+      sent: true,
+      time: new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }),
+      isAttachment: true,
+    }]);
+    event.target.value = '';
   };
 
   return (
@@ -93,12 +122,13 @@ const ChatView = ({ conversation, onBack }) => {
         borderTop: '1px solid #F1F5F9', padding: '12px 16px',
         display: 'flex', gap: 10, alignItems: 'center', zIndex: 40,
       }}>
-        <button style={{
+        <input ref={fileRef} type="file" style={{ display: 'none' }} onChange={handleFileSelect} />
+        <button onClick={handleAttach} style={{
           width: 40, height: 40, borderRadius: '50%',
           border: 'none', background: '#F8FAFC', cursor: 'pointer',
           display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
         }}>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#64748B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+          <Paperclip size={18} color="#64748B" />
         </button>
         <input
           value={messageText}

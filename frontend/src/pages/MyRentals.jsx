@@ -12,9 +12,15 @@ const tabs = [
 
 export default function MyRentals() {
   const navigate = useNavigate();
-  const { rentals } = useApp();
+  const { rentals, items } = useApp();
   const [activeTab, setActiveTab] = useState('active');
   const visibleRentals = rentals.filter(rental => rental.status === activeTab);
+
+  const getItemId = (rental) => {
+    if (rental.itemId) return rental.itemId;
+    const match = items.find(i => i.title.toLowerCase() === (rental.item || '').toLowerCase());
+    return match ? match.id : 1;
+  };
 
   return (
     <div className="page">
@@ -109,12 +115,21 @@ export default function MyRentals() {
                     <RefreshCw size={14} /> Extend
                   </button>
                 )}
-                <button style={{
-                  flex: 1, padding: '9px', borderRadius: 10,
-                  border: '1.5px solid #E2E8F0', background: 'white',
-                  color: '#0F172A', fontSize: 13, fontWeight: 600,
-                }}>
-                  {rental.status === 'active' ? 'Details' : rental.status === 'completed' ? 'Review' : 'Details'}
+                <button
+                  onClick={() => {
+                    if (rental.status === 'completed' && !rental.rated) {
+                      navigate(`/return-review/${rental.id}`);
+                    } else {
+                      navigate(`/item/${getItemId(rental)}`);
+                    }
+                  }}
+                  style={{
+                    flex: 1, padding: '9px', borderRadius: 10,
+                    border: '1.5px solid #E2E8F0', background: 'white',
+                    color: '#0F172A', fontSize: 13, fontWeight: 600, cursor: 'pointer',
+                  }}
+                >
+                  {rental.status === 'active' ? 'Details' : rental.status === 'completed' ? (rental.rated ? 'Completed ✓' : 'Leave Review') : 'Details'}
                 </button>
               </div>
             </div>

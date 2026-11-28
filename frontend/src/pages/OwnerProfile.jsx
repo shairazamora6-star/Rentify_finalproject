@@ -1,27 +1,47 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { MapPin, Star, MessageSquare, Share2, Camera, Heart, ShieldCheck, Users, ChevronLeft, Phone, Mail } from 'lucide-react';
+import { MapPin, Star, MessageSquare, Share2, Camera, Heart, ShieldCheck, Users, ChevronLeft, Phone, Mail, Clock } from 'lucide-react';
 import { mockItems } from '../data/mockData';
+import { useApp } from '../contexts/AppContext';
 
 export default function OwnerProfile() {
+  const { id } = useParams();
   const navigate = useNavigate();
+  const { addNotification } = useApp();
   const [showShareMenu, setShowShareMenu] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [followed, setFollowed] = useState(false);
 
-  // Mock owner data — in real app this would come from context or API
+  // Find owner from mockItems by matching owner name or use id to find items
+  // The :id param can be owner name (lowercase with hyphens) or numeric
+  const ownerName = useMemo(() => {
+    // Try to find items with owner matching the id param (case-insensitive, hyphenated)
+    const matchingItem = mockItems.find(item =>
+      item.owner.toLowerCase().replace(/\s+/g, '-') === id.toLowerCase()
+    );
+    return matchingItem?.owner || 'Sarah Chen'; // fallback
+  }, [id]);
+
+  // Derive owner data from their items
+  const ownerItems = useMemo(() => mockItems.filter(item => item.owner === ownerName), [ownerName]);
+  const firstItem = ownerItems[0];
+
+  // Generate consistent avatar initials from owner name
+  const ownerInitials = ownerName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+
   const owner = {
-    id: 101,
-    name: 'Sarah Chen',
-    username: '@sarahchen',
+    id: firstItem?.ownerId || 101,
+    name: ownerName,
+    username: '@' + ownerName.toLowerCase().replace(/\s+/g, ''),
     joined: 'March 2023',
-    location: 'San Francisco, CA',
+    location: firstItem?.location || 'San Francisco, CA',
     rating: 4.92,
-    totalReviews: 87,
+    totalReviews: ownerItems.reduce((sum, item) => sum + (item.reviews || 0), 0),
     responseRate: 98,
     responseTime: '< 1 hour',
     verified: true,
     memberSince: 'Member since March 2023',
-    itemsForRent: 12,
+    itemsForRent: ownerItems.length,
     completedRentals: 156,
     bio: "Outdoor enthusiast and gear collector. I love sharing my equipment with the community! From camera gear to camping essentials, I've got you covered.",
   };
@@ -33,14 +53,50 @@ export default function OwnerProfile() {
     { category: 'Reliability', value: 4.9 },
   ];
 
-  const myItems = mockItems.slice(0, 4);
-  const otherOwnerItems = mockItems.filter(i => i.owner !== owner.name).slice(0, 2);
+  const myItems = ownerItems.slice(0, 4);
 
   const handleShare = () => {
-    navigator.clipboard?.writeText('https://rentify.app/owner/sarah-chen');
+    navigator.clipboard?.writeText(`https://rentify.app/owner/${id}`);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
     setShowShareMenu(false);
+  };
+
+  const handleSendMessage = () => {
+    if (!ownerName) return;
+    // Navigate to messages with a conversation context
+    navigate('/messages', { state: { conversation: { ownerId: owner.id, ownerName: owner.name, itemId: firstItem?.id } } });
+  };
+
+  const handleFollow = () => {
+    setFollowed(!followed);
+    addNotification({
+      type: followed ? 'unfollowed' : 'followed',
+      title: followed ? 'Unfollowed' : 'Followed',
+      message: `You ${followed ? 'unfollowed' : 'are now following'} ${owner.name}.`,
+    });
+  };
+
+  const handleViewAll = () => {
+    navigate('/search', { state: { ownerFilter: owner.name } });
+  };
+
+  const handleAvatarUpload = () => {
+    // Demo: create a file input and simulate upload
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        addNotification({
+          type: 'avatar_updated',
+          title: 'Avatar Updated',
+          message: 'Your profile photo has been updated (demo mode).',
+        });
+      }
+    };
+    input.click();
   };
 
   return (
@@ -92,14 +148,14 @@ export default function OwnerProfile() {
               background: 'linear-gradient(135deg, #3978D5, #73A7E5)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               color: 'white', fontWeight: 700, fontSize: 28,
-            }}>SC</div>
+            }}>{ownerInitials}</div>
             <button style={{
               position: 'absolute', bottom: 0, right: 0,
               width: 28, height: 28, borderRadius: '50%',
               background: '#2563EB',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               border: '2px solid white', cursor: 'pointer',
-            }}>
+            }} onClick={handleAvatarUpload}>
               <Camera size={14} color="white" />
             </button>
           </div>
@@ -146,11 +202,11 @@ export default function OwnerProfile() {
 
         {/* Action Buttons */}
         <div style={{ display: 'flex', gap: 10 }}>
-          <button className="btn-primary" style={{ flex: 1 }}>
+          <button className="btn-primary" style={{ flex: 1 }} onClick={handleSendMessage}>
             <MessageSquare size={16} /> Send Message
           </button>
-          <button className="btn-outline" style={{ flex: 1 }}>
-            <Heart size={16} /> Follow
+          <button className={followed ? 'btn-primary' : 'btn-outline'} style={{ flex: 1 }} onClick={handleFollow}>
+            <Heart size={16} fill={followed ? '#2563EB' : 'none'} stroke={followed ? '#2563EB' : '#2563EB'} /> {followed ? 'Following' : 'Follow'}
           </button>
         </div>
       </div>
@@ -188,7 +244,7 @@ export default function OwnerProfile() {
         <div style={{ marginBottom: 24 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
             <h3 style={{ fontSize: 16, fontWeight: 700 }}>My Listings ({owner.itemsForRent})</h3>
-            <button style={{ fontSize: 13, color: '#2563EB', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600 }}>View All</button>
+            <button style={{ fontSize: 13, color: '#2563EB', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600 }} onClick={handleViewAll}>View All</button>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
             {myItems.map(item => (

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronLeft, Eye, EyeOff, Clock, CheckCircle, Save, CheckCircle as SavedIcon } from 'lucide-react';
+import { ChevronLeft, Eye, EyeOff, Clock, CheckCircle } from 'lucide-react';
 
 export default function ActivityStatus() {
   const navigate = useNavigate();
@@ -181,7 +181,12 @@ export default function ActivityStatus() {
               {quickMessages.map(msg => (
                 <button
                   key={msg}
-                  onClick={() => { setStatus('on'); setCustomMessage(msg); if (showCustom) { setInputValue(msg); setShowCustom(false); } }}
+                  onClick={() => {
+                    const nextStatus = msg === 'Offline' ? 'off' : 'on';
+                    setStatus(nextStatus);
+                    setCustomMessage(msg);
+                    if (showCustom) { setInputValue(msg); setShowCustom(false); }
+                  }}
                   style={{
                     width: '100%', display: 'flex', alignItems: 'center', gap: 12,
                     padding: '14px 20px', borderBottom: '1px solid #F1F5F9',

@@ -12,12 +12,23 @@ export default function ItemDetails() {
 
   const item = items.find(i => i.id === parseInt(id)) || mockItems.find(i => i.id === parseInt(id));
   const [selectedImage, setSelectedImage] = useState(0);
+  const [showAllReviews, setShowAllReviews] = useState(false);
 
   if (!item) return <div className="page">Item not found</div>;
 
-  const images = [item.image, item.image, item.image];
+  const images = item.images && item.images.length ? item.images : [item.image];
   const features = item.features || ['High quality', 'Good condition', 'Available now'];
-  const reviews = item.reviews || [];
+  const reviewList = Array.isArray(item.reviews) ? item.reviews : (item.reviewList || []);
+  const reviewCount = Array.isArray(item.reviews) ? item.reviews.length : (item.reviews || reviewList.length || 0);
+
+  const handleShare = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      addNotification({ type: 'system', title: 'Link copied', message: 'Share link copied to clipboard' });
+    } catch {
+      addNotification({ type: 'system', title: 'Link ready to share', message: window.location.href });
+    }
+  };
 
   return (
     <div className="page" style={{ paddingBottom: 80 }}>
@@ -53,7 +64,7 @@ export default function ItemDetails() {
             }}>
               <Heart size={18} color={isFavoritedItem(item.id) ? '#EF4444' : '#64748B'} fill={isFavoritedItem(item.id) ? '#EF4444' : 'none'} />
             </button>
-            <button onClick={() => addNotification({ type: 'system', title: 'Link copied', message: 'Share link copied to clipboard' })} style={{
+            <button onClick={handleShare} style={{
               width: 40, height: 40, borderRadius: '50%',
               background: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(10px)',
               border: 'none', cursor: 'pointer',
@@ -92,7 +103,7 @@ export default function ItemDetails() {
             <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
               <Star size={16} color="#F59E0B" fill="#F59E0B" />
               <span style={{ fontWeight: 700, fontSize: 15, color: '#0F172A' }}>{item.rating}</span>
-              <span style={{ fontSize: 13, color: '#94A3B8' }}>({item.reviewCount})</span>
+              <span style={{ fontSize: 13, color: '#94A3B8' }}>({reviewCount})</span>
             </div>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 12 }}>
@@ -152,15 +163,22 @@ export default function ItemDetails() {
         </div>
 
         {/* Reviews Preview */}
-        {reviews.length > 0 && (
+        {(reviewList.length > 0 || reviewCount > 0) && (
           <div style={{ marginBottom: 20 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
               <h3 style={{ fontSize: 16, fontWeight: 700, color: '#0F172A' }}>Reviews</h3>
-              <button style={{ fontSize: 13, color: '#2563EB', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer' }}>
-                See all
-              </button>
+              {reviewList.length > 2 && (
+                <button onClick={() => setShowAllReviews(v => !v)} style={{ fontSize: 13, color: '#2563EB', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer' }}>
+                  {showAllReviews ? 'See less' : `See all (${reviewList.length})`}
+                </button>
+              )}
             </div>
-            {reviews.slice(0, 2).map((review, i) => (
+            {reviewList.length === 0 ? (
+              <p style={{ fontSize: 13, color: '#64748B', margin: 0 }}>
+                {reviewCount > 0 ? `Rated ${item.rating} by ${reviewCount} renter${reviewCount === 1 ? '' : 's'}` : 'No reviews yet'} — details after your rental.
+              </p>
+            ) : (
+              reviewList.slice(0, showAllReviews ? undefined : 2).map((review, i) => (
               <div key={i} style={{ padding: '12px 0', borderBottom: i < 1 ? '1px solid #F1F5F9' : 'none' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
                   <div style={{
@@ -182,7 +200,8 @@ export default function ItemDetails() {
                 </div>
                 <p style={{ fontSize: 13, color: '#64748B', lineHeight: 1.5, margin: 0 }}>{review.text}</p>
               </div>
-            ))}
+              ))
+            )}
           </div>
         )}
       </div>

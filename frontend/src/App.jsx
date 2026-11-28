@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate, Link, NavLink, useNavigate } from 'react-router-dom'
+import { Routes, Route, Navigate, Link, NavLink, useNavigate, useLocation } from 'react-router-dom'
 import { Bell, User } from 'lucide-react'
 import { useApp } from './contexts/AppContext'
 import BottomNav from './components/BottomNav'
@@ -56,6 +56,7 @@ const PUBLIC_ROUTES = ['/login', '/register', '/landing']
 function GetLayout({ children }) {
   const { isLoggedIn, user, logout } = useApp()
   const navigate = useNavigate()
+  const { pathname } = useLocation()
   return (
     <div className="app-frame">
       <header className="app-topbar">
@@ -90,8 +91,8 @@ function GetLayout({ children }) {
         </div>
       </header>
       {children}
-      {isLoggedIn && !PUBLIC_ROUTES.includes(window.location.pathname) && <BottomNav />}
-      {!PUBLIC_ROUTES.includes(window.location.pathname) && <RentalAssistant />}
+      {isLoggedIn && !PUBLIC_ROUTES.includes(pathname) && <BottomNav />}
+      {!PUBLIC_ROUTES.includes(pathname) && <RentalAssistant />}
     </div>
   )
 }
@@ -440,7 +441,7 @@ export default function App() {
           )
         }
       />
-            <Route path="/admin/login" element={<AdminLogin />} />
+      <Route path="/admin/login" element={<AdminLogin />} />
       <Route path="/admin" element={<AdminLayout />}>
         {/* Overview — Marketplace Overview (new Figma page) */}
         <Route index element={<AdminOverview />} />
@@ -464,6 +465,7 @@ export default function App() {
         <Route path="complaints" element={<Complaints />} />
         <Route path="settings" element={<Settings />} />
       </Route>
+      <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </>
   )

@@ -11,6 +11,20 @@ export default function ExtendRentalPending() {
   const rental = rentals.find(r => r.id === parseInt(id));
   const item = rental ? mockItems.find(i => i.id === rental.itemId || i.title === rental.item) : null;
 
+  // Guard: if rental not found, show not found
+  if (!rental || !item) {
+    return (
+      <div className="page" style={{ padding: '60px 20px', textAlign: 'center' }}>
+        <div style={{ fontSize: 56, marginBottom: 16 }}>🔍</div>
+        <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 8 }}>Rental Not Found</h2>
+        <p style={{ color: '#64748B', marginBottom: 24 }}>This extension request doesn't exist or has been removed.</p>
+        <button className="btn-primary" onClick={() => navigate('/my-rentals')}>
+          Back to My Rentals
+        </button>
+      </div>
+    );
+  }
+
   const status = rental?.extensionStatus || 'pending'; // pending, approved, rejected
 
   const statusConfig = {

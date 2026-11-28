@@ -1,25 +1,28 @@
-import { Bell, CheckCheck, Trash2, XCircle } from 'lucide-react';
+import { Bell, Trash2, XCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import { mockNotifications } from '../data/mockData';
+import { useApp } from '../contexts/AppContext';
 
 export default function Notifications() {
   const navigate = useNavigate();
-  const [notifList, setNotifList] = useState(mockNotifications);
+  const {
+    notifications,
+    markNotificationRead,
+    markAllNotificationsRead,
+    clearNotifications,
+  } = useApp();
   const [showClearConfirm, setShowClearConfirm] = useState(false);
 
   const markAllRead = () => {
-    setNotifList(prev => prev.map(n => ({ ...n, read: true })));
+    markAllNotificationsRead();
   };
 
   const clearAll = () => {
-    setNotifList([]);
+    clearNotifications();
     setShowClearConfirm(false);
   };
 
-  const markRead = (id) => {
-    setNotifList(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
-  };
+  const notifList = notifications;
 
   const getTypeIcon = (type) => {
     switch (type) {
@@ -103,7 +106,7 @@ export default function Notifications() {
           notifList.map(notif => (
             <div
               key={notif.id}
-              onClick={() => markRead(notif.id)}
+              onClick={() => markNotificationRead(notif.id)}
               style={{
                 display: 'flex',
                 gap: 12,

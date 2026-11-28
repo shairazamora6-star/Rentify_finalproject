@@ -6,8 +6,9 @@ import { useApp } from '../contexts/AppContext';
 import { apiFetch } from '../lib/api';
 
 // Custom date range picker
-function DateRangePicker({ startDate, endDate, onSelect }) {
-  const today = new Date();
+function DateRangePicker({ startDate, endDate, onSelect, minDate }) {
+  const today = minDate || new Date();
+  today.setHours(0, 0, 0, 0);
   const [viewDate, setViewDate] = useState(() => {
     const d = new Date(today.getFullYear(), today.getMonth(), 1);
     return d;
@@ -39,6 +40,12 @@ function DateRangePicker({ startDate, endDate, onSelect }) {
     return new Date(viewDate.getFullYear(), viewDate.getMonth(), d).getTime() === new Date(endDate).getTime();
   };
 
+  const isPast = (d) => {
+    const date = new Date(viewDate.getFullYear(), viewDate.getMonth(), d);
+    date.setHours(0, 0, 0, 0);
+    return date < today;
+  };
+
   return (
     <div style={{ background: 'white', borderRadius: 16, padding: '18px 16px', border: '1px solid #E2E8F0' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18 }}>
@@ -58,28 +65,35 @@ function DateRangePicker({ startDate, endDate, onSelect }) {
           const selected = isSelected(d);
           const start = isStart(d);
           const end = isEnd(d);
+          const past = isPast(d);
           return (
-            <button key={i} onClick={() => {
-              const date = new Date(viewDate.getFullYear(), viewDate.getMonth(), d);
-              if (!startDate || (endDate && date <= endDate) || !endDate) {
-                if (!startDate || (startDate && endDate)) {
-                  onSelect({ start: date.toISOString(), end: null });
-                } else if (!endDate) {
-                  if (date < new Date(startDate)) {
-                    onSelect({ start: date.toISOString(), end: new Date(startDate) });
-                  } else {
-                    onSelect({ start: startDate, end: date.toISOString() });
+            <button
+              key={i}
+              onClick={() => {
+                if (past) return;
+                const date = new Date(viewDate.getFullYear(), viewDate.getMonth(), d);
+                if (!startDate || (endDate && date <= endDate) || !endDate) {
+                  if (!startDate || (startDate && endDate)) {
+                    onSelect({ start: date.toISOString(), end: null });
+                  } else if (!endDate) {
+                    if (date < new Date(startDate)) {
+                      onSelect({ start: date.toISOString(), end: new Date(startDate) });
+                    } else {
+                      onSelect({ start: startDate, end: date.toISOString() });
+                    }
                   }
                 }
-              }
-            }} style={{
-              width: '100%', maxWidth: 38, height: 38, borderRadius: selected ? 12 : 10,
-              fontSize: 13, fontWeight: 500,
-              background: selected ? '#2563EB' : isToday ? '#EEF2FF' : 'transparent',
-              color: selected ? 'white' : isToday ? '#2563EB' : '#0F172A',
-              border: isToday && !selected ? '1.5px solid #BFDBFE' : '1.5px solid transparent',
-              cursor: 'pointer', margin: '2px auto', position: 'relative',
-            }}>
+              }}
+              disabled={past}
+              style={{
+                width: '100%', maxWidth: 38, height: 38, borderRadius: selected ? 12 : 10,
+                fontSize: 13, fontWeight: 500,
+                background: selected ? '#2563EB' : isToday ? '#EEF2FF' : past ? '#F8FAFC' : 'transparent',
+                color: selected ? 'white' : isToday ? '#2563EB' : past ? '#CBD5E1' : '#0F172A',
+                border: isToday && !selected ? '1.5px solid #BFDBFE' : past ? '1.5px solid #F1F5F9' : '1.5px solid transparent',
+                cursor: past ? 'not-allowed' : 'pointer', margin: '2px auto', position: 'relative',
+                opacity: past ? 0.5 : 1,
+              }}>
               {d}
               {start && <span style={{ position: 'absolute', bottom: 3, left: '50%', transform: 'translateX(-50%)', width: 4, height: 4, borderRadius: '50%', background: 'white' }} />}
               {end && <span style={{ position: 'absolute', bottom: 3, left: '50%', transform: 'translateX(-50%)', width: 4, height: 4, borderRadius: '50%', background: 'white' }} />}
@@ -231,7 +245,7 @@ export default function Reserve() {
         {/* Step 1: Date Selection */}
         {step === 1 && (
           <>
-            <DateRangePicker startDate={dates.start} endDate={dates.end} onSelect={setDates} />
+            <DateRangePicker startDate={dates.start} endDate={dates.end} onSelect={setDates} minDate={new Date()} />
             {days > 0 && (
               <div style={{ marginTop: 16, padding: '14px 16px', background: '#EEF2FF', borderRadius: 14 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
