@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Calendar, Clock, AlertCircle, CheckCircle, XCircle, Loader2, ChevronLeft } from 'lucide-react';
+import { Calendar, Clock, AlertCircle, CheckCircle, XCircle, Loader2, ChevronLeft, CreditCard, Smartphone, Wallet, Truck } from 'lucide-react';
 import { mockItems } from '../data/mockData';
 import { useApp } from '../contexts/AppContext';
 
@@ -13,36 +13,108 @@ export default function ExtendRental() {
   const item = rental ? mockItems.find(i => i.id === rental.itemId || i.title === rental.item) : null;
 
   const [step, setStep] = useState(1); // 1: dates, 2: review, 3: payment
-  const [startDate, setStartDate] = useState(rental?.endDate || '');
+  const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [totalDays, setTotalDays] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
   const [agreed, setAgreed] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState('card');
+  const [paymentMethod, setPaymentMethod] = useState('gcash');
   const [processing, setProcessing] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
   const [calendarMonth, setCalendarMonth] = useState(new Date());
   const [selecting, setSelecting] = useState('start');
 
+  // Parse the rental end date correctly - handle both string formats
+  const parseRentalEndDate = (dateStr) => {
+    if (!dateStr) return null;
+    // Try parsing as ISO string first
+    let date = new Date(dateStr);
+    if (isNaN(date.getTime())) {
+      // Try parsing as "Nov 28" format with current year
+      date = new Date(`${dateStr}, ${new Date().getFullYear()}`);
+    }
+    if (isNaN(date.getTime())) {
+      // Try parsing with year
+      date = new Date(dateStr);
+    }
+    return date;
+  };
+
+  const rentalEndDate = parseRentalEndDate(rental?.endDate);
+
   useEffect(() => {
-    if (rental && rental.endDate) {
-      const end = new Date(rental.endDate);
+    if (rentalEndDate) {
+      const start = new Date(rentalEndDate);
+      const end = new Date(rentalEndDate);
       end.setDate(end.getDate() + 1);
-      setStartDate(rental.endDate);
+      setStartDate(start.toISOString().split('T')[0]);
       setEndDate(end.toISOString().split('T')[0]);
       calculateTotal();
     }
-  }, [rental]);
+  }, [rentalEndDate]);
 
   const calculateTotal = () => {
     if (startDate && endDate && item) {
       const start = new Date(startDate);
       const end = new Date(endDate);
+      // Calculate days: end date - start date (e.g., Nov 29 to Nov 30 = 1 day)
       const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
-      setTotalDays(days);
-      setTotalPrice(days * item.price);
+      setTotalDays(days > 0 ? days : 0);
+      setTotalPrice(days > 0 ? days * item.price : 0);
     }
   };
+
+  const getPaymentDetails = (method) => {
+    const subtotal = totalPrice;
+    let serviceFee = 0;
+    let tax = 0;
+    let label = '';
+    let icon = null;
+    let description = '';
+
+    switch (method) {
+      case 'cod':
+        // COD: No service fee (F2F pickup), Insurance fee (tax) = 5%
+        serviceFee = 0;
+        tax = subtotal * 0.05;
+        label = 'Cash on Delivery (COD)';
+        icon = <Truck size={20} />;
+        description = 'Face-to-face pickup • No delivery fee • 5% Damage Insurance';
+        break;
+      case 'gcash':
+        // E-Wallets: 10% delivery fee + 8% tax
+        serviceFee = subtotal * 0.10;
+        tax = subtotal * 0.08;
+        label = 'GCash';
+        icon = <Smartphone size={20} />;
+        description = 'Home delivery • 10% Service fee • 8% Tax';
+        break;
+      case 'paymaya':
+        serviceFee = subtotal * 0.10;
+        tax = subtotal * 0.08;
+        label = 'PayMaya';
+        icon = <Smartphone size={20} />;
+        description = 'Home delivery • 10% Service fee • 8% Tax';
+        break;
+      case 'gotyme':
+        serviceFee = subtotal * 0.10;
+        tax = subtotal * 0.08;
+        label = 'GoTyme';
+        icon = <Wallet size={20} />;
+        description = 'Home delivery • 10% Service fee • 8% Tax';
+        break;
+      default:
+        serviceFee = subtotal * 0.10;
+        tax = subtotal * 0.08;
+        label = 'GCash';
+        icon = <Smartphone size={20} />;
+        description = 'Home delivery • 10% Service fee • 8% Tax';
+    }
+
+    return { subtotal, serviceFee, tax, total: subtotal + serviceFee + tax, label, icon, description };
+  };
+
+  const paymentDetails = getPaymentDetails(paymentMethod);
 
   const handleExtend = async () => {
     setProcessing(true);
@@ -77,7 +149,7 @@ export default function ExtendRental() {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    const minDate = rental ? new Date(rental.endDate) : today;
+    const minDate = rentalEndDate || today;
     minDate.setHours(0, 0, 0, 0);
 
     const days = [];
@@ -99,8 +171,8 @@ export default function ExtendRental() {
           onClick={() => !isPast && handleDateSelect(dateStr)}
           disabled={isPast}
           style={{
-            width: 36, height: 36, borderRadius: 8,
-            border: 'none', background: 'transparent',
+            width: 36, height: 36,
+            border: 'none',
             fontSize: 13, fontWeight: isSelected ? 700 : 500,
             color: isPast ? '#CBD5E1' : isSelected ? 'white' : isInRange ? '#2563EB' : '#0F172A',
             backgroundColor: isStart ? '#2563EB' : isEnd ? '#2563EB' : isInRange ? '#EFF6FF' : 'transparent',
@@ -156,14 +228,14 @@ export default function ExtendRental() {
         <span style={{ fontWeight: 700, fontSize: 18 }}>Extend Rental</span>
       </div>
 
-      {/* Progress Steps */}
+      {/* Progress Steps with connector lines */}
       <div style={{ padding: '16px 20px 8px', background: 'white', borderBottom: '1px solid #F1F5F9' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           {steps.map((s, i) => (
-            <div key={s.num} style={{ flex: 1, textAlign: 'center', position: 'relative' }}>
+            <div key={s.num} style={{ flex: 1, textAlign: 'center', position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               {i < steps.length - 1 && (
                 <div style={{
-                  position: 'absolute', top: 11, left: '50%', right: '50%',
+                  position: 'absolute', top: 10, left: 'calc(50% + 11px)', right: 'calc(50% + 11px)',
                   height: 2, background: step > i + 1 ? '#2563EB' : '#E2E8F0', zIndex: 0,
                 }} />
               )}
@@ -182,20 +254,22 @@ export default function ExtendRental() {
       </div>
 
       <div style={{ padding: '20px' }}>
-        {/* Item Info */}
+        {/* Item Info - Fixed horizontal alignment */}
         <div style={{
           display: 'flex', gap: 12, marginBottom: 20,
           padding: 12, background: '#F8FAFC', borderRadius: 12,
+          alignItems: 'center',
         }}>
           <img src={item.image} alt={item.title}
-            style={{ width: 60, height: 60, borderRadius: 10, objectFit: 'cover' }} />
-          <div style={{ flex: 1 }}>
-            <h3 style={{ fontSize: 14, fontWeight: 700, marginBottom: 4 }}>{item.title}</h3>
-            <p style={{ fontSize: 12, color: '#64748B' }}>Current rental ends: {new Date(rental.endDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
+            style={{ width: 60, height: 60, borderRadius: 10, objectFit: 'cover', flexShrink: 0 }} />
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <h3 style={{ fontSize: 14, fontWeight: 700, marginBottom: 4, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.title}</h3>
+            <p style={{ fontSize: 12, color: '#64748B', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Current rental ends: {new Date(rental.endDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
           </div>
           <span style={{
             padding: '4px 10px', borderRadius: 20, fontSize: 11, fontWeight: 700,
             background: '#FEF3C7', color: '#92400E',
+            flexShrink: 0, whiteSpace: 'nowrap',
           }}>Active</span>
         </div>
 
@@ -275,8 +349,8 @@ export default function ExtendRental() {
             <button
               className="btn-primary"
               onClick={() => setStep(2)}
-              disabled={!startDate || !endDate}
-              style={{ opacity: startDate && endDate ? 1 : 0.5 }}
+              disabled={!startDate || !endDate || totalDays <= 0}
+              style={{ opacity: startDate && endDate && totalDays > 0 ? 1 : 0.5 }}
             >
               Continue to Review
             </button>
@@ -295,17 +369,17 @@ export default function ExtendRental() {
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12 }}>
                 <span style={{ color: '#64748B' }}>Service fee (10%)</span>
-                <span style={{ fontWeight: 600 }}>${(totalPrice * 0.1).toFixed(2)}</span>
+                <span style={{ fontWeight: 600 }}>${paymentDetails.serviceFee.toFixed(2)}</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12 }}>
                 <span style={{ color: '#64748B' }}>Tax (8%)</span>
-                <span style={{ fontWeight: 600 }}>${(totalPrice * 0.08).toFixed(2)}</span>
+                <span style={{ fontWeight: 600 }}>${paymentDetails.tax.toFixed(2)}</span>
               </div>
               <hr style={{ borderColor: '#F1F5F9', margin: '12px 0' }} />
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ fontSize: 16, fontWeight: 700 }}>Total</span>
                 <span style={{ fontSize: 16, fontWeight: 700, color: '#2563EB' }}>
-                  ${(totalPrice * 1.18).toFixed(2)}
+                  ${paymentDetails.total.toFixed(2)}
                 </span>
               </div>
             </div>
@@ -350,56 +424,72 @@ export default function ExtendRental() {
           <div>
             <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 16 }}>Payment Method</h3>
 
-            {['card', 'wallet'].map(method => (
-              <button
-                key={method}
-                onClick={() => setPaymentMethod(method)}
-                style={{
-                  width: '100%', display: 'flex', alignItems: 'center', gap: 12,
-                  padding: '16px', borderRadius: 12, marginBottom: 12,
-                  border: `2px solid ${paymentMethod === method ? '#2563EB' : '#E2E8F0'}`,
-                  background: paymentMethod === method ? '#EFF6FF' : 'white',
-                  cursor: 'pointer', textAlign: 'left',
-                }}
-              >
-                <div style={{
-                  width: 24, height: 24, borderRadius: '50%',
-                  border: `2px solid ${paymentMethod === method ? '#2563EB' : '#CBD5E1'}`,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                }}>
-                  {paymentMethod === method && (
-                    <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#2563EB' }} />
+            {[
+              { id: 'gcash', label: 'GCash', icon: <Smartphone size={20} />, desc: 'Home delivery • 10% Service fee • 8% Tax' },
+              { id: 'paymaya', label: 'PayMaya', icon: <Smartphone size={20} />, desc: 'Home delivery • 10% Service fee • 8% Tax' },
+              { id: 'gotyme', label: 'GoTyme', icon: <Wallet size={20} />, desc: 'Home delivery • 10% Service fee • 8% Tax' },
+              { id: 'cod', label: 'Cash on Delivery (COD)', icon: <Truck size={20} />, desc: 'Face-to-face pickup • No delivery fee • 5% Damage Insurance' },
+            ].map(method => {
+              const details = getPaymentDetails(method.id);
+              return (
+                <button
+                  key={method.id}
+                  onClick={() => setPaymentMethod(method.id)}
+                  style={{
+                    width: '100%', display: 'flex', alignItems: 'center', gap: 12,
+                    padding: '16px', borderRadius: 12, marginBottom: 12,
+                    border: `2px solid ${paymentMethod === method.id ? '#2563EB' : '#E2E8F0'}`,
+                    background: paymentMethod === method.id ? '#EFF6FF' : 'white',
+                    cursor: 'pointer', textAlign: 'left',
+                  }}
+                >
+                  <div style={{
+                    width: 44, height: 44, borderRadius: 12,
+                    border: `2px solid ${paymentMethod === method.id ? '#2563EB' : '#CBD5E1'}`,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    background: paymentMethod === method.id ? '#EEF2FF' : '#F8FAFC',
+                    color: paymentMethod === method.id ? '#2563EB' : '#64748B',
+                    flexShrink: 0,
+                  }}>
+                    {method.icon}
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <p style={{ fontSize: 15, fontWeight: 600, color: '#0F172A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      {method.label}
+                    </p>
+                    <p style={{ fontSize: 12, color: '#64748B', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      {method.desc}
+                    </p>
+                  </div>
+                  {paymentMethod === method.id && (
+                    <CheckCircle size={22} color="#2563EB" />
                   )}
-                </div>
-                <div style={{ flex: 1 }}>
-                  <p style={{ fontSize: 15, fontWeight: 600, color: '#0F172A' }}>
-                    {method === 'card' ? 'Credit/Debit Card' : 'Rentify Wallet'}
-                  </p>
-                  <p style={{ fontSize: 12, color: '#64748B' }}>
-                    {method === 'card' ? '•••• 4242' : '$245.00 available'}
-                  </p>
-                </div>
-              </button>
-            ))}
+                </button>
+              );
+            })}
 
             <div style={{ background: 'white', border: '1px solid #E2E8F0', borderRadius: 12, padding: 16, marginBottom: 20 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
                 <span style={{ color: '#64748B' }}>Extension ({totalDays} days)</span>
-                <span style={{ fontWeight: 600 }}>${totalPrice}</span>
+                <span style={{ fontWeight: 600 }}>${paymentDetails.subtotal}</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-                <span style={{ color: '#64748B' }}>Service fee</span>
-                <span style={{ fontWeight: 600 }}>${(totalPrice * 0.1).toFixed(2)}</span>
+                <span style={{ color: '#64748B' }}>
+                  {paymentMethod === 'cod' ? 'Damage Insurance (5%)' : 'Service fee (10%)'}
+                </span>
+                <span style={{ fontWeight: 600 }}>${paymentDetails.serviceFee.toFixed(2)}</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-                <span style={{ color: '#64748B' }}>Tax</span>
-                <span style={{ fontWeight: 600 }}>${(totalPrice * 0.08).toFixed(2)}</span>
+                <span style={{ color: '#64748B' }}>
+                  {paymentMethod === 'cod' ? 'Tax' : 'Tax (8%)'}
+                </span>
+                <span style={{ fontWeight: 600 }}>${paymentDetails.tax.toFixed(2)}</span>
               </div>
               <hr style={{ borderColor: '#F1F5F9', margin: '12px 0' }} />
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ fontSize: 16, fontWeight: 700 }}>Total to Pay</span>
                 <span style={{ fontSize: 16, fontWeight: 700, color: '#2563EB' }}>
-                  ${(totalPrice * 1.18).toFixed(2)}
+                  ${paymentDetails.total.toFixed(2)}
                 </span>
               </div>
             </div>
@@ -413,7 +503,7 @@ export default function ExtendRental() {
               {processing ? (
                 <> <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> Processing...</>
               ) : (
-                `Confirm & Pay $${(totalPrice * 1.18).toFixed(2)}`
+                `Confirm & Pay $${paymentDetails.total.toFixed(2)}`
               )}
             </button>
 

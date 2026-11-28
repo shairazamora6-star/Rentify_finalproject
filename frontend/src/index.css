@@ -189,11 +189,12 @@ img { display: block; max-width: 100%; }
 .app-topbar-links a { color: #617185; font-size: 12px; font-weight: 550; transition: color .15s; }
 .app-topbar-links a:hover,.app-topbar-links a.active { color: var(--primary); }
 .app-topbar-user { display: flex; align-items: center; gap: 11px; flex-shrink: 0; }
-.app-topbar-user span { color: #536579; font-size: 11px; }
-.app-topbar-user button { padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; color: #435b77; background: #fff; font-size: 11px; font-weight: 600; }
+.app-topbar-user-profile { display: flex; align-items: center; gap: 8px; padding: 4px 8px 4px 4px; border-radius: 9px; border: 1px solid var(--border); background: #fff; transition: border-color .15s, background .15s; }
+.app-topbar-user-profile:hover { border-color: #bfdbfe; background: #eff6ff; }
+.app-topbar-username { color: #536579; font-size: 13px; font-weight: 550; white-space: nowrap; }
 .app-topbar-icon { width: 34px; height: 34px; display: grid; place-items: center; border: 1px solid var(--border); border-radius: 9px; color: #64748b; background: #fff; transition: color .15s, border-color .15s, background .15s; }
 .app-topbar-icon:hover { color: var(--primary); border-color: #bfdbfe; background: #eff6ff; }
-.app-topbar-avatar { width: 100%; height: 100%; border-radius: inherit; object-fit: cover; }
+.app-topbar-avatar { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }
 .bottom-nav { max-width: 720px; margin: 0 auto; border-radius: 14px 14px 0 0; box-shadow: 0 -8px 30px rgba(45,93,150,.08); }
 .lf-header,.rf-header { width: min(100%, 560px); margin: 0 auto; background: linear-gradient(135deg,#377bd6,#69a5e8)!important; }
 .lf-card,.rf-card { width: min(100% - 32px, 520px); margin-right: auto; margin-left: auto; }
@@ -203,7 +204,6 @@ img { display: block; max-width: 100%; }
 @media (max-width: 760px) {
   .app-topbar { padding: 0 16px; }
   .app-topbar-links { display: none; }
-  .app-topbar-user span { display: none; }
   .app-topbar-user { gap: 7px; }
 }
 @media (max-width: 640px) {

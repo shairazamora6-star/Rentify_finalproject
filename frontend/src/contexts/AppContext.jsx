@@ -23,6 +23,14 @@ const readStoredRentals = () => {
     return [];
   }
 };
+const readStoredCart = () => {
+  try {
+    const saved = JSON.parse(localStorage.getItem('rentify_cart') || '[]');
+    return Array.isArray(saved) ? saved : [];
+  } catch {
+    return [];
+  }
+};
 
 export function AppProvider({ children }) {
   const [isLoggedIn, setIsLoggedIn] = useState(() => Boolean(getStoredUser()));
@@ -37,6 +45,7 @@ export function AppProvider({ children }) {
   ]);
   const [notifications, setNotifications] = useState(isDemoMode ? mockNotifications : []);
   const [items, setItems] = useState(mockItems);
+  const [cart, setCart] = useState(readStoredCart);
 
   useEffect(() => {
     apiFetch('/api/items')
@@ -148,12 +157,32 @@ export function AppProvider({ children }) {
 
   const isFavorited = (id) => favorites.has(id);
 
+  const addToCart = (item) => {
+    setCart(prev => {
+      if (prev.some(c => c.id === item.id)) return prev;
+      const next = [...prev, { ...item, addedAt: Date.now() }];
+      localStorage.setItem('rentify_cart', JSON.stringify(next));
+      return next;
+    });
+  };
+
+  const removeFromCart = (itemId) => {
+    setCart(prev => {
+      const next = prev.filter(c => c.id !== itemId);
+      localStorage.setItem('rentify_cart', JSON.stringify(next));
+      return next;
+    });
+  };
+
+  const isInCart = (itemId) => cart.some(c => c.id === itemId);
+
   return (
     <AppContext.Provider value={{
       isLoggedIn, setIsLoggedIn, user, setUser, updateUser, login, register, logout, items,
       favorites, toggleFavorite, isFavorited,
       rentals, addRental, updateRental, notifications, addNotification,
       markNotificationRead, markAllNotificationsRead, clearNotifications,
+      cart, addToCart, removeFromCart, isInCart,
     }}>
       {children}
     </AppContext.Provider>

@@ -73,18 +73,17 @@ function GetLayout({ children }) {
         <div className="app-topbar-user">
           {isLoggedIn ? (
             <>
-              <Link className="app-topbar-icon" to="/notifications" aria-label="Notifications">
-                <Bell size={18} />
-              </Link>
-              <Link className="app-topbar-icon" to="/profile" aria-label="Profile">
+              <Link className="app-topbar-user-profile" to="/profile" aria-label="Profile">
                 {user?.profileImage ? (
                   <img className="app-topbar-avatar" src={user.profileImage} alt="" />
                 ) : (
                   <User size={18} />
                 )}
+                <span className="app-topbar-username">{user?.name}</span>
               </Link>
-              <span>{user?.name}</span>
-              <button onClick={logout}>Sign out</button>
+              <Link className="app-topbar-icon" to="/notifications" aria-label="Notifications">
+                <Bell size={18} />
+              </Link>
             </>
           ) : (
             <>
