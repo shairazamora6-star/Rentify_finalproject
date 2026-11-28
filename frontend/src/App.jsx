@@ -8,6 +8,7 @@ import Home from './pages/Home'
 import Search from './pages/Search'
 import ItemDetails from './pages/ItemDetails'
 import Reserve from './pages/Reserve'
+import Checkout from './pages/Checkout'
 import BookingConfirmation from './pages/BookingConfirmation'
 import MyRentals from './pages/MyRentals'
 import Messages from './pages/Messages'
@@ -65,6 +66,16 @@ function GetLayout({ children }) {
   const goCheckout = () => {
     setCartOpen(false)
     navigate('/search')
+  }
+
+  const goReserve = () => {
+    setCartOpen(false)
+    navigate('/checkout')
+  }
+
+  const viewCartItem = (id) => {
+    setCartOpen(false)
+    navigate(`/item/${id}`)
   }
 
   return (
@@ -136,13 +147,13 @@ function GetLayout({ children }) {
             <>
               <div className="cart-drawer-list">
                 {cart.map(c => (
-                  <div key={c.id} className="cart-drawer-item">
+                  <div key={c.id} className="cart-drawer-item" onClick={() => viewCartItem(c.id)} style={{ cursor: 'pointer' }}>
                     <img src={c.image} alt="" className="cart-drawer-item-img" />
                     <div className="cart-drawer-item-body">
                       <span className="cart-drawer-item-name">{c.title}</span>
                       <span className="cart-drawer-item-price">${c.price}<span> /day</span></span>
                     </div>
-                    <button className="cart-drawer-item-remove" onClick={() => removeFromCart(c.id)} aria-label={`Remove ${c.title} from cart`}>
+                    <button className="cart-drawer-item-remove" onClick={(e) => { e.stopPropagation(); removeFromCart(c.id) }} aria-label={`Remove ${c.title} from cart`}>
                       <Trash2 size={15} />
                     </button>
                   </div>
@@ -153,7 +164,7 @@ function GetLayout({ children }) {
                   <span>Subtotal</span>
                   <strong>${cartSubtotal}<span> /day</span></strong>
                 </div>
-                <button className="cart-drawer-checkout" onClick={goCheckout}>
+                <button className="cart-drawer-checkout" onClick={goReserve}>
                   Reserve items <ArrowRight size={16} />
                 </button>
               </div>
@@ -203,6 +214,16 @@ export default function App() {
         element={
           isLoggedIn ? (
             <GetLayout><Reserve /></GetLayout>
+          ) : (
+            <Navigate to="/login" replace />
+          )
+        }
+      />
+      <Route
+        path="/checkout"
+        element={
+          isLoggedIn ? (
+            <GetLayout><Checkout /></GetLayout>
           ) : (
             <Navigate to="/login" replace />
           )

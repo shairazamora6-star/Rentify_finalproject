@@ -16,8 +16,11 @@ import {
   Menu,
   X,
   ChevronRight,
+  Moon,
+  Sun,
 } from 'lucide-react'
 import { useAdmin } from '../contexts/AdminContext'
+import { useApp } from '../contexts/AppContext'
 import '../pages/Admin.css'
 import RentifyLogo from './RentifyLogo'
 
@@ -52,6 +55,7 @@ const NAV_SECTIONS = [
 
 export default function AdminLayout() {
   const { admin, isAdmin, adminLogout } = useAdmin()
+  const { theme, toggleTheme } = useApp()
   const navigate = useNavigate()
 
   const [sidebarOpen, setSidebarOpen]   = useState(false)   // mobile drawer
@@ -99,8 +103,17 @@ export default function AdminLayout() {
           </Link>
         </div>
 
-        {/* Right: avatar name + hamburger */}
+        {/* Right: theme toggle, avatar name + hamburger */}
         <div className="admin-header-right">
+          <button
+            className="admin-theme-toggle"
+            onClick={toggleTheme}
+            aria-label={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
+            style={{ width: 36, height: 36 }}
+          >
+            {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+          </button>
+
           <div className="admin-header-user">
             <span className="admin-header-avatar">{admin.avatar}</span>
             <span className="admin-header-username">{admin.name}</span>

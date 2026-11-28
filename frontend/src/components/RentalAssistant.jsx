@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { ArrowUpRight, MessageCircle, Send, X } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { apiFetch, isDemoMode } from '../lib/api'
@@ -9,8 +9,58 @@ export default function RentalAssistant() {
   const [message, setMessage] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [messages, setMessages] = useState([
-    { id: 'welcome', role: 'assistant', text: 'Tell me what you need for your next project or occasion, and I’ll look through current rentals.' },
+    { id: 'welcome', role: 'assistant', text: 'Tell me what you need for your next project or occasion, and I\'ll look through current rentals.' },
   ])
+  const [position, setPosition] = useState(() => {
+    try {
+      const stored = localStorage.getItem('rentify_assistant_position')
+      if (stored) return JSON.parse(stored)
+    } catch {}
+    return null
+  })
+  const [dragging, setDragging] = useState(false)
+  const [dragStart, setDragStart] = useState(null)
+  const toggleRef = useRef(null)
+
+  useEffect(() => {
+    if (position) localStorage.setItem('rentify_assistant_position', JSON.stringify(position))
+  }, [position])
+
+  const handlePointerDown = (e) => {
+    if (e.button !== 0) return
+    const rect = toggleRef.current?.getBoundingClientRect()
+    if (!rect) return
+    setDragStart({ x: e.clientX, y: e.clientY, right: rect.right, bottom: rect.bottom })
+    setDragging(false)
+    window.addEventListener('pointermove', handlePointerMove)
+    window.addEventListener('pointerup', handlePointerUp)
+  }
+
+  const handlePointerMove = (e) => {
+    if (!dragStart) return
+    const dx = e.clientX - dragStart.x
+    const dy = e.clientY - dragStart.y
+    if (!dragging && (Math.abs(dx) > 4 || Math.abs(dy) > 4)) {
+      setDragging(true)
+    }
+    if (dragging) {
+      const newRight = dragStart.right - dx
+      const newBottom = dragStart.bottom + dy
+      const maxRight = window.innerWidth - 52
+      const maxBottom = window.innerHeight - 52
+      setPosition({
+        right: Math.max(12, Math.min(maxRight, newRight)),
+        bottom: Math.max(12, Math.min(maxBottom, newBottom)),
+      })
+    }
+  }
+
+  const handlePointerUp = () => {
+    window.removeEventListener('pointermove', handlePointerMove)
+    window.removeEventListener('pointerup', handlePointerUp)
+    setDragStart(null)
+    setDragging(false)
+  }
 
   const sendMessage = async (event) => {
     event.preventDefault()
@@ -44,8 +94,10 @@ export default function RentalAssistant() {
     }
   }
 
+  const style = position ? { right: 'auto', bottom: 'auto', left: `${window.innerWidth - position.right - 52}px`, top: `${window.innerHeight - position.bottom - 52}px` } : {}
+
   return (
-    <div className="rental-assistant">
+    <div className="rental-assistant" style={style}>
       {isOpen && (
         <section className="assistant-panel" aria-label="Rental recommendations">
           <header className="assistant-header">
@@ -78,15 +130,20 @@ export default function RentalAssistant() {
             />
             <button type="submit" aria-label="Send message" disabled={isLoading || !message.trim()}><Send size={17} /></button>
           </form>
-          <p className="assistant-disclaimer">{isDemoMode ? 'Demo mode: recommendations use sample listings in your browser.' : 'Your message may be sent to the configured chatbot API. Don’t include sensitive information.'}</p>
+          <p className="assistant-disclaimer">{isDemoMode ? 'Demo mode: recommendations use sample listings in your browser.' : 'Your message may be sent to the configured chatbot API. Don\'t include sensitive information.'}</p>
         </section>
       )}
       <button
+        ref={toggleRef}
         className="assistant-toggle"
         type="button"
         aria-label={isOpen ? 'Close rental helper' : 'Ask for rental recommendations'}
         aria-expanded={isOpen}
-        onClick={() => setIsOpen(open => !open)}
+        onClick={() => {
+          if (!dragging) setIsOpen(open => !open)
+        }}
+        onPointerDown={handlePointerDown}
+        style={{ cursor: dragging ? 'grabbing' : position ? 'grab' : undefined }}
       >
         {isOpen ? <X size={22} /> : <MessageCircle size={22} />}
         {!isOpen && <span>Need a rental?</span>}

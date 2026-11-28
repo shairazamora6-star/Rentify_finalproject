@@ -5,8 +5,45 @@ import { mockItems } from '../data/mockData';
 import { useApp } from '../contexts/AppContext';
 import { apiFetch } from '../lib/api';
 
-// Custom date range picker
-function DateRangePicker({ startDate, endDate, onSelect, minDate }) {
+// ── Shared payment logic (used by Reserve and multi-item Checkout) ──
+export const PAYMENT_METHODS = [
+  { id: 'gcash', label: 'GCash', icon: 'smartphone', desc: 'Home delivery • 10% Service fee • 8% Damage Insurance' },
+  { id: 'paymaya', label: 'PayMaya', icon: 'smartphone', desc: 'Home delivery • 10% Service fee • 8% Damage Insurance' },
+  { id: 'gotyme', label: 'GoTyme', icon: 'wallet', desc: 'Home delivery • 10% Service fee • 8% Damage Insurance' },
+  { id: 'cod', label: 'Cash on Delivery (COD)', icon: 'truck', desc: 'Face-to-face pickup • No delivery fee • 5% Damage Insurance' },
+];
+
+export function getPaymentDetailsForSubtotal(method, subtotal) {
+  let serviceFee = 0;
+  let damageInsurance = 0;
+  switch (method) {
+    case 'cod':
+      // COD: no service fee (F2F pickup), 5% damage insurance
+      serviceFee = 0;
+      damageInsurance = subtotal * 0.05;
+      break;
+    case 'gcash':
+    case 'paymaya':
+    case 'gotyme':
+    default:
+      // E-wallets: 10% service fee + 8% damage insurance
+      serviceFee = subtotal * 0.10;
+      damageInsurance = subtotal * 0.08;
+  }
+  return { subtotal, serviceFee, damageInsurance, total: subtotal + serviceFee + damageInsurance };
+}
+
+export function damageInsuranceLabel(method) {
+  return method === 'cod' ? 'Damage Insurance (5%)' : 'Damage Insurance (8%)';
+}
+
+export function serviceFeeLabel(method) {
+  return method === 'cod' ? 'Damage Insurance (5%)' : 'Service fee (10%)';
+}
+
+
+// Custom date range picker (exported so the multi-item Checkout page can reuse it)
+export function DateRangePicker({ startDate, endDate, onSelect, minDate }) {
   const today = minDate || new Date();
   today.setHours(0, 0, 0, 0);
   const [viewDate, setViewDate] = useState(() => {
@@ -72,17 +109,22 @@ function DateRangePicker({ startDate, endDate, onSelect, minDate }) {
               onClick={() => {
                 if (past) return;
                 const date = new Date(viewDate.getFullYear(), viewDate.getMonth(), d);
-                if (!startDate || (endDate && date <= endDate) || !endDate) {
-                  if (!startDate || (startDate && endDate)) {
-                    onSelect({ start: date.toISOString(), end: null });
-                  } else if (!endDate) {
-                    if (date < new Date(startDate)) {
-                      onSelect({ start: date.toISOString(), end: new Date(startDate) });
-                    } else {
-                      onSelect({ start: startDate, end: date.toISOString() });
-                    }
-                  }
+                // No start yet → begin a new range here.
+                if (!startDate) {
+                  onSelect({ start: date.toISOString(), end: null });
+                  return;
                 }
+                // Start set, end not yet → complete the range, or restart if clicked before start.
+                if (!endDate) {
+                  if (date >= new Date(startDate)) {
+                    onSelect({ start: startDate, end: date.toISOString() });
+                  } else {
+                    onSelect({ start: date.toISOString(), end: null });
+                  }
+                  return;
+                }
+                // Range complete → allow free editing by starting a fresh selection.
+                onSelect({ start: date.toISOString(), end: null });
               }}
               disabled={past}
               style={{
@@ -123,7 +165,7 @@ export default function Reserve() {
   const [step, setStep] = useState(1);
   const [dates, setDates] = useState({ start: null, end: null });
   const [agreed, setAgreed] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState(0);
+  const [paymentMethod, setPaymentMethod] = useState('gcash');
   const [bookingError, setBookingError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -135,52 +177,27 @@ export default function Reserve() {
   const subtotal = days * item.price;
 
   const getPaymentDetails = (method) => {
-    let serviceFee = 0;
-    let tax = 0;
+    const base = getPaymentDetailsForSubtotal(method, subtotal);
     let label = '';
     let icon = null;
     let description = '';
 
     switch (method) {
       case 'cod':
-        // COD: No service fee (F2F pickup), Insurance fee (tax) = 5%
-        serviceFee = 0;
-        tax = subtotal * 0.05;
         label = 'Cash on Delivery (COD)';
         icon = <Truck size={20} />;
         description = 'Face-to-face pickup • No delivery fee • 5% Damage Insurance';
         break;
       case 'gcash':
-        // E-Wallets: 10% delivery fee + 8% tax
-        serviceFee = subtotal * 0.10;
-        tax = subtotal * 0.08;
-        label = 'GCash';
-        icon = <Smartphone size={20} />;
-        description = 'Home delivery • 10% Service fee • 8% Tax';
-        break;
       case 'paymaya':
-        serviceFee = subtotal * 0.10;
-        tax = subtotal * 0.08;
-        label = 'PayMaya';
-        icon = <Smartphone size={20} />;
-        description = 'Home delivery • 10% Service fee • 8% Tax';
-        break;
       case 'gotyme':
-        serviceFee = subtotal * 0.10;
-        tax = subtotal * 0.08;
-        label = 'GoTyme';
-        icon = <Wallet size={20} />;
-        description = 'Home delivery • 10% Service fee • 8% Tax';
-        break;
       default:
-        serviceFee = subtotal * 0.10;
-        tax = subtotal * 0.08;
-        label = 'GCash';
-        icon = <Smartphone size={20} />;
-        description = 'Home delivery • 10% Service fee • 8% Tax';
+        label = method === 'paymaya' ? 'PayMaya' : method === 'gotyme' ? 'GoTyme' : 'GCash';
+        icon = method === 'gotyme' ? <Wallet size={20} /> : <Smartphone size={20} />;
+        description = 'Home delivery • 10% Service fee • 8% Damage Insurance';
     }
 
-    return { subtotal, serviceFee, tax, total: subtotal + serviceFee + tax, label, icon, description };
+    return { subtotal: base.subtotal, serviceFee: base.serviceFee, tax: base.damageInsurance, total: base.total, label, icon, description };
   };
 
   const paymentDetails = getPaymentDetails(paymentMethod);
@@ -209,7 +226,7 @@ export default function Reserve() {
           itemId: item.id,
           startDate: dates.start,
           endDate: dates.end,
-          total,
+          total: paymentDetails.total,
         }),
       });
       const result = await response.json();
@@ -219,11 +236,11 @@ export default function Reserve() {
         item,
         startDate: dates.start,
         endDate: dates.end,
-        total,
+        total: paymentDetails.total,
         status: 'upcoming',
       });
       navigate(`/booking-confirmation/${id}`, {
-        state: { total, startDate: dates.start, endDate: dates.end, bookingId: result.id },
+        state: { total: paymentDetails.total, startDate: dates.start, endDate: dates.end, bookingId: result.id },
       });
     } catch (error) {
       setBookingError(error.message || 'Unable to save this reservation. Please try again.');
@@ -338,13 +355,13 @@ export default function Reserve() {
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
                 <span style={{ fontSize: 14, color: 'var(--ink-3)' }}>
-                  {paymentMethod === 'cod' ? 'Damage Insurance (5%)' : 'Service fee (10%)'}
+                  {paymentMethod === 'cod' ? 'Service fee (0%)' : 'Service fee (10%)'}
                 </span>
                 <span style={{ fontSize: 14, fontWeight: 600 }}>${paymentDetails.serviceFee.toFixed(2)}</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
                 <span style={{ fontSize: 14, color: 'var(--ink-3)' }}>
-                  {paymentMethod === 'cod' ? 'Tax' : 'Tax (8%)'}
+                  {paymentMethod === 'cod' ? 'Damage Insurance (5%)' : 'Damage Insurance (8%)'}
                 </span>
                 <span style={{ fontSize: 14, fontWeight: 600 }}>${paymentDetails.tax.toFixed(2)}</span>
               </div>
@@ -410,13 +427,13 @@ export default function Reserve() {
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
                 <span style={{ fontSize: 14, color: 'var(--ink-3)' }}>
-                  {paymentMethod === 'cod' ? 'Damage Insurance (5%)' : 'Service fee (10%)'}
+                  {paymentMethod === 'cod' ? 'Service fee (0%)' : 'Service fee (10%)'}
                 </span>
                 <span style={{ fontSize: 14, fontWeight: 600 }}>${paymentDetails.serviceFee.toFixed(2)}</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
                 <span style={{ fontSize: 14, color: 'var(--ink-3)' }}>
-                  {paymentMethod === 'cod' ? 'Tax' : 'Tax (8%)'}
+                  {paymentMethod === 'cod' ? 'Damage Insurance (5%)' : 'Damage Insurance (8%)'}
                 </span>
                 <span style={{ fontSize: 14, fontWeight: 600 }}>${paymentDetails.tax.toFixed(2)}</span>
               </div>
@@ -430,9 +447,9 @@ export default function Reserve() {
             <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 12, color: 'var(--ink-1)' }}>Payment Method</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 28 }}>
               {[
-                { id: 'gcash', label: 'GCash', icon: <Smartphone size={20} />, desc: 'Home delivery • 10% Service fee • 8% Tax' },
-                { id: 'paymaya', label: 'PayMaya', icon: <Smartphone size={20} />, desc: 'Home delivery • 10% Service fee • 8% Tax' },
-                { id: 'gotyme', label: 'GoTyme', icon: <Wallet size={20} />, desc: 'Home delivery • 10% Service fee • 8% Tax' },
+                { id: 'gcash', label: 'GCash', icon: <Smartphone size={20} />, desc: 'Home delivery • 10% Service fee • 8% Damage Insurance' },
+                { id: 'paymaya', label: 'PayMaya', icon: <Smartphone size={20} />, desc: 'Home delivery • 10% Service fee • 8% Damage Insurance' },
+                { id: 'gotyme', label: 'GoTyme', icon: <Wallet size={20} />, desc: 'Home delivery • 10% Service fee • 8% Damage Insurance' },
                 { id: 'cod', label: 'Cash on Delivery (COD)', icon: <Truck size={20} />, desc: 'Face-to-face pickup • No delivery fee • 5% Damage Insurance' },
               ].map((method) => {
                 const details = getPaymentDetails(method.id);

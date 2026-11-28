@@ -123,6 +123,22 @@
 }
 .admin-sidebar-toggle:hover { border-color: var(--accent); color: var(--accent); }
 
+.admin-theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: none;
+  border: 1.5px solid var(--border);
+  color: var(--ink-2);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: border-color .15s, color .15s;
+}
+.admin-theme-toggle:hover { border-color: var(--accent); color: var(--accent); }
+
 /* Logo */
 .admin-header-brand {
   display: inline-flex;
