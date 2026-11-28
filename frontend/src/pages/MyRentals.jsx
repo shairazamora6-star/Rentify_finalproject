@@ -132,6 +132,16 @@ export default function MyRentals() {
                     <RefreshCw size={14} /> Extend
                   </button>
                 )}
+                {(rental.status === 'active' || rental.status === 'upcoming') && (
+                  <button onClick={() => navigate(`/item/${getItemId(rental)}`)} style={{
+                    flex: 1, padding: '9px', borderRadius: 10,
+                    border: '1.5px solid #E2E8F0', background: 'white',
+                    color: '#0F172A', fontSize: 13, fontWeight: 600,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4,
+                  }}>
+                    <FileText size={14} /> Details
+                  </button>
+                )}
                 {rental.status === 'completed' && !rental.rated && (
                   <button
                     onClick={() => navigate(`/return-review/${rental.id}`)}
