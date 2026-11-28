@@ -52,6 +52,7 @@ import Complaints from './pages/Complaints'
 import Settings from './pages/Settings'
 import AdminStub from './pages/AdminStub'
 import ActiveTracking from './pages/ActiveTracking'
+import CategoriesSearch from './pages/CategoriesSearch'
 
 const PUBLIC_ROUTES = ['/login', '/register', '/landing']
 
@@ -519,7 +520,7 @@ export default function App() {
         {/* Marketplace */}
         <Route path="listings" element={<Rentals />} />
         <Route path="listings/new" element={<AdminStub title="Add New Item" />} />
-        <Route path="categories" element={<AdminStub title="Categories & Search" />} />
+        <Route path="categories" element={<CategoriesSearch />} />
         <Route path="customers" element={<AdminStub title="Customers" />} />
         <Route path="owners" element={<AdminStub title="Owners" />} />
         {/* Business */}
