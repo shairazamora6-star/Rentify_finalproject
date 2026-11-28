@@ -169,10 +169,10 @@ export default function Home() {
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--ink-1)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.title}</div>
                 <div style={{ fontSize: 12, color: 'var(--ink-3)' }}>
-                  {isFromHistory ? `${rentalCounts[item.title]} rental${rentalCounts[item.title] === 1 ? '' : 's'}` : `$${item.price}/day`}
+                  {isFromHistory ? `${rentalCounts[item.title]} rental${rentalCounts[item.title] === 1 ? '' : 's'}` : `₱${item.price}/day`}
                 </div>
               </div>
-              <span style={{ fontSize: 15, fontWeight: 800, color: 'var(--accent)' }}>${item.price}<span style={{ fontSize: 11, fontWeight: 500, color: 'var(--ink-4)' }}>/day</span></span>
+              <span style={{ fontSize: 15, fontWeight: 800, color: 'var(--accent)' }}>₱{item.price}<span style={{ fontSize: 11, fontWeight: 500, color: 'var(--ink-4)' }}>/day</span></span>
             </button>
           ))}
         </div>

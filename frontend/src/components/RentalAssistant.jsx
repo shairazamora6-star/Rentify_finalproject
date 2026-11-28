@@ -111,7 +111,7 @@ export default function RentalAssistant() {
                 {entry.items?.map(item => (
                   <Link className="assistant-item" to={`/item/${item.id}`} key={item.id} onClick={() => setIsOpen(false)}>
                     <img src={item.image} alt="" />
-                    <span><strong>{item.title}</strong><small>${Number(item.price).toFixed(0)} / {item.pricePeriod || 'day'}</small></span>
+                    <span><strong>{item.title}</strong><small>₱{Number(item.price).toFixed(0)} / {item.pricePeriod || 'day'}</small></span>
                     <ArrowUpRight size={16} aria-hidden="true" />
                   </Link>
                 ))}

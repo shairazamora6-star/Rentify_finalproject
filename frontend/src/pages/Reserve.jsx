@@ -315,7 +315,7 @@ export default function Reserve() {
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--ink-3)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
               {item.location}
             </p>
-            <p style={{ fontSize: 16, fontWeight: 800, color: 'var(--accent)', marginTop: 6 }}>${item.price}<span style={{ fontSize: 12, fontWeight: 500, color: 'var(--ink-3)' }}>/day</span></p>
+            <p style={{ fontSize: 16, fontWeight: 800, color: 'var(--accent)', marginTop: 6 }}>₱{item.price}<span style={{ fontSize: 12, fontWeight: 500, color: 'var(--ink-3)' }}>/day</span></p>
           </div>
         </div>
 
@@ -350,25 +350,25 @@ export default function Reserve() {
             <div style={{ background: 'var(--surface-1)', borderRadius: 16, padding: '18px 16px', border: '1px solid var(--line-1)', marginBottom: 20 }}>
               <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 14, color: 'var(--ink-1)' }}>Price Breakdown</h3>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
-                <span style={{ fontSize: 14, color: 'var(--ink-3)' }}>${item.price} × {days} days</span>
-                <span style={{ fontSize: 14, fontWeight: 600 }}>${paymentDetails.subtotal}</span>
+                <span style={{ fontSize: 14, color: 'var(--ink-3)' }}>₱{item.price} × {days} days</span>
+                <span style={{ fontSize: 14, fontWeight: 600 }}>₱{paymentDetails.subtotal}</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
                 <span style={{ fontSize: 14, color: 'var(--ink-3)' }}>
                   {paymentMethod === 'cod' ? 'Service fee (0%)' : 'Service fee (10%)'}
                 </span>
-                <span style={{ fontSize: 14, fontWeight: 600 }}>${paymentDetails.serviceFee.toFixed(2)}</span>
+                <span style={{ fontSize: 14, fontWeight: 600 }}>₱{paymentDetails.serviceFee.toFixed(2)}</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
                 <span style={{ fontSize: 14, color: 'var(--ink-3)' }}>
                   {paymentMethod === 'cod' ? 'Damage Insurance (5%)' : 'Damage Insurance (8%)'}
                 </span>
-                <span style={{ fontSize: 14, fontWeight: 600 }}>${paymentDetails.tax.toFixed(2)}</span>
+                <span style={{ fontSize: 14, fontWeight: 600 }}>₱{paymentDetails.tax.toFixed(2)}</span>
               </div>
               <div style={{ height: 1, background: 'var(--line-2)', margin: '12px 0' }} />
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--ink-1)' }}>Total</span>
-                <span style={{ fontSize: 18, fontWeight: 800, color: 'var(--accent)' }}>${paymentDetails.total.toFixed(2)}</span>
+                <span style={{ fontSize: 18, fontWeight: 800, color: 'var(--accent)' }}>₱{paymentDetails.total.toFixed(2)}</span>
               </div>
             </div>
 
@@ -422,25 +422,25 @@ export default function Reserve() {
           <>
             <div style={{ background: 'var(--surface-1)', borderRadius: 16, padding: '18px 16px', border: '1px solid var(--line-1)', marginBottom: 24 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
-                <span style={{ fontSize: 14, color: 'var(--ink-3)' }}>${item.price} × {days} days</span>
-                <span style={{ fontSize: 14, fontWeight: 600 }}>${paymentDetails.subtotal}</span>
+                <span style={{ fontSize: 14, color: 'var(--ink-3)' }}>₱{item.price} × {days} days</span>
+                <span style={{ fontSize: 14, fontWeight: 600 }}>₱{paymentDetails.subtotal}</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
                 <span style={{ fontSize: 14, color: 'var(--ink-3)' }}>
                   {paymentMethod === 'cod' ? 'Service fee (0%)' : 'Service fee (10%)'}
                 </span>
-                <span style={{ fontSize: 14, fontWeight: 600 }}>${paymentDetails.serviceFee.toFixed(2)}</span>
+                <span style={{ fontSize: 14, fontWeight: 600 }}>₱{paymentDetails.serviceFee.toFixed(2)}</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
                 <span style={{ fontSize: 14, color: 'var(--ink-3)' }}>
                   {paymentMethod === 'cod' ? 'Damage Insurance (5%)' : 'Damage Insurance (8%)'}
                 </span>
-                <span style={{ fontSize: 14, fontWeight: 600 }}>${paymentDetails.tax.toFixed(2)}</span>
+                <span style={{ fontSize: 14, fontWeight: 600 }}>₱{paymentDetails.tax.toFixed(2)}</span>
               </div>
               <div style={{ height: 1, background: 'var(--line-2)', margin: '12px 0' }} />
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--ink-1)' }}>Total</span>
-                <span style={{ fontSize: 20, fontWeight: 800, color: 'var(--accent)' }}>${paymentDetails.total.toFixed(2)}</span>
+                <span style={{ fontSize: 20, fontWeight: 800, color: 'var(--accent)' }}>₱{paymentDetails.total.toFixed(2)}</span>
               </div>
             </div>
 
@@ -493,7 +493,7 @@ export default function Reserve() {
 
             {bookingError && <p role="alert" style={{ marginBottom: 14, color: 'var(--danger)', fontSize: 13 }}>{bookingError}</p>}
             <button onClick={confirmRental} disabled={isSubmitting} className="btn-primary" style={{ opacity: isSubmitting ? 0.7 : 1 }}>
-              {isSubmitting ? 'Saving reservation…' : `Confirm reservation · $${paymentDetails.total.toFixed(2)}`}
+              {isSubmitting ? 'Saving reservation…' : `Confirm reservation · ₱${paymentDetails.total.toFixed(2)}`}
             </button>
           </>
         )}

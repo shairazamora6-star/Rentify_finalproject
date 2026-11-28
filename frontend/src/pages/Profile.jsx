@@ -1,11 +1,11 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useMemo } from 'react';
 import { Camera, User, Mail, MapPin, Calendar, Edit2, Shield, Bell, LogOut, Trash2, LayoutDashboard, Check } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '../contexts/AppContext';
 
 export default function Profile() {
   const navigate = useNavigate();
-  const { logout, user, updateUser } = useApp();
+  const { logout, user, updateUser, rentals } = useApp();
   const fileInputRef = useRef(null);
   const [editMode, setEditMode] = useState(false);
   const [profile, setProfile] = useState({
@@ -59,6 +59,16 @@ export default function Profile() {
     logout();
     navigate('/login');
   };
+
+  // Compute stats from rentals
+  const stats = useMemo(() => {
+    const userRentals = rentals.filter(r => r.ownerId === user?.id || r.userId === user?.id);
+    const rentalsCount = userRentals.length;
+    const earned = userRentals.reduce((sum, r) => sum + (r.totalPrice || r.price || 0), 0);
+    // Mock rating - could be from reviews in a real app
+    const rating = 4.8;
+    return { rentalsCount, earned, rating };
+  }, [rentals, user?.id]);
 
   return (
     <div className="page">
@@ -140,9 +150,9 @@ export default function Profile() {
         borderRadius: 12, overflow: 'hidden', marginTop: 16,
       }}>
         {[
-          { label: 'Rentals', value: '12' },
-          { label: 'Earned', value: '$2,450' },
-          { label: 'Rating', value: '4.8 ★' },
+          { label: 'Rentals', value: stats.rentalsCount.toString() },
+          { label: 'Earned', value: `₱${stats.earned.toLocaleString()}` },
+          { label: 'Rating', value: `${stats.rating} ★` },
         ].map(stat => (
           <div key={stat.label} style={{ background: 'var(--surface)', padding: '16px 8px', textAlign: 'center' }}>
             <p style={{ fontSize: 20, fontWeight: 700, color: 'var(--ink-1)' }}>{stat.value}</p>

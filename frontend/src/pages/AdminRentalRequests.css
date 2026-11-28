@@ -8,7 +8,7 @@
   padding: 28px 32px 48px;
   min-height: 100%;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  color: #0F172A;
+  color: var(--ink-1);
   background: transparent;
 }
 
@@ -25,7 +25,7 @@
 .rr-page-title {
   font-size: 22px;
   font-weight: 700;
-  color: #0F172A;
+  color: var(--ink-1);
   letter-spacing: -0.02em;
   line-height: 1.2;
 }
@@ -33,7 +33,7 @@
 .rr-page-subtitle {
   margin-top: 4px;
   font-size: 13.5px;
-  color: #64748B;
+  color: var(--ink-3);
 }
 
 .rr-header-controls {
@@ -58,29 +58,29 @@
 .rr-search-icon {
   position: absolute;
   left: 11px;
-  color: #94A3B8;
+  color: var(--ink-4);
   pointer-events: none;
 }
 
 .rr-search {
   width: 100%;
   padding: 9px 14px 9px 36px;
-  border: 1.5px solid #C7D7F5;
+  border: 1.5px solid var(--border);
   border-radius: 10px;
-  background: rgba(255,255,255,0.92);
+  background: var(--surface-1);
   font-size: 13px;
-  color: #0F172A;
+  color: var(--ink-1);
   outline: none;
   transition: border-color 0.15s, box-shadow 0.15s;
 }
 
 .rr-search:focus {
-  border-color: #2563EB;
-  box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
-  background: #fff;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-shadow);
+  background: var(--surface-1);
 }
 
-.rr-search::placeholder { color: #94A3B8; }
+.rr-search::placeholder { color: var(--ink-4); }
 
 /* Filter button */
 .rr-filter-btn {
@@ -88,17 +88,17 @@
   align-items: center;
   gap: 7px;
   padding: 9px 14px;
-  border: 1.5px solid #C7D7F5;
+  border: 1.5px solid var(--border);
   border-radius: 10px;
-  background: rgba(255,255,255,0.92);
+  background: var(--surface-1);
   font-size: 13px;
   font-weight: 600;
-  color: #475569;
+  color: var(--ink-2);
   cursor: pointer;
   flex-shrink: 0;
   transition: border-color 0.15s, color 0.15s;
 }
-.rr-filter-btn:hover { border-color: #2563EB; color: #2563EB; }
+.rr-filter-btn:hover { border-color: var(--accent); color: var(--accent); }
 
 /* ── Summary cards ── */
 .rr-summary-cards {
@@ -123,7 +123,7 @@
 .rr-sc-pending  { background: linear-gradient(135deg,#FFF7ED,#FED7AA); border-color: #FDBA74; }
 .rr-sc-accepted { background: linear-gradient(135deg,#F0FDF4,#D1FAE5); border-color: #A7F3D0; }
 .rr-sc-declined { background: linear-gradient(135deg,#FFF1F2,#FFE4E6); border-color: #FECDD3; }
-.rr-sc-total    { background: linear-gradient(135deg,#EFF6FF,#DBEAFE); border-color: #BFDBFE; }
+.rr-sc-total    { background: linear-gradient(135deg,var(--accent-softer),var(--accent-soft)); border-color: var(--accent-line); }
 
 .rr-sc-icon {
   width: 42px;
@@ -136,19 +136,19 @@
 }
 .rr-sc-pending  .rr-sc-icon { background: #F97316; box-shadow: 0 4px 10px rgba(249,115,22,0.3); }
 .rr-sc-accepted .rr-sc-icon { background: #10B981; box-shadow: 0 4px 10px rgba(16,185,129,0.3); }
-.rr-sc-declined .rr-sc-icon { background: #EF4444; box-shadow: 0 4px 10px rgba(239,68,68,0.3); }
-.rr-sc-total    .rr-sc-icon { background: #2563EB; box-shadow: 0 4px 10px rgba(37,99,235,0.3); }
+.rr-sc-declined .rr-sc-icon { background: var(--danger); box-shadow: 0 4px 10px rgba(239,68,68,0.3); }
+.rr-sc-total    .rr-sc-icon { background: var(--accent); box-shadow: 0 4px 10px var(--accent-shadow); }
 
 .rr-sc-label {
   font-size: 12px;
   font-weight: 600;
-  color: #64748B;
+  color: var(--ink-3);
   line-height: 1.3;
 }
 .rr-sc-value {
   font-size: 24px;
   font-weight: 800;
-  color: #0F172A;
+  color: var(--ink-1);
   letter-spacing: -0.03em;
   line-height: 1;
   margin-top: 2px;
@@ -156,8 +156,8 @@
 
 /* ── Main card ── */
 .rr-main-card {
-  background: #fff;
-  border: 1px solid #DCE8F5;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
   border-radius: 18px;
   box-shadow: 0 1px 4px rgba(0,0,0,0.04), 0 6px 20px -6px rgba(45,93,150,0.1);
   overflow: hidden;
@@ -175,11 +175,11 @@
 .rr-card-title {
   font-size: 16px;
   font-weight: 700;
-  color: #0F172A;
+  color: var(--ink-1);
 }
 .rr-card-subtitle {
   font-size: 13px;
-  color: #64748B;
+  color: var(--ink-3);
   margin-top: 3px;
 }
 
@@ -188,7 +188,7 @@
   display: flex;
   gap: 4px;
   padding: 14px 24px 0;
-  border-bottom: 1.5px solid #EDF4FC;
+  border-bottom: 1.5px solid var(--border-light);
 }
 
 .rr-tab {
@@ -199,7 +199,7 @@
   border-radius: 8px 8px 0 0;
   font-size: 13px;
   font-weight: 600;
-  color: #64748B;
+  color: var(--ink-3);
   background: none;
   border: none;
   cursor: pointer;
@@ -208,8 +208,8 @@
   border-bottom: 2.5px solid transparent;
   transition: color 0.15s;
 }
-.rr-tab:hover { color: #0F172A; background: #F8FAFF; }
-.rr-tab-active { color: #2563EB; border-bottom-color: #2563EB; }
+.rr-tab:hover { color: var(--ink-1); background: var(--accent-softer); }
+.rr-tab-active { color: var(--accent); border-bottom-color: var(--accent); }
 
 .rr-tab-count {
   min-width: 20px;
@@ -240,19 +240,19 @@
   justify-content: center;
   gap: 12px;
   padding: 48px 24px;
-  color: #94A3B8;
+  color: var(--ink-4);
   font-size: 14px;
 }
 
 /* ── Individual request card ── */
 .rr-request-card {
-  background: #ffffff;
+  background: var(--surface-1);
   border-radius: 16px;
   padding: 20px 22px 18px;
-  border: 1px solid #E8F0FD;
+  border: 1px solid var(--accent-soft);
   box-shadow:
-    0 1px 3px rgba(37, 99, 235, 0.06),
-    0 6px 20px -6px rgba(37, 99, 235, 0.10);
+    0 1px 3px var(--accent-shadow),
+    0 6px 20px -6px var(--accent-shadow);
   transition: box-shadow 0.18s, transform 0.18s;
   position: relative;
   overflow: hidden;
@@ -267,17 +267,17 @@
   bottom: 0;
   width: 4px;
   border-radius: 16px 0 0 16px;
-  background: #2563EB;         /* default / pending */
+  background: var(--accent);         /* default / pending */
 }
 
 /* When the card contains an accepted badge override the stripe */
 .rr-request-card:has(.rr-status-accepted)::before  { background: #10B981; }
-.rr-request-card:has(.rr-status-declined)::before  { background: #EF4444; }
+.rr-request-card:has(.rr-status-declined)::before  { background: var(--danger); }
 
 .rr-request-card:hover {
   box-shadow:
-    0 2px 8px rgba(37, 99, 235, 0.08),
-    0 10px 28px -6px rgba(37, 99, 235, 0.14);
+    0 2px 8px var(--accent-shadow),
+    0 10px 28px -6px var(--accent-shadow);
   transform: translateY(-2px);
 }
 
@@ -312,12 +312,12 @@
 .rr-customer-name {
   font-size: 14px;
   font-weight: 700;
-  color: #0F172A;
+  color: var(--ink-1);
   line-height: 1.3;
 }
 .rr-item-name {
   font-size: 12.5px;
-  color: #64748B;
+  color: var(--ink-3);
   margin-top: 2px;
 }
 
@@ -332,12 +332,12 @@
 .rr-price {
   font-size: 16px;
   font-weight: 800;
-  color: #0F172A;
+  color: var(--ink-1);
   letter-spacing: -0.02em;
 }
 .rr-time-ago {
   font-size: 11px;
-  color: #94A3B8;
+  color: var(--ink-4);
 }
 
 /* Status badge */
@@ -369,32 +369,32 @@
   border-radius: 20px;
   font-size: 11.5px;
   font-weight: 600;
-  background: #F1F5F9;
-  color: #475569;
+  background: var(--line-2);
+  color: var(--ink-2);
   border: 1px solid transparent;
 }
 .rr-chip svg { flex-shrink: 0; }
 
 /* Blue info-box chips — matches the RA admin avatar blue (#2563EB) */
 .rr-chip-blue {
-  background: #DBEAFE;           /* light blue fill   */
-  color: #1D4ED8;                /* dark navy-blue text */
-  border-color: #BFDBFE;        /* soft blue border  */
+  background: var(--accent-soft);           /* light blue fill   */
+  color: var(--accent);                /* dark navy-blue text */
+  border-color: var(--accent-line);        /* soft blue border  */
 }
 .rr-chip-blue svg {
-  color: #2563EB;                /* icon matches primary blue */
+  color: var(--accent);                /* icon matches primary blue */
 }
 
 /* Customer note */
 .rr-note {
   font-size: 12.5px;
-  color: #64748B;
+  color: var(--ink-3);
   font-style: italic;
   line-height: 1.6;
   padding: 10px 14px;
-  background: #F0F6FF;
+  background: var(--accent-softer);
   border-radius: 8px;
-  border-left: 3px solid #93C5FD;
+  border-left: 3px solid var(--accent-line);
   margin-bottom: 16px;
 }
 
@@ -413,8 +413,8 @@
   gap: 6px;
   padding: 8px 16px;
   border-radius: 9px;
-  border: 1.5px solid #E2E8F0;
-  background: #fff;
+  border: 1.5px solid var(--line-1);
+  background: var(--surface-1);
   font-size: 13px;
   font-weight: 600;
   color: #64748B;
@@ -476,11 +476,11 @@
 }
 
 .rr-info-card {
-  background: #fff;
-  border: 1px solid #DCE8F5;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
   border-radius: 18px;
   padding: 22px 24px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.04), 0 6px 20px -6px rgba(45,93,150,0.1);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04), 0 6px 20px -6px var(--accent-shadow);
 }
 
 .rr-info-header {
@@ -499,17 +499,17 @@
   flex-shrink: 0;
   color: #fff;
 }
-.rr-info-blue   { background: #2563EB; box-shadow: 0 4px 10px rgba(37,99,235,0.3); }
+.rr-info-blue   { background: var(--accent); box-shadow: 0 4px 10px var(--accent-shadow); }
 .rr-info-violet { background: #7C3AED; box-shadow: 0 4px 10px rgba(124,58,237,0.3); }
 
 .rr-info-title {
   font-size: 15px;
   font-weight: 700;
-  color: #0F172A;
+  color: var(--ink-1);
 }
 .rr-info-sub {
   font-size: 12.5px;
-  color: #64748B;
+  color: var(--ink-3);
   margin-top: 2px;
 }
 
@@ -518,9 +518,9 @@
   display: flex;
   align-items: center;
   padding: 14px;
-  background: #F8FAFF;
+  background: var(--accent-softer);
   border-radius: 10px;
-  border: 1px solid #EDF4FC;
+  border: 1px solid var(--accent-line);
   margin-bottom: 16px;
 }
 .rr-info-stat {
@@ -533,18 +533,18 @@
 .rr-info-stat-value {
   font-size: 20px;
   font-weight: 800;
-  color: #0F172A;
+  color: var(--ink-1);
   letter-spacing: -0.02em;
 }
 .rr-info-stat-label {
   font-size: 11.5px;
-  color: #64748B;
+  color: var(--ink-3);
   font-weight: 500;
 }
 .rr-info-stat-div {
   width: 1px;
   height: 32px;
-  background: #E2E8F0;
+  background: var(--line-1);
 }
 
 /* Tracking list */
@@ -559,7 +559,7 @@
   align-items: center;
   gap: 12px;
   padding: 10px 0;
-  border-bottom: 1px solid #F1F5F9;
+  border-bottom: 1px solid var(--line-2);
 }
 .rr-tracking-item:last-child { border-bottom: none; }
 
@@ -573,14 +573,14 @@
 .rr-tracking-name {
   font-size: 13px;
   font-weight: 600;
-  color: #0F172A;
+  color: var(--ink-1);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 .rr-tracking-due {
   font-size: 11.5px;
-  color: #64748B;
+  color: var(--ink-3);
   margin-top: 2px;
 }
 
@@ -589,14 +589,14 @@
   padding: 6px 12px;
   border-radius: 7px;
   border: none;
-  background: #EFF6FF;
-  color: #2563EB;
+  background: var(--accent-softer);
+  color: var(--accent);
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
   transition: background 0.15s;
 }
-.rr-track-btn:hover { background: #DBEAFE; }
+.rr-track-btn:hover { background: var(--accent-soft); }
 
 /* Shared link button */
 .rr-info-link {
@@ -605,7 +605,7 @@
   gap: 5px;
   font-size: 13px;
   font-weight: 600;
-  color: #2563EB;
+  color: var(--accent);
   background: none;
   border: none;
   cursor: pointer;
@@ -646,4 +646,57 @@
 
 @media (max-width: 400px) {
   .rr-summary-cards { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* ============================================================
+   DARK MODE OVERRIDES for AdminRentalRequests
+   Matches the auto-theming approach of AdminOverview.css
+   ============================================================ */
+[data-theme="dark"] {
+  /* Summary card gradients & borders */
+  .rr-sc-pending  { background: linear-gradient(135deg,#3D2B00,#5C3A00); border-color: #8B5E00; }
+  .rr-sc-accepted { background: linear-gradient(135deg,#052E16,#0A4D2A); border-color: #147A45; }
+  .rr-sc-declined { background: linear-gradient(135deg,#3D0A0A,#5C1414); border-color: #8B2222; }
+  .rr-sc-total    { background: linear-gradient(135deg,var(--accent-softer),var(--accent-soft)); border-color: var(--accent-line); }
+
+  /* Summary card icons */
+  .rr-sc-pending  .rr-sc-icon { background: #F97316; box-shadow: 0 4px 10px rgba(249,115,22,0.4); }
+  .rr-sc-accepted .rr-sc-icon { background: #10B981; box-shadow: 0 4px 10px rgba(16,185,129,0.4); }
+  .rr-sc-declined .rr-sc-icon { background: var(--danger); box-shadow: 0 4px 10px rgba(239,68,68,0.4); }
+  .rr-sc-total    .rr-sc-icon { background: var(--accent); box-shadow: 0 4px 10px var(--accent-shadow); }
+
+  /* Tab counts */
+  .rr-tc-orange { background: #3D2B00; color: #FDE68A; }
+  .rr-tc-green  { background: #052E16; color: #A7F3D0; }
+  .rr-tc-red    { background: #3D0A0A; color: #FCA5A5; }
+
+  /* Request card border & stripe */
+  .rr-request-card { border-color: var(--accent-soft); }
+  .rr-request-card::before { background: var(--accent); }
+  .rr-request-card:has(.rr-status-accepted)::before  { background: #10B981; }
+  .rr-request-card:has(.rr-status-declined)::before  { background: var(--danger); }
+
+  /* Buttons */
+  .rr-btn-decline:hover { border-color: #EF4444; color: #FCA5A5; background: #3D0A0A; }
+  .rr-btn-approve { background: var(--accent); box-shadow: 0 4px 12px var(--accent-shadow); }
+  .rr-btn-approve:hover { background: var(--accent); filter: brightness(1.1); }
+  .rr-btn-view { border-color: var(--accent-line); background: var(--accent-softer); color: var(--accent); }
+  .rr-btn-view:hover { background: var(--accent-soft); }
+
+  /* Status notes */
+  .rr-accepted-note { color: #6EE7B7; }
+  .rr-declined-note { color: #FCA5A5; }
+
+  /* Info card backgrounds */
+  .rr-info-card { background: var(--surface-1); border-color: var(--border); box-shadow: 0 1px 4px rgba(0,0,0,0.2), 0 6px 20px -6px var(--accent-shadow); }
+  .rr-info-stats { background: var(--accent-softer); border-color: var(--accent-line); }
+  .rr-info-stat-div { background: var(--line-1); }
+
+  /* Tracking items */
+  .rr-tracking-item { border-color: var(--line-2); }
+  .rr-track-btn { background: var(--accent-softer); color: var(--accent); }
+  .rr-track-btn:hover { background: var(--accent-soft); }
+
+  /* Info link */
+  .rr-info-link { color: var(--accent); }
 }

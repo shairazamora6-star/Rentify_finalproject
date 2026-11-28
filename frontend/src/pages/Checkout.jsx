@@ -120,8 +120,8 @@ export default function Checkout() {
             <img src={c.image} alt="" style={{ width: 64, height: 64, borderRadius: 10, objectFit: 'cover' }} />
             <div style={{ flex: 1, minWidth: 0 }}>
               <p style={{ fontSize: 14, fontWeight: 700, color: 'var(--ink-1)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.title}</p>
-              <p style={{ fontSize: 12, color: 'var(--ink-3)' }}>{c.pricePeriod ? `$${c.price} / ${c.pricePeriod}` : `$${c.price} / day`}</p>
-              {days > 0 && <p style={{ fontSize: 12, color: 'var(--accent)', fontWeight: 700 }}>${c.total.toFixed(2)} · {days} day{days > 1 ? 's' : ''}</p>}
+              <p style={{ fontSize: 12, color: 'var(--ink-3)' }}>{c.pricePeriod ? `₱${c.price} / ${c.pricePeriod}` : `₱${c.price} / day`}</p>
+              {days > 0 && <p style={{ fontSize: 12, color: 'var(--accent)', fontWeight: 700 }}>₱{c.total.toFixed(2)} · {days} day{days > 1 ? 's' : ''}</p>}
             </div>
             <button onClick={() => removeFromCart(c.id)} aria-label={`Remove ${c.title} from cart`} style={{ padding: 8, color: 'var(--ink-4)', borderRadius: 8, width: 32, height: 32, display: 'grid', placeItems: 'center' }}>
               <Trash2 size={15} />
@@ -181,24 +181,24 @@ export default function Checkout() {
           {lineTotals.map(c => (
             <div key={c.id} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, color: 'var(--ink-2)' }}>
               <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '60%' }}>{c.title}{days > 0 ? ` · ${days} day${days > 1 ? 's' : ''}` : ''}</span>
-              <span style={{ fontWeight: 600 }}>{days > 0 ? `$${c.total.toFixed(2)}` : '—'}</span>
+              <span style={{ fontWeight: 600 }}>{days > 0 ? `₱${c.total.toFixed(2)}` : '—'}</span>
             </div>
           ))}
           <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, color: 'var(--ink-3)', borderTop: '1px solid var(--line-2)', paddingTop: 8 }}>
             <span>Subtotal</span>
-            <span>{grandSubtotal ? `$${grandSubtotal.toFixed(2)}` : '—'}</span>
+            <span>{grandSubtotal ? `₱${grandSubtotal.toFixed(2)}` : '—'}</span>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, color: 'var(--ink-2)' }}>
             <span>{paymentMethod === 'cod' ? 'Service fee (0%)' : 'Service fee (10%)'}</span>
-            <span>{paymentDetails.serviceFee ? `$${paymentDetails.serviceFee.toFixed(2)}` : '$0.00'}</span>
+            <span>{paymentDetails.serviceFee ? `₱${paymentDetails.serviceFee.toFixed(2)}` : '₱0.00'}</span>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, color: 'var(--ink-2)' }}>
             <span>{paymentMethod === 'cod' ? 'Damage Insurance (5%)' : 'Damage Insurance (8%)'}</span>
-            <span>{paymentDetails.damageInsurance ? `$${paymentDetails.damageInsurance.toFixed(2)}` : '$0.00'}</span>
+            <span>{paymentDetails.damageInsurance ? `₱${paymentDetails.damageInsurance.toFixed(2)}` : '₱0.00'}</span>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 15, fontWeight: 800, color: 'var(--ink-1)', borderTop: '1px solid var(--line-2)', paddingTop: 10 }}>
             <span>Total</span>
-            <span style={{ color: 'var(--accent)' }}>{paymentDetails.total ? `$${paymentDetails.total.toFixed(2)}` : '$0.00'}</span>
+            <span style={{ color: 'var(--accent)' }}>{paymentDetails.total ? `₱${paymentDetails.total.toFixed(2)}` : '₱0.00'}</span>
           </div>
         </div>
       </div>
@@ -224,7 +224,7 @@ export default function Checkout() {
         onClick={confirmAll}
         disabled={!agree || !dates.start || !dates.end || processing || cart.length === 0}
       >
-        Confirm reservation {paymentDetails.total > 0 && `· $${paymentDetails.total.toFixed(2)}`} <ArrowRight size={16} />
+        Confirm reservation {paymentDetails.total > 0 && `· ₱${paymentDetails.total.toFixed(2)}`} <ArrowRight size={16} />
       </button>
 
       <div style={{ height: 100 }} />

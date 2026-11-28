@@ -197,8 +197,8 @@ img { display: block; max-width: 100%; }
 .app-topbar-brand-mark { width: 31px; height: 31px; display: grid; place-items: center; flex-shrink: 0; }
 .app-topbar-links { display: flex; align-items: center; gap: 30px; }
 .app-topbar-links a { white-space: nowrap; }
-.app-topbar-links a { color: #617185; font-size: 12px; font-weight: 550; transition: color .15s; }
-.app-topbar-links a:hover,.app-topbar-links a.active { color: var(--primary); }
+.app-topbar-links a { color: #617185; font-size: 12px; font-weight: 550; transition: color .15s, text-shadow .15s, transform .15s; }
+.app-topbar-links a:hover, .app-topbar-links a.active { color: var(--primary); text-shadow: 0 0 10px var(--primary-light), 0 0 20px var(--primary-light); transform: translateY(-1px); }
 .app-topbar-user { display: flex; align-items: center; gap: 11px; flex-shrink: 0; }
 .app-topbar-user-profile { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 34px; padding: 4px 10px 4px 6px; border-radius: 9px; border: 1px solid var(--border); background: #fff; transition: border-color .15s, background .15s; }
 .app-topbar-user-profile:hover { border-color: #bfdbfe; background: #eff6ff; }

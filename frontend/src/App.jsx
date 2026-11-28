@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Routes, Route, Navigate, Link, NavLink, useNavigate, useLocation } from 'react-router-dom'
 import { Bell, User, ShoppingCart, X, Trash2, ArrowRight, Moon, Sun } from 'lucide-react'
 import { useApp } from './contexts/AppContext'
 import BottomNav from './components/BottomNav'
 import RentifyLogo from './components/RentifyLogo'
+import LoadingScreen from './components/LoadingScreen'
 import Home from './pages/Home'
 import Search from './pages/Search'
 import ItemDetails from './pages/ItemDetails'
@@ -151,7 +152,7 @@ function GetLayout({ children }) {
                     <img src={c.image} alt="" className="cart-drawer-item-img" />
                     <div className="cart-drawer-item-body">
                       <span className="cart-drawer-item-name">{c.title}</span>
-                      <span className="cart-drawer-item-price">${c.price}<span> /day</span></span>
+                      <span className="cart-drawer-item-price">₱{c.price}<span> /day</span></span>
                     </div>
                     <button className="cart-drawer-item-remove" onClick={(e) => { e.stopPropagation(); removeFromCart(c.id) }} aria-label={`Remove ${c.title} from cart`}>
                       <Trash2 size={15} />
@@ -162,7 +163,7 @@ function GetLayout({ children }) {
               <div className="cart-drawer-footer">
                 <div className="cart-drawer-subtotal">
                   <span>Subtotal</span>
-                  <strong>${cartSubtotal}<span> /day</span></strong>
+                  <strong>₱{cartSubtotal}<span> /day</span></strong>
                 </div>
                 <button className="cart-drawer-checkout" onClick={goReserve}>
                   Reserve items <ArrowRight size={16} />
@@ -182,6 +183,17 @@ function GetLayout({ children }) {
 
 export default function App() {
   const { isLoggedIn } = useApp()
+  const [appLoaded, setAppLoaded] = useState(false)
+
+  useEffect(() => {
+    // Simulate app initialization - can be replaced with actual async operations
+    const timer = setTimeout(() => setAppLoaded(true), 800)
+    return () => clearTimeout(timer)
+  }, [])
+
+  if (!appLoaded) {
+    return <LoadingScreen onLoaded={() => setAppLoaded(true)} />
+  }
 
   return (
     <>

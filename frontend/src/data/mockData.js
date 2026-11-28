@@ -1314,7 +1314,7 @@ export const mockNotifications = [
   { id: 1, type: 'booking', title: 'Your booking is confirmed!', message: 'Canon EOS R5 Camera — Nov 28 to Dec 2', time: '2m ago', read: false },
   { id: 2, type: 'message', title: 'New message from Marcus', message: 'Hey! The camera is ready for pickup...', time: '1h ago', read: false },
   { id: 3, type: 'extension', title: 'Extension approved', message: 'Your rental extension has been approved', time: '3h ago', read: true },
-  { id: 4, type: 'system', title: 'Payment successful', message: '$135.00 charged to your card ending in 4242', time: '1d ago', read: true },
+  { id: 4, type: 'system', title: 'Payment successful', message: '₱135.00 charged to your card ending in 4242', time: '1d ago', read: true },
 ];
 
 export const mockMessages = [

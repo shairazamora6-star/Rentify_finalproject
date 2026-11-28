@@ -115,7 +115,7 @@ export default function ItemDetails() {
             <span style={{ fontSize: 14, color: 'var(--ink-3)' }}>{item.location}</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
-            <span style={{ fontSize: 28, fontWeight: 800, color: 'var(--accent)' }}>${item.price}</span>
+            <span style={{ fontSize: 28, fontWeight: 800, color: 'var(--accent)' }}>₱{item.price}</span>
             <span style={{ fontSize: 15, color: 'var(--ink-3)' }}>/day</span>
           </div>
         </div>
@@ -222,7 +222,7 @@ export default function ItemDetails() {
       }}>
         <div style={{ flex: 1 }}>
           <div style={{ fontSize: 12, color: 'var(--ink-3)' }}>Total price</div>
-          <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--accent)' }}>${item.price}<span style={{ fontSize: 13, fontWeight: 500, color: 'var(--ink-3)' }}>/day</span></div>
+          <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--accent)' }}>₱{item.price}<span style={{ fontSize: 13, fontWeight: 500, color: 'var(--ink-3)' }}>/day</span></div>
         </div>
         <button onClick={() => {
           if (!isLoggedIn) {

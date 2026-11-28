@@ -86,7 +86,7 @@ export default function ItemCard({ item }) {
           <span style={{ fontSize: 12, color: 'var(--ink-4)' }}>{item.distance}</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 3 }}>
-          <span style={{ fontSize: 16, fontWeight: 700, color: 'var(--accent)' }}>${item.price}</span>
+          <span style={{ fontSize: 16, fontWeight: 700, color: 'var(--accent)' }}>₱{item.price}</span>
           <span style={{ fontSize: 12, color: 'var(--ink-3)' }}>/{item.pricePeriod}</span>
         </div>
       </div>

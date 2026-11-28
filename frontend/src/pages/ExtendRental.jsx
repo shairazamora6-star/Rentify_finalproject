@@ -363,7 +363,7 @@ export default function ExtendRental() {
                   Extension: <strong>{totalDays} day{totalDays !== 1 ? 's' : ''}</strong>
                 </p>
                 <p style={{ fontSize: 15, fontWeight: 700, color: 'var(--accent)' }}>
-                  Additional: ${totalPrice}
+                  Additional: ₱{totalPrice}
                 </p>
               </div>
             )}
@@ -387,21 +387,21 @@ export default function ExtendRental() {
             <div style={{ background: 'var(--surface)', border: '1px solid var(--line-1)', borderRadius: 'var(--radius-md)', padding: 16, marginBottom: 16 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12 }}>
                 <span style={{ color: 'var(--ink-3)' }}>{totalDays} day{totalDays !== 1 ? 's' : ''} extension</span>
-                <span style={{ fontWeight: 600 }}>${totalPrice}</span>
+                <span style={{ fontWeight: 600 }}>₱{totalPrice}</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12 }}>
                 <span style={{ color: 'var(--ink-3)' }}>Service fee (10%)</span>
-                <span style={{ fontWeight: 600 }}>${paymentDetails.serviceFee.toFixed(2)}</span>
+                <span style={{ fontWeight: 600 }}>₱{paymentDetails.serviceFee.toFixed(2)}</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12 }}>
                 <span style={{ color: 'var(--ink-3)' }}>Tax (8%)</span>
-                <span style={{ fontWeight: 600 }}>${paymentDetails.tax.toFixed(2)}</span>
+                <span style={{ fontWeight: 600 }}>₱{paymentDetails.tax.toFixed(2)}</span>
               </div>
               <hr style={{ borderColor: 'var(--line-2)', margin: '12px 0' }} />
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ fontSize: 16, fontWeight: 700 }}>Total</span>
                 <span style={{ fontSize: 16, fontWeight: 700, color: 'var(--accent)' }}>
-                  ${paymentDetails.total.toFixed(2)}
+                  ₱{paymentDetails.total.toFixed(2)}
                 </span>
               </div>
             </div>
@@ -496,25 +496,25 @@ export default function ExtendRental() {
             <div style={{ background: 'var(--surface)', border: '1px solid var(--line-1)', borderRadius: 12, padding: 16, marginBottom: 20 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
                 <span style={{ color: 'var(--ink-3)' }}>Extension ({totalDays} days)</span>
-                <span style={{ fontWeight: 600 }}>${paymentDetails.subtotal}</span>
+                <span style={{ fontWeight: 600 }}>₱{paymentDetails.subtotal}</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
                 <span style={{ color: 'var(--ink-3)' }}>
                   {paymentMethod === 'cod' ? 'Damage Insurance (5%)' : 'Service fee (10%)'}
                 </span>
-                <span style={{ fontWeight: 600 }}>${paymentDetails.serviceFee.toFixed(2)}</span>
+                <span style={{ fontWeight: 600 }}>₱{paymentDetails.serviceFee.toFixed(2)}</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
                 <span style={{ color: 'var(--ink-3)' }}>
                   {paymentMethod === 'cod' ? 'Tax' : 'Tax (8%)'}
                 </span>
-                <span style={{ fontWeight: 600 }}>${paymentDetails.tax.toFixed(2)}</span>
+                <span style={{ fontWeight: 600 }}>₱{paymentDetails.tax.toFixed(2)}</span>
               </div>
               <hr style={{ borderColor: 'var(--line-2)', margin: '12px 0' }} />
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ fontSize: 16, fontWeight: 700 }}>Total to Pay</span>
                 <span style={{ fontSize: 16, fontWeight: 700, color: 'var(--accent)' }}>
-                  ${paymentDetails.total.toFixed(2)}
+                  ₱{paymentDetails.total.toFixed(2)}
                 </span>
               </div>
             </div>
@@ -528,7 +528,7 @@ export default function ExtendRental() {
               {processing ? (
                 <> <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> Processing...</>
               ) : (
-                `Confirm & Pay $${paymentDetails.total.toFixed(2)}`
+                `Confirm & Pay ₱${paymentDetails.total.toFixed(2)}`
               )}
             </button>
 

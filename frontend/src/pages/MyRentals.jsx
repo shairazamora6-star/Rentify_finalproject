@@ -118,7 +118,7 @@ export default function MyRentals() {
                     <CalendarDays size={13} color="var(--ink-4)" />
                     <span style={{ fontSize: 12, color: 'var(--ink-3)' }}>{rental.startDate} → {rental.endDate}</span>
                   </div>
-                  <p style={{ fontSize: 17, fontWeight: 800, color: 'var(--accent)' }}>${rental.total}</p>
+                  <p style={{ fontSize: 17, fontWeight: 800, color: 'var(--accent)' }}>₱{rental.total}</p>
                 </div>
               </div>
               <div style={{ padding: '10px 18px 14px', borderTop: '1px solid var(--line-2)', display: 'flex', gap: 8 }}>
@@ -294,11 +294,11 @@ export default function MyRentals() {
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{ fontSize: 13, color: 'var(--ink-3)', fontWeight: 600 }}>Total charged</span>
-                <span style={{ fontSize: 22, fontWeight: 800, color: 'var(--ink-1)' }}>${receiptRental.total}</span>
+                <span style={{ fontSize: 22, fontWeight: 800, color: 'var(--ink-1)' }}>₱{receiptRental.total}</span>
               </div>
               {receiptUnitPrice != null && (
                 <p style={{ fontSize: 11, color: 'var(--ink-4)', marginTop: 6 }}>
-                  {receiptDayCount} day{receiptDayCount === 1 ? '' : 's'} × ${receiptUnitPrice.toFixed(2)}/day
+                  {receiptDayCount} day{receiptDayCount === 1 ? '' : 's'} × ₱{receiptUnitPrice.toFixed(2)}/day
                 </p>
               )}
               <button onClick={() => setReceiptRental(null)} style={{

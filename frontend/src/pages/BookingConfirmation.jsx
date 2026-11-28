@@ -60,7 +60,7 @@ export default function BookingConfirmation() {
         }}>
           {[
             { label: 'Owner', value: typeof item.owner === 'object' ? item.owner.name : item.owner },
-            { label: 'Total', value: state?.total != null ? `$${state.total}` : `$${item.price}/day` },
+            { label: 'Total', value: state?.total != null ? `₱${state.total}` : `₱${item.price}/day` },
             { label: 'Status', value: 'Confirmed' },
           ].map(({ label, value }) => (
             <div key={label} style={{ textAlign: 'center' }}>

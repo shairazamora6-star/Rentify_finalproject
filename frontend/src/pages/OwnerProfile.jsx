@@ -275,7 +275,7 @@ export default function OwnerProfile() {
                 <img src={item.image} alt={item.title} style={{ width: '100%', height: 100, objectFit: 'cover' }} />
                 <div style={{ padding: '8px 10px' }}>
                   <p style={{ fontSize: 13, fontWeight: 600, marginBottom: 4, lineHeight: 1.3, color: 'var(--ink-1)' }}>{item.title}</p>
-                  <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--accent)' }}>${item.price}<span style={{ fontSize: 11, color: 'var(--ink-4)' }}>/{item.pricePeriod}</span></span>
+                  <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--accent)' }}>₱{item.price}<span style={{ fontSize: 11, color: 'var(--ink-4)' }}>/{item.pricePeriod}</span></span>
                 </div>
               </div>
             ))}
