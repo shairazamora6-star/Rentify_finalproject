@@ -24,7 +24,7 @@
   background: #fff;
 }
 .store-brand { display: inline-flex; align-items: center; gap: 10px; font-size: 23px; font-weight: 750; letter-spacing: -.075em; }
-.brand-mark { width: 35px; height: 35px; border-radius: 11px; display: grid; place-items: center; color: white; background: #3978d5; font-size: 19px; font-weight: 800; letter-spacing: -.04em; }
+.brand-mark { width: 35px; height: 35px; display: grid; place-items: center; flex-shrink: 0; }
 .brand-period { color: #97ae78; }
 .store-nav { display: flex; gap: 38px; margin-left: 60px; }
 .store-nav a { color: #49564e; font-size: 13px; font-weight: 550; transition: color .18s; }

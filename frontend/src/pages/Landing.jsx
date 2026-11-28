@@ -3,6 +3,7 @@ import { ArrowDown, ArrowRight, ArrowUpRight, BadgeCheck, Camera, ChevronRight, 
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '../contexts/AppContext';
 import RentalAssistant from '../components/RentalAssistant';
+import RentifyLogo from '../components/RentifyLogo';
 import './Landing.css';
 
 const categories = [
@@ -44,7 +45,7 @@ export default function Landing() {
 
       <header className="store-header">
         <a className="store-brand" href="/" aria-label="Rentify home">
-          <span className="brand-mark">R</span>
+          <span className="brand-mark"><RentifyLogo size={35} /></span>
           <span>rentify<span className="brand-period">.</span></span>
         </a>
         <nav className={`store-nav${menuOpen ? ' is-open' : ''}`} aria-label="Main navigation">
@@ -172,7 +173,7 @@ export default function Landing() {
       </main>
 
       <footer className="store-footer">
-        <a className="store-brand" href="/" aria-label="Rentify home"><span className="brand-mark">R</span><span>rentify<span className="brand-period">.</span></span></a>
+        <a className="store-brand" href="/" aria-label="Rentify home"><span className="brand-mark"><RentifyLogo size={30} /></span><span>rentify<span className="brand-period">.</span></span></a>
         <span>Borrow a little. Live a lot.</span>
         <span>© 2025 Rentify · Made for sharing</span>
       </footer>

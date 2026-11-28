@@ -1,12 +1,13 @@
 import { ArrowUpRight, Camera, CircleCheck, ShieldCheck } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import RentifyLogo from './RentifyLogo'
 
 export default function AuthLayout({ title, description, children, footer, variant }) {
   return (
     <div className={`auth-shell${variant ? ` auth-shell-${variant}` : ''}`}>
       <aside className="auth-aside">
         <Link className="auth-brand" to="/">
-          <span className="auth-brand-mark">R</span>
+          <span className="auth-brand-mark"><RentifyLogo size={36} /></span>
           <span>Rentify</span>
         </Link>
 
@@ -32,7 +33,7 @@ export default function AuthLayout({ title, description, children, footer, varia
 
       <main className="auth-main">
         <Link className="auth-mobile-brand" to="/">
-          <span className="auth-brand-mark">R</span>
+          <span className="auth-brand-mark"><RentifyLogo size={36} /></span>
           <span>Rentify</span>
         </Link>
         <div className="auth-content">
