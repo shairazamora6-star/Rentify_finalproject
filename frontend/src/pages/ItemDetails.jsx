@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ChevronLeft, Heart, Share2, MapPin, Star, ArrowRight } from 'lucide-react';
+import { ChevronLeft, Heart, Share2, MapPin, Star, ArrowRight, ShoppingCart, Check } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { mockItems } from '../data/mockData';
 import { useApp } from '../contexts/AppContext';
@@ -8,7 +8,7 @@ import ShareSheet from '../components/ShareSheet';
 export default function ItemDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { toggleFavorite, isFavorited, isLoggedIn, addNotification, items } = useApp();
+  const { toggleFavorite, isFavorited, isLoggedIn, addNotification, items, addToCart, isInCart } = useApp();
   const isFavoritedItem = (itemId) => isFavorited(itemId);
 
   const item = items.find(i => i.id === parseInt(id)) || mockItems.find(i => i.id === parseInt(id));
@@ -212,6 +212,22 @@ export default function ItemDetails() {
           <div style={{ fontSize: 12, color: '#64748B' }}>Total price</div>
           <div style={{ fontSize: 20, fontWeight: 800, color: '#2563EB' }}>${item.price}<span style={{ fontSize: 13, fontWeight: 500, color: '#64748B' }}>/day</span></div>
         </div>
+        <button onClick={() => {
+          if (!isLoggedIn) {
+            navigate('/login');
+          } else {
+            addToCart(item);
+            addNotification({ type: 'system', title: 'Added to cart', message: `${item.title} has been added to your cart` });
+          }
+        }} style={{
+          padding: '14px 20px', borderRadius: 14, fontSize: 15, fontWeight: 600,
+          border: '1.5px solid #E2E8F0', background: isInCart(item.id) ? '#EEF2FF' : 'white',
+          color: isInCart(item.id) ? '#2563EB' : '#0F172A',
+          display: 'flex', alignItems: 'center', gap: 8, minWidth: 140, justifyContent: 'center',
+        }}>
+          {isInCart(item.id) ? <Check size={18} /> : <ShoppingCart size={18} />}
+          {isInCart(item.id) ? 'In Cart' : 'Add to Cart'}
+        </button>
         <button onClick={() => { if (!isLoggedIn) navigate('/login'); else navigate(`/reserve/${id}`); }} className="btn-primary" style={{ padding: '14px 28px', borderRadius: 14, fontSize: 15, fontWeight: 700 }}>
           Reserve Now
         </button>

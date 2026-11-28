@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ChevronLeft, CalendarDays } from 'lucide-react';
+import { ChevronLeft, CalendarDays, Smartphone, Wallet, Truck } from 'lucide-react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { mockItems } from '../data/mockData';
 import { useApp } from '../contexts/AppContext';
@@ -133,8 +133,57 @@ export default function Reserve() {
     ? Math.ceil((new Date(dates.end) - new Date(dates.start)) / (1000 * 60 * 60 * 24))
     : 0;
   const subtotal = days * item.price;
-  const serviceFee = Math.round(subtotal * 0.1);
-  const total = subtotal + serviceFee;
+
+  const getPaymentDetails = (method) => {
+    let serviceFee = 0;
+    let tax = 0;
+    let label = '';
+    let icon = null;
+    let description = '';
+
+    switch (method) {
+      case 'cod':
+        // COD: No service fee (F2F pickup), Insurance fee (tax) = 5%
+        serviceFee = 0;
+        tax = subtotal * 0.05;
+        label = 'Cash on Delivery (COD)';
+        icon = <Truck size={20} />;
+        description = 'Face-to-face pickup • No delivery fee • 5% Damage Insurance';
+        break;
+      case 'gcash':
+        // E-Wallets: 10% delivery fee + 8% tax
+        serviceFee = subtotal * 0.10;
+        tax = subtotal * 0.08;
+        label = 'GCash';
+        icon = <Smartphone size={20} />;
+        description = 'Home delivery • 10% Service fee • 8% Tax';
+        break;
+      case 'paymaya':
+        serviceFee = subtotal * 0.10;
+        tax = subtotal * 0.08;
+        label = 'PayMaya';
+        icon = <Smartphone size={20} />;
+        description = 'Home delivery • 10% Service fee • 8% Tax';
+        break;
+      case 'gotyme':
+        serviceFee = subtotal * 0.10;
+        tax = subtotal * 0.08;
+        label = 'GoTyme';
+        icon = <Wallet size={20} />;
+        description = 'Home delivery • 10% Service fee • 8% Tax';
+        break;
+      default:
+        serviceFee = subtotal * 0.10;
+        tax = subtotal * 0.08;
+        label = 'GCash';
+        icon = <Smartphone size={20} />;
+        description = 'Home delivery • 10% Service fee • 8% Tax';
+    }
+
+    return { subtotal, serviceFee, tax, total: subtotal + serviceFee + tax, label, icon, description };
+  };
+
+  const paymentDetails = getPaymentDetails(paymentMethod);
 
   const steps = ['Select Dates', 'Review & Agree', 'Payment'];
 
@@ -207,20 +256,29 @@ export default function Reserve() {
       </div>
 
       <div style={{ padding: '24px 20px' }}>
-        {/* Step Indicator */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 24 }}>
+        {/* Step Indicator with connector lines */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 0, marginBottom: 24 }}>
           {steps.map((label, i) => (
-            <div key={i} style={{ flex: 1, textAlign: 'center' }}>
-              <div style={{
-                width: 32, height: 32, borderRadius: '50%', margin: '0 auto 6px',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 13, fontWeight: 700,
-                background: i + 1 < step ? '#2563EB' : i + 1 === step ? '#EEF2FF' : '#F1F5F9',
-                color: i + 1 <= step ? '#2563EB' : '#94A3B8',
-                border: i + 1 === step ? '2px solid #2563EB' : '2px solid transparent',
-                transition: 'all 0.3s',
-              }}>{i + 1}</div>
-              <span style={{ fontSize: 11, fontWeight: i + 1 === step ? 600 : 400, color: i + 1 <= step ? '#0F172A' : '#94A3B8' }}>{label}</span>
+            <div key={i} style={{ flex: 1, textAlign: 'center', position: 'relative' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative' }}>
+                <div style={{
+                  width: 32, height: 32, borderRadius: '50%',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: 13, fontWeight: 700,
+                  background: i + 1 < step ? '#2563EB' : i + 1 === step ? '#EEF2FF' : '#F1F5F9',
+                  color: i + 1 <= step ? '#2563EB' : '#94A3B8',
+                  border: i + 1 === step ? '2px solid #2563EB' : '2px solid transparent',
+                  transition: 'all 0.3s',
+                  zIndex: 1,
+                }}>{i + 1}</div>
+                <span style={{ fontSize: 11, fontWeight: i + 1 === step ? 600 : 400, color: i + 1 <= step ? '#0F172A' : '#94A3B8', whiteSpace: 'nowrap' }}>{label}</span>
+              </div>
+              {i < steps.length - 1 && (
+                <div style={{
+                  position: 'absolute', top: 15, left: 'calc(50% + 16px)', right: 'calc(50% + 16px)',
+                  height: 2, background: i + 1 < step ? '#2563EB' : '#E2E8F0', zIndex: 0,
+                }} />
+              )}
             </div>
           ))}
         </div>
@@ -274,16 +332,24 @@ export default function Reserve() {
               <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 14, color: '#0F172A' }}>Price Breakdown</h3>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
                 <span style={{ fontSize: 14, color: '#64748B' }}>${item.price} × {days} days</span>
-                <span style={{ fontSize: 14, fontWeight: 600 }}>${subtotal}</span>
+                <span style={{ fontSize: 14, fontWeight: 600 }}>${paymentDetails.subtotal}</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
-                <span style={{ fontSize: 14, color: '#64748B' }}>Service fee</span>
-                <span style={{ fontSize: 14, fontWeight: 600 }}>${serviceFee}</span>
+                <span style={{ fontSize: 14, color: '#64748B' }}>
+                  {paymentMethod === 'cod' ? 'Damage Insurance (5%)' : 'Service fee (10%)'}
+                </span>
+                <span style={{ fontSize: 14, fontWeight: 600 }}>${paymentDetails.serviceFee.toFixed(2)}</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
+                <span style={{ fontSize: 14, color: '#64748B' }}>
+                  {paymentMethod === 'cod' ? 'Tax' : 'Tax (8%)'}
+                </span>
+                <span style={{ fontSize: 14, fontWeight: 600 }}>${paymentDetails.tax.toFixed(2)}</span>
               </div>
               <div style={{ height: 1, background: '#F1F5F9', margin: '12px 0' }} />
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ fontSize: 15, fontWeight: 700, color: '#0F172A' }}>Total</span>
-                <span style={{ fontSize: 18, fontWeight: 800, color: '#2563EB' }}>${total}</span>
+                <span style={{ fontSize: 18, fontWeight: 800, color: '#2563EB' }}>${paymentDetails.total.toFixed(2)}</span>
               </div>
             </div>
 
@@ -338,43 +404,73 @@ export default function Reserve() {
             <div style={{ background: 'white', borderRadius: 16, padding: '18px 16px', border: '1px solid #E2E8F0', marginBottom: 24 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
                 <span style={{ fontSize: 14, color: '#64748B' }}>${item.price} × {days} days</span>
-                <span style={{ fontSize: 14, fontWeight: 600 }}>${subtotal}</span>
+                <span style={{ fontSize: 14, fontWeight: 600 }}>${paymentDetails.subtotal}</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
-                <span style={{ fontSize: 14, color: '#64748B' }}>Service fee</span>
-                <span style={{ fontSize: 14, fontWeight: 600 }}>${serviceFee}</span>
+                <span style={{ fontSize: 14, color: '#64748B' }}>
+                  {paymentMethod === 'cod' ? 'Damage Insurance (5%)' : 'Service fee (10%)'}
+                </span>
+                <span style={{ fontSize: 14, fontWeight: 600 }}>${paymentDetails.serviceFee.toFixed(2)}</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
+                <span style={{ fontSize: 14, color: '#64748B' }}>
+                  {paymentMethod === 'cod' ? 'Tax' : 'Tax (8%)'}
+                </span>
+                <span style={{ fontSize: 14, fontWeight: 600 }}>${paymentDetails.tax.toFixed(2)}</span>
               </div>
               <div style={{ height: 1, background: '#F1F5F9', margin: '12px 0' }} />
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ fontSize: 15, fontWeight: 700, color: '#0F172A' }}>Total</span>
-                <span style={{ fontSize: 20, fontWeight: 800, color: '#2563EB' }}>${total}</span>
+                <span style={{ fontSize: 20, fontWeight: 800, color: '#2563EB' }}>${paymentDetails.total.toFixed(2)}</span>
               </div>
             </div>
 
             <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 12, color: '#0F172A' }}>Payment Method</h3>
-            <div style={{ display: 'flex', gap: 10, marginBottom: 28 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 28 }}>
               {[
-                { label: 'Visa', suffix: '•••• 4242', icon: '💳' },
-                { label: 'Mastercard', suffix: '•••• 8888', icon: '💳' },
-                { label: 'PayPal', suffix: 'j***@email.com', icon: '🅿️' },
-              ].map((method, i) => (
-                <button key={i} onClick={() => setPaymentMethod(i)} style={{
-                  flex: 1, padding: '14px 8px', borderRadius: 14,
-                  border: paymentMethod === i ? '2px solid #2563EB' : '1.5px solid #E2E8F0',
-                  background: paymentMethod === i ? '#EEF2FF' : 'white',
-                  fontSize: 12, fontWeight: 600, color: '#0F172A',
-                  textAlign: 'center', cursor: 'pointer', transition: 'all 0.15s',
-                }}>
-                  <div style={{ fontSize: 20, marginBottom: 4 }}>{method.icon}</div>
-                  {method.label}
-                  <div style={{ fontSize: 11, color: '#64748B', marginTop: 2 }}>{method.suffix}</div>
-                </button>
-              ))}
+                { id: 'gcash', label: 'GCash', icon: <Smartphone size={20} />, desc: 'Home delivery • 10% Service fee • 8% Tax' },
+                { id: 'paymaya', label: 'PayMaya', icon: <Smartphone size={20} />, desc: 'Home delivery • 10% Service fee • 8% Tax' },
+                { id: 'gotyme', label: 'GoTyme', icon: <Wallet size={20} />, desc: 'Home delivery • 10% Service fee • 8% Tax' },
+                { id: 'cod', label: 'Cash on Delivery (COD)', icon: <Truck size={20} />, desc: 'Face-to-face pickup • No delivery fee • 5% Damage Insurance' },
+              ].map((method) => {
+                const details = getPaymentDetails(method.id);
+                return (
+                  <button key={method.id} onClick={() => setPaymentMethod(method.id)} style={{
+                    width: '100%', display: 'flex', alignItems: 'center', gap: 12,
+                    padding: '16px', borderRadius: 12,
+                    border: `2px solid ${paymentMethod === method.id ? '#2563EB' : '#E2E8F0'}`,
+                    background: paymentMethod === method.id ? '#EFF6FF' : 'white',
+                    cursor: 'pointer', textAlign: 'left',
+                  }}>
+                    <div style={{
+                      width: 44, height: 44, borderRadius: 12,
+                      border: `2px solid ${paymentMethod === method.id ? '#2563EB' : '#CBD5E1'}`,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      background: paymentMethod === method.id ? '#EEF2FF' : '#F8FAFC',
+                      color: paymentMethod === method.id ? '#2563EB' : '#64748B',
+                      flexShrink: 0,
+                    }}>
+                      {method.icon}
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <p style={{ fontSize: 15, fontWeight: 600, color: '#0F172A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        {method.label}
+                      </p>
+                      <p style={{ fontSize: 12, color: '#64748B', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        {method.desc}
+                      </p>
+                    </div>
+                    {paymentMethod === method.id && (
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    )}
+                  </button>
+                );
+              })}
             </div>
 
             {bookingError && <p role="alert" style={{ marginBottom: 14, color: '#B42318', fontSize: 13 }}>{bookingError}</p>}
             <button onClick={confirmRental} disabled={isSubmitting} className="btn-primary" style={{ opacity: isSubmitting ? 0.7 : 1 }}>
-              {isSubmitting ? 'Saving reservation…' : `Confirm reservation · $${total}`}
+              {isSubmitting ? 'Saving reservation…' : `Confirm reservation · $${paymentDetails.total.toFixed(2)}`}
             </button>
           </>
         )}
