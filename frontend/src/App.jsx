@@ -3,6 +3,7 @@ import { Routes, Route, Navigate, Link, NavLink, useNavigate, useLocation } from
 import { Bell, User, ShoppingCart, X, Trash2, ArrowRight, Moon, Sun } from 'lucide-react'
 import { useApp } from './contexts/AppContext'
 import BottomNav from './components/BottomNav'
+import RentifyLogo from './components/RentifyLogo'
 import Home from './pages/Home'
 import Search from './pages/Search'
 import ItemDetails from './pages/ItemDetails'
