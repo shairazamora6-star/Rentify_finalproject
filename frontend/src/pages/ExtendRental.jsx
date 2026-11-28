@@ -284,7 +284,7 @@ export default function ExtendRental() {
           </div>
           <span style={{
             padding: '4px 10px', borderRadius: 20, fontSize: 11, fontWeight: 700,
-            background: '#FEF3C7', color: '#92400E',
+            background: 'var(--warning-soft)', color: 'var(--warning)',
             flexShrink: 0, whiteSpace: 'nowrap',
           }}>Active</span>
         </div>
@@ -359,7 +359,7 @@ export default function ExtendRental() {
               <div style={{
                 padding: '16px', background: 'var(--accent-softer)', borderRadius: 'var(--radius-md)', marginBottom: 20,
               }}>
-                <p style={{ fontSize: 13, color: '#1E40AF', marginBottom: 4 }}>
+                <p style={{ fontSize: 13, color: 'var(--accent)', marginBottom: 4 }}>
                   Extension: <strong>{totalDays} day{totalDays !== 1 ? 's' : ''}</strong>
                 </p>
                 <p style={{ fontSize: 15, fontWeight: 700, color: 'var(--accent)' }}>
@@ -406,14 +406,14 @@ export default function ExtendRental() {
               </div>
             </div>
 
-            <div style={{ background: '#FEF3C7', border: '1px solid #FDE68A', borderRadius: 10, padding: 12, marginBottom: 20 }}>
+            <div style={{ background: 'var(--warning-soft)', border: '1px solid var(--warning-line)', borderRadius: 10, padding: 12, marginBottom: 20 }}>
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
-                <AlertCircle size={18} color="#92400E" style={{ flexShrink: 0, marginTop: 1 }} />
+                <AlertCircle size={18} color="var(--warning)" style={{ flexShrink: 0, marginTop: 1 }} />
                 <div>
-                  <p style={{ fontSize: 13, fontWeight: 600, color: '#92400E', marginBottom: 4 }}>
+                  <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--warning)', marginBottom: 4 }}>
                     Owner approval required
                   </p>
-                  <p style={{ fontSize: 12, color: '#92400E' }}>
+                  <p style={{ fontSize: 12, color: 'var(--warning)' }}>
                     This extension request will be sent to the owner for approval. Your rental continues until they respond.
                   </p>
                 </div>
