@@ -33,6 +33,7 @@ export default function ItemCard({ item }) {
           alt={item.title}
           style={{ width: '100%', height: 140, objectFit: 'cover' }}
         />
+        {/* Favorite button only */}
         <button
           onClick={e => { e.stopPropagation(); toggleFavorite(item.id); }}
           style={{
@@ -43,10 +44,12 @@ export default function ItemCard({ item }) {
             height: 32,
             borderRadius: '50%',
             background: 'white',
+            border: 'none',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+            cursor: 'pointer',
           }}
         >
           <Heart size={16} fill={favorited ? '#EF4444' : 'none'} stroke={favorited ? '#EF4444' : '#64748B'} />
