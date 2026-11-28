@@ -1,4 +1,4 @@
-.nearby-page { padding-top: 40px; }
+.nearby-page { padding-top: 64px; }
 .nearby-intro { max-width: 760px; margin: 0 auto; padding: 38px; border: 1px solid #e1ebf7; border-radius: 20px; background: linear-gradient(135deg,#f3f8ff,#fff 72%); }
 .nearby-kicker { color: #3978d5; font-size: 10px; font-weight: 750; letter-spacing: .14em; }
 .nearby-intro h1 { margin-top: 10px; font-size: clamp(29px,4vw,42px); letter-spacing: -.05em; }
@@ -22,7 +22,7 @@
 .nearby-empty { padding: 48px 16px; border: 1px dashed #dce8f5; border-radius: 14px; color: #718198; text-align: center; font-size: 13px; }
 
 @media (max-width: 640px) {
-  .nearby-page { padding-top: 18px; }
+  .nearby-page { padding-top: 24px; }
   .nearby-intro { padding: 24px 18px; border-radius: 15px; }
   .nearby-intro h1 { font-size: 29px; }
   .nearby-controls { align-items: stretch; flex-direction: column; gap: 10px; }
