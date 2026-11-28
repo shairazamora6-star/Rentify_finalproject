@@ -19,6 +19,7 @@ import {
 } from 'lucide-react'
 import { useAdmin } from '../contexts/AdminContext'
 import '../pages/Admin.css'
+import RentifyLogo from './RentifyLogo'
 
 // ── Sidebar navigation (Customers, Owners, Account & Settings removed) ──
 const NAV_SECTIONS = [
@@ -48,19 +49,6 @@ const NAV_SECTIONS = [
     ],
   },
 ]
-
-// ── R-square logo mark ──
-function RentifyLogo({ size = 32 }) {
-  return (
-    <span
-      className="admin-logo-mark"
-      style={{ width: size, height: size, fontSize: size * 0.52 }}
-      aria-hidden="true"
-    >
-      R
-    </span>
-  )
-}
 
 export default function AdminLayout() {
   const { admin, isAdmin, adminLogout } = useAdmin()

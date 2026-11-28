@@ -50,6 +50,7 @@ import Reports from './pages/Reports'
 import Complaints from './pages/Complaints'
 import Settings from './pages/Settings'
 import AdminStub from './pages/AdminStub'
+import RentifyLogo from './components/RentifyLogo'
 
 const PUBLIC_ROUTES = ['/login', '/register', '/landing']
 
@@ -60,7 +61,7 @@ function GetLayout({ children }) {
     <div className="app-frame">
       <header className="app-topbar">
         <Link className="app-topbar-brand" to="/">
-          <span className="app-topbar-brand-mark">R</span>
+          <span className="app-topbar-brand-mark"><RentifyLogo size={31} /></span>
           <span>Rentify</span>
         </Link>
         <nav className="app-topbar-links" aria-label="Main navigation">
@@ -76,7 +77,11 @@ function GetLayout({ children }) {
                 <Bell size={18} />
               </Link>
               <Link className="app-topbar-icon" to="/profile" aria-label="Profile">
-                <User size={18} />
+                {user?.profileImage ? (
+                  <img className="app-topbar-avatar" src={user.profileImage} alt="" />
+                ) : (
+                  <User size={18} />
+                )}
               </Link>
               <span>{user?.name}</span>
               <button onClick={logout}>Sign out</button>

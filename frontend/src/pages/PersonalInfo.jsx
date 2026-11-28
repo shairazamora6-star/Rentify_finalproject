@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, User, Mail, MapPin, Camera, Save, CheckCircle } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
@@ -6,23 +6,56 @@ import { useApp } from '../contexts/AppContext';
 export default function PersonalInfo() {
   const navigate = useNavigate();
   const { user, updateUser } = useApp();
+  const fileInputRef = useRef(null);
 
   const [activeTab, setActiveTab] = useState('profile');
   const [profile, setProfile] = useState({
-    fullName: 'John Mitchell',
+    fullName: user?.name || 'John Mitchell',
     username: 'johnmitchell',
     bio: 'Frequent renter, love outdoor gear and cameras!',
-    email: 'john.mitchell@email.com',
+    email: user?.email || 'john.mitchell@email.com',
     phone: '+1 (555) 123-4567',
     location: 'San Francisco, CA',
   });
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [profileImage, setProfileImage] = useState(user?.profileImage || '');
+
+  const handlePhotoChange = (event) => {
+    const file = event.target.files?.[0];
+    if (!file || !file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const image = new Image();
+      image.onload = () => {
+        const canvas = document.createElement('canvas');
+        const size = 256;
+        canvas.width = size;
+        canvas.height = size;
+        const scale = Math.max(size / image.width, size / image.height);
+        const width = image.width * scale;
+        const height = image.height * scale;
+        const context = canvas.getContext('2d');
+        context.drawImage(image, (size - width) / 2, (size - height) / 2, width, height);
+        const resized = canvas.toDataURL('image/jpeg', 0.88);
+        setProfileImage(resized);
+        updateUser({ profileImage: resized });
+      };
+      image.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  };
 
   const handleSave = async () => {
     setSaving(true);
     await new Promise(r => setTimeout(r, 1000));
-    // In real app: updateUser(profile)
+    updateUser({
+      name: profile.fullName,
+      email: profile.email,
+      phone: profile.phone,
+      location: profile.location,
+      profileImage,
+    });
     setSaving(false);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
@@ -94,10 +127,15 @@ export default function PersonalInfo() {
                   background: 'linear-gradient(135deg, #3978D5, #73A7E5)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   color: 'white', fontWeight: 700, fontSize: 36,
+                  overflow: 'hidden',
                 }}>
-                  JM
+                  {profileImage ? (
+                    <img src={profileImage} alt={profile.fullName} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  ) : (
+                    (profile.fullName || 'User').split(' ').map(part => part[0]).join('').slice(0, 2).toUpperCase()
+                  )}
                 </div>
-                <button style={{
+                <button type="button" onClick={() => fileInputRef.current?.click()} aria-label="Change profile photo" style={{
                   position: 'absolute', bottom: 0, right: 0,
                   width: 32, height: 32, borderRadius: '50%',
                   background: '#2563EB',
@@ -106,6 +144,7 @@ export default function PersonalInfo() {
                 }}>
                   <Camera size={16} color="white" />
                 </button>
+                <input ref={fileInputRef} type="file" accept="image/*" onChange={handlePhotoChange} style={{ display: 'none' }} />
               </div>
               <p style={{ fontSize: 13, color: '#64748B' }}>Tap to change photo</p>
             </div>
