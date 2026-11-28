@@ -21,41 +21,41 @@ export default function BookingConfirmation() {
       }}>
         <div style={{
           width: 80, height: 80, borderRadius: '50%',
-          background: '#E7F7F4',
+          background: 'var(--success-light)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           margin: '0 auto 20px',
         }}>
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#087F73" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--success)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="20 6 9 17 4 12" />
           </svg>
         </div>
-        <h1 style={{ fontSize: 24, fontWeight: 700, marginBottom: 8 }}>Booking Confirmed!</h1>
-        <p style={{ color: '#64748B', fontSize: 15 }}>Your reservation has been successful</p>
+        <h1 style={{ fontSize: 24, fontWeight: 700, color: 'var(--ink-1)', marginBottom: 8 }}>Booking Confirmed!</h1>
+        <p style={{ color: 'var(--ink-3)', fontSize: 15 }}>Your reservation has been successful</p>
       </div>
 
       {/* Item Card */}
       <div style={{
-        background: 'white', borderRadius: 16, padding: 16,
-        border: '1px solid #E2E8F0', marginBottom: 16,
+        background: 'var(--surface)', borderRadius: 16, padding: 16,
+        border: '1px solid var(--line-1)', marginBottom: 16,
       }}>
         <div style={{ display: 'flex', gap: 12 }}>
           <img src={item.image} alt={item.title}
             style={{ width: 80, height: 80, borderRadius: 10, objectFit: 'cover' }} />
           <div>
-            <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 4 }}>{item.title}</h3>
+            <h3 style={{ fontSize: 15, fontWeight: 700, color: 'var(--ink-1)', marginBottom: 4 }}>{item.title}</h3>
             <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginBottom: 4 }}>
               <Star size={14} fill="#F59E0B" stroke="#F59E0B" />
-              <span style={{ fontSize: 13, color: '#64748B' }}>{item.rating}</span>
+              <span style={{ fontSize: 13, color: 'var(--ink-3)' }}>{item.rating}</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-              <MapPin size={14} color="#94A3B8" />
-              <span style={{ fontSize: 13, color: '#94A3B8' }}>{item.location}</span>
+              <MapPin size={14} color="var(--ink-4)" />
+              <span style={{ fontSize: 13, color: 'var(--ink-4)' }}>{item.location}</span>
             </div>
           </div>
         </div>
         <div style={{
           marginTop: 16, padding: '12px 16px',
-          background: '#F8FAFC', borderRadius: 10,
+          background: 'var(--surface-1)', borderRadius: 10,
           display: 'flex', justifyContent: 'space-around',
         }}>
           {[
@@ -64,13 +64,13 @@ export default function BookingConfirmation() {
             { label: 'Status', value: 'Confirmed' },
           ].map(({ label, value }) => (
             <div key={label} style={{ textAlign: 'center' }}>
-              <p style={{ fontSize: 11, color: '#94A3B8', marginBottom: 2 }}>{label}</p>
-              <p style={{ fontSize: 14, fontWeight: 700, color: '#0F172A' }}>{value}</p>
+              <p style={{ fontSize: 11, color: 'var(--ink-4)', marginBottom: 2 }}>{label}</p>
+              <p style={{ fontSize: 14, fontWeight: 700, color: 'var(--ink-1)' }}>{value}</p>
             </div>
           ))}
         </div>
         {state?.startDate && state?.endDate && (
-          <p style={{ marginTop: 12, textAlign: 'center', color: '#60758D', fontSize: 12 }}>
+          <p style={{ marginTop: 12, textAlign: 'center', color: 'var(--ink-4)', fontSize: 12 }}>
             {new Date(state.startDate).toLocaleDateString()} – {new Date(state.endDate).toLocaleDateString()}
             {state.bookingId ? ` · Booking #${state.bookingId}` : ''}
           </p>

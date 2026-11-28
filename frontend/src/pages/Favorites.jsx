@@ -13,40 +13,37 @@ export default function Favorites() {
     <div className="page">
       {/* Header */}
       <div style={{
-        background: 'white',
+        background: 'var(--surface)',
         padding: '16px 20px',
         display: 'flex',
         alignItems: 'center',
         gap: 12,
-        borderBottom: '1px solid #E2E8F0',
+        borderBottom: '1px solid var(--line-1)',
         position: 'sticky', top: 0, zIndex: 50,
       }}>
-        <button onClick={() => navigate(-1)} style={{ padding: 4 }}>←</button>
-        <span style={{ fontWeight: 700, fontSize: 18 }}>Favorites</span>
+        <button onClick={() => navigate(-1)} style={{
+          padding: 4,
+          color: 'var(--ink-1)',
+          transition: 'opacity 0.15s',
+        }}
+        onMouseEnter={e => { e.currentTarget.style.opacity = 0.75; }}
+        onMouseLeave={e => { e.currentTarget.style.opacity = ''; }}>←</button>
+        <span style={{ fontWeight: 700, fontSize: 18, color: 'var(--ink-1)' }}>Favorites</span>
       </div>
 
       <div style={{ padding: '20px' }}>
         {favorites.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '60px 20px' }}>
-            <Heart size={48} color="#E2E8F0" style={{ margin: '0 auto 16px' }} fill="#E2E8F0" />
-            <p style={{ color: '#64748B', fontWeight: 600, fontSize: 16 }}>No favorites yet</p>
-            <p style={{ color: '#94A3B8', fontSize: 13, marginTop: 4 }}>Save items you love by tapping the heart</p>
-            <button onClick={() => navigate('/')} style={{
-              marginTop: 20,
-              padding: '12px 24px',
-              borderRadius: 10,
-              background: '#2563EB',
-              color: 'white',
-              fontWeight: 600,
-              fontSize: 14,
-              border: 'none',
-            }}>
+            <Heart size={48} color="var(--line-1)" style={{ margin: '0 auto 16px' }} fill="var(--line-1)" />
+            <p style={{ color: 'var(--ink-3)', fontWeight: 600, fontSize: 16 }}>No favorites yet</p>
+            <p style={{ color: 'var(--ink-4)', fontSize: 13, marginTop: 4 }}>Save items you love by tapping the heart</p>
+            <button onClick={() => navigate('/')} className="btn-primary" style={{ marginTop: 20, width: 'auto' }}>
               Browse Items
             </button>
           </div>
         ) : (
           <>
-            <p style={{ fontSize: 14, color: '#64748B', marginBottom: 16 }}>{favorites.length} saved items</p>
+            <p style={{ fontSize: 14, color: 'var(--ink-3)', marginBottom: 16 }}>{favorites.length} saved items</p>
             <div className="rental-grid">
               {favorites.map(item => <ItemCard key={item.id} item={item} />)}
             </div>

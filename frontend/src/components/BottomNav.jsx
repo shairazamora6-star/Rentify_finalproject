@@ -16,8 +16,8 @@ export default function BottomNav() {
       bottom: 0,
       left: 0,
       width: '100%',
-      background: 'white',
-      borderTop: '1px solid #DCE8F5',
+      background: 'var(--surface)',
+      borderTop: '1px solid var(--border)',
       display: 'flex',
       padding: '8px 0 env(safe-area-inset-bottom, 8px)',
       zIndex: 100,
@@ -27,21 +27,12 @@ export default function BottomNav() {
           key={path}
           to={path}
           end={path === '/'}
-          style={({ isActive }) => ({
-            flex: 1,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: 2,
-            padding: '6px 0',
-            color: isActive ? '#2563EB' : '#94A3B8',
-            transition: 'color 0.15s',
-          })}
+          className="bottom-nav-item"
         >
           {({ isActive }) => (
             <>
-              <Icon size={22} strokeWidth={isActive ? 2.5 : 2} />
-              <span style={{ fontSize: 11, fontWeight: isActive ? 600 : 400 }}>{label}</span>
+              <Icon size={22} strokeWidth={isActive ? 2.5 : 2} style={{ transition: 'transform 0.15s' }} />
+              <span style={{ fontSize: 11, fontWeight: isActive ? 600 : 400, transition: 'color 0.15s' }}>{label}</span>
             </>
           )}
         </NavLink>
