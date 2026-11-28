@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Search } from 'lucide-react';
+import { Search, TrendingUp } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import ItemCard from '../components/ItemCard';
 import { categories } from '../data/mockData';
@@ -7,7 +7,7 @@ import { useApp } from '../contexts/AppContext';
 
 export default function Home() {
   const navigate = useNavigate();
-  const { items, user } = useApp();
+  const { items, user, rentals } = useApp();
   const [activeCat, setActiveCat] = useState('all');
   const [location, setLocation] = useState('San Francisco, CA');
   const [editingLocation, setEditingLocation] = useState(false);
@@ -17,6 +17,19 @@ export default function Home() {
   const filtered = activeCat === 'all' ? items : items.filter(i => i.category === activeCat);
   const featured = items.filter(i => i.featured);
   const nearbyItems = activeCat === 'all' ? filtered.filter(item => !item.featured) : filtered;
+
+  // Most rented: rank items by how often they appear in the customer's rental history
+  const rentalCounts = {};
+  rentals.forEach(r => {
+    const title = r.item || (r.itemId ? (items.find(i => i.id === r.itemId) || {}).title : null);
+    if (title) rentalCounts[title] = (rentalCounts[title] || 0) + 1;
+  });
+  const mostRented = items
+    .filter(i => rentalCounts[i.title] > 0)
+    .sort((a, b) => rentalCounts[b.title] - rentalCounts[a.title])
+    .slice(0, 6);
+  const popularItems = mostRented.length ? mostRented : featured.length ? featured : items.slice(0, 6);
+  const isFromHistory = mostRented.length > 0;
 
   return (
     <div className="page">
@@ -121,29 +134,45 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Browse Categories */}
+      {/* Most Rented */}
       <div style={{ padding: '0 20px 24px' }}>
-        <h2 style={{ fontSize: 17, fontWeight: 700, color: '#0F172A', marginBottom: 14 }}>Browse Categories</h2>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
-          {[
-            { name: 'Electronics', id: 'electronics', emoji: '💻', bg: '#EEF2FF' },
-            { name: 'Cameras', id: 'cameras', emoji: '📷', bg: '#F0FDFA' },
-            { name: 'Gaming', id: 'gaming', emoji: '🎮', bg: '#FFFBEB' },
-            { name: 'Tools', id: 'tools', emoji: '🔧', bg: '#FFF1F2' },
-            { name: 'Sports', id: 'sports', emoji: '⚽', bg: '#F5F3FF' },
-            { name: 'Fashion', id: 'fashion', emoji: '👗', bg: '#FEF3C7' },
-          ].map(cat => (
-            <button key={cat.name} onClick={() => navigate(`/search?category=${cat.id}`)} style={{
-              padding: '16px 8px', borderRadius: 14, background: cat.bg,
-              border: 'none', cursor: 'pointer',
-              display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,
-              transition: 'transform 0.15s, box-shadow 0.15s',
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <h2 style={{ fontSize: 17, fontWeight: 700, color: '#0F172A', margin: 0 }}>Most rented</h2>
+            {isFromHistory && <TrendingUp size={15} color="#2563EB" />}
+          </div>
+          <button onClick={() => navigate('/search')} style={{ fontSize: 13, color: '#2563EB', fontWeight: 600, padding: '4px 0', background: 'none', border: 'none', cursor: 'pointer' }}>See all →</button>
+        </div>
+        <p style={{ fontSize: 12, color: '#94A3B8', margin: '0 0 14px' }}>
+          {isFromHistory ? 'Items customers rent the most' : 'Popular picks right now'}
+        </p>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          {popularItems.map((item, idx) => (
+            <button key={item.id} onClick={() => navigate(`/item/${item.id}`)} style={{
+              display: 'flex', alignItems: 'center', gap: 12,
+              padding: 12, borderRadius: 14,
+              background: 'white', border: '1.5px solid #EDF4FC',
+              cursor: 'pointer', textAlign: 'left',
+              transition: 'border-color 0.15s, box-shadow 0.15s',
             }}
-            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)'; }}
-            onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = ''; }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = '#BFDBFE'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(45,93,150,0.08)'; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = '#EDF4FC'; e.currentTarget.style.boxShadow = ''; }}
             >
-              <span style={{ fontSize: 24 }}>{cat.emoji}</span>
-              <span style={{ fontSize: 12, fontWeight: 700, color: '#0F172A', textAlign: 'center' }}>{cat.name}</span>
+              <span style={{
+                width: 26, height: 26, borderRadius: 8, flexShrink: 0,
+                background: idx === 0 ? '#EEF2FF' : '#F8FAFC',
+                color: idx === 0 ? '#2563EB' : '#94A3B8',
+                display: 'grid', placeItems: 'center',
+                fontSize: 12, fontWeight: 800,
+              }}>{idx + 1}</span>
+              <img src={item.image} alt="" style={{ width: 48, height: 48, borderRadius: 10, objectFit: 'cover', flexShrink: 0 }} />
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 14, fontWeight: 700, color: '#0F172A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.title}</div>
+                <div style={{ fontSize: 12, color: '#64748B' }}>
+                  {isFromHistory ? `${rentalCounts[item.title]} rental${rentalCounts[item.title] === 1 ? '' : 's'}` : `$${item.price}/day`}
+                </div>
+              </div>
+              <span style={{ fontSize: 15, fontWeight: 800, color: '#2563EB' }}>${item.price}<span style={{ fontSize: 11, fontWeight: 500, color: '#94A3B8' }}>/day</span></span>
             </button>
           ))}
         </div>

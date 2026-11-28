@@ -1,5 +1,6 @@
+import { useState } from 'react'
 import { Routes, Route, Navigate, Link, NavLink, useNavigate, useLocation } from 'react-router-dom'
-import { Bell, User } from 'lucide-react'
+import { Bell, User, ShoppingCart, X, Trash2, ArrowRight } from 'lucide-react'
 import { useApp } from './contexts/AppContext'
 import BottomNav from './components/BottomNav'
 import Home from './pages/Home'
@@ -54,9 +55,18 @@ import RentifyLogo from './components/RentifyLogo'
 const PUBLIC_ROUTES = ['/login', '/register', '/landing']
 
 function GetLayout({ children }) {
-  const { isLoggedIn, user, logout } = useApp()
+  const { isLoggedIn, user, logout, cart, removeFromCart } = useApp()
   const navigate = useNavigate()
   const { pathname } = useLocation()
+  const [cartOpen, setCartOpen] = useState(false)
+  const cartCount = cart.length
+  const cartSubtotal = cart.reduce((sum, c) => sum + (c.price || 0), 0)
+
+  const goCheckout = () => {
+    setCartOpen(false)
+    navigate('/search')
+  }
+
   return (
     <div className="app-frame">
       <header className="app-topbar">
@@ -73,6 +83,12 @@ function GetLayout({ children }) {
         <div className="app-topbar-user">
           {isLoggedIn ? (
             <>
+              <button className="app-topbar-icon app-topbar-cart" onClick={() => setCartOpen(true)} aria-label={`Cart, ${cartCount} item${cartCount === 1 ? '' : 's'}`}>
+                <ShoppingCart size={18} />
+                {cartCount > 0 && (
+                  <span className="app-topbar-cart-badge">{cartCount}</span>
+                )}
+              </button>
               <Link className="app-topbar-user-profile" to="/profile" aria-label="Profile">
                 {user?.profileImage ? (
                   <img className="app-topbar-avatar" src={user.profileImage} alt="" />
@@ -93,6 +109,53 @@ function GetLayout({ children }) {
           )}
         </div>
       </header>
+
+      {/* Cart drawer */}
+      <div className={`cart-drawer-overlay${cartOpen ? ' open' : ''}`} aria-hidden={!cartOpen}>
+        <aside className={`cart-drawer${cartOpen ? ' open' : ''}`} role="dialog" aria-label="Your cart">
+          <div className="cart-drawer-header">
+            <span className="cart-drawer-title">Your cart</span>
+            <button className="cart-drawer-close" onClick={() => setCartOpen(false)} aria-label="Close cart">
+              <X size={18} />
+            </button>
+          </div>
+
+          {cart.length === 0 ? (
+            <div className="cart-drawer-empty">
+              <ShoppingCart size={30} />
+              <p>No items in your cart yet.</p>
+              <button className="cart-drawer-empty-link" onClick={goCheckout}>Browse items</button>
+            </div>
+          ) : (
+            <>
+              <div className="cart-drawer-list">
+                {cart.map(c => (
+                  <div key={c.id} className="cart-drawer-item">
+                    <img src={c.image} alt="" className="cart-drawer-item-img" />
+                    <div className="cart-drawer-item-body">
+                      <span className="cart-drawer-item-name">{c.title}</span>
+                      <span className="cart-drawer-item-price">${c.price}<span> /day</span></span>
+                    </div>
+                    <button className="cart-drawer-item-remove" onClick={() => removeFromCart(c.id)} aria-label={`Remove ${c.title} from cart`}>
+                      <Trash2 size={15} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+              <div className="cart-drawer-footer">
+                <div className="cart-drawer-subtotal">
+                  <span>Subtotal</span>
+                  <strong>${cartSubtotal}<span> /day</span></strong>
+                </div>
+                <button className="cart-drawer-checkout" onClick={goCheckout}>
+                  Reserve items <ArrowRight size={16} />
+                </button>
+              </div>
+            </>
+          )}
+        </aside>
+      </div>
+
       {children}
       {isLoggedIn && !PUBLIC_ROUTES.includes(pathname) && <BottomNav />}
       {!PUBLIC_ROUTES.includes(pathname) && <RentalAssistant />}
