@@ -15,13 +15,17 @@ export default function Search() {
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [maxPrice, setMaxPrice] = useState('');
   const [inStockOnly, setInStockOnly] = useState(false);
+  const [minRating, setMinRating] = useState('');
+  const [maxDistance, setMaxDistance] = useState('');
 
   let results = items.filter(item => {
     const matchQ = !query || item.title.toLowerCase().includes(query.toLowerCase()) || item.category.toLowerCase().includes(query.toLowerCase());
     const matchCat = category === 'all' || item.category === category;
     const matchPrice = !maxPrice || item.price <= Number(maxPrice);
     const matchStock = !inStockOnly || item.available;
-    return matchQ && matchCat && matchPrice && matchStock;
+    const matchRating = !minRating || item.rating >= Number(minRating);
+    const matchDistance = !maxDistance || parseFloat(item.distance) <= Number(maxDistance);
+    return matchQ && matchCat && matchPrice && matchStock && matchRating && matchDistance;
   });
 
   if (sortBy === 'price') results = [...results].sort((a, b) => a.price - b.price);
@@ -82,8 +86,34 @@ export default function Search() {
               <input type="checkbox" checked={inStockOnly} onChange={e => setInStockOnly(e.target.checked)} />
               Available now
             </label>
-            {(maxPrice || inStockOnly) && (
-              <button onClick={() => { setMaxPrice(''); setInStockOnly(false); }} style={{
+            <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 600, color: '#0F172A' }}>
+              Min rating
+              <select
+                value={minRating}
+                onChange={e => setMinRating(e.target.value)}
+                style={{ width: 88, padding: '8px 8px', fontSize: 13, borderRadius: 8, border: '1px solid #E2E8F0', background: 'white', outline: 'none' }}
+              >
+                <option value="">Any</option>
+                <option value="4.8">4.8+</option>
+                <option value="4.5">4.5+</option>
+                <option value="4.0">4.0+</option>
+              </select>
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 600, color: '#0F172A' }}>
+              Max distance
+              <select
+                value={maxDistance}
+                onChange={e => setMaxDistance(e.target.value)}
+                style={{ width: 96, padding: '8px 8px', fontSize: 13, borderRadius: 8, border: '1px solid #E2E8F0', background: 'white', outline: 'none' }}
+              >
+                <option value="">Any</option>
+                <option value="2">2 mi</option>
+                <option value="3">3 mi</option>
+                <option value="5">5 mi</option>
+              </select>
+            </label>
+            {(maxPrice || inStockOnly || minRating || maxDistance) && (
+              <button onClick={() => { setMaxPrice(''); setInStockOnly(false); setMinRating(''); setMaxDistance(''); }} style={{
                 fontSize: 12, fontWeight: 600, color: '#2563EB', background: 'none', border: 'none', cursor: 'pointer',
               }}>Clear filters</button>
             )}
